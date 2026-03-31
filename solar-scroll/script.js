@@ -13,7 +13,7 @@ let currentFrameFloat = 0;
 const cache = {};
 
 function framePath(index) {
-  return `/frames/frame_${String(index + 1).padStart(3, "0")}.png?v=${CACHE_BUST}`;
+  return `frames/frame_${String(index + 1).padStart(3, "0")}.png?v=${CACHE_BUST}`;
 }
 
 function getOrLoad(index) {
