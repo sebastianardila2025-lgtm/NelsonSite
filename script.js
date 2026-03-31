@@ -333,7 +333,7 @@ function handleNavbarScroll() {
 
 // Add animation classes to elements
 function addAnimationClasses() {
-    const sections = document.querySelectorAll('section');
+    const sections = document.querySelectorAll('section:not(#scroll-section)');
     sections.forEach((section, index) => {
         section.classList.add('animate-on-scroll');
         section.style.animationDelay = `${index * 0.1}s`;
@@ -529,8 +529,8 @@ function debounce(func, wait) {
 const debouncedScrollAnimation = debounce(handleScrollAnimation, 10);
 const debouncedNavbarScroll = debounce(handleNavbarScroll, 10);
 
-window.addEventListener('scroll', debouncedScrollAnimation);
-window.addEventListener('scroll', debouncedNavbarScroll);
+window.addEventListener('scroll', debouncedScrollAnimation, { passive: true });
+window.addEventListener('scroll', debouncedNavbarScroll, { passive: true });
 
 // Lazy loading for images (if added later)
 function lazyLoadImages() {

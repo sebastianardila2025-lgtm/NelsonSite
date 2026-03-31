@@ -1,101 +1,88 @@
-const frameCount = 151;
-const LOOKAHEAD = 6;
-const CACHE_BUST = Date.now();
-
-const canvas = document.getElementById("solar-canvas");
-const ctx = canvas.getContext("2d");
+const video   = document.getElementById("solar-video");
+const canvas  = document.getElementById("solar-canvas");
+const ctx     = canvas.getContext("2d");
 const section = document.getElementById("scroll-section");
+const loader  = document.getElementById("loader");
 
-let currentFrame = -1;
-let targetFrame = 0;
-let currentFrameFloat = 0;
+let ready       = false;
+let pendingSeek = false;
+let rafId       = null;
 
-const cache = {};
-
-function framePath(index) {
-  return `frames/frame_${String(index + 1).padStart(3, "0")}.png?v=${CACHE_BUST}`;
-}
-
-function getOrLoad(index) {
-  if (index < 0 || index >= frameCount) return null;
-  if (cache[index]) return cache[index];
-  const img = new Image();
-  img.src = framePath(index);
-  cache[index] = img;
-  return img;
-}
-
+/* ── Canvas sizing ── */
 function resizeCanvas() {
   const dpr = window.devicePixelRatio || 1;
-  const width = window.innerWidth;
-  const height = window.innerHeight;
-
-  canvas.width = width * dpr;
-  canvas.height = height * dpr;
-  canvas.style.width = width + "px";
-  canvas.style.height = height + "px";
-
+  canvas.width  = window.innerWidth  * dpr;
+  canvas.height = window.innerHeight * dpr;
+  canvas.style.width  = window.innerWidth  + "px";
+  canvas.style.height = window.innerHeight + "px";
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   ctx.scale(dpr, dpr);
+  if (ready) drawVideoFrame();
 }
 
-function drawFrame(img) {
-  if (!img || !img.complete || !img.naturalWidth) return;
-  const cw = window.innerWidth;
-  const ch = window.innerHeight;
-  const iw = img.naturalWidth;
-  const ih = img.naturalHeight;
+/* ── Draw current video frame to canvas ── */
+function drawVideoFrame() {
+  if (!video.videoWidth) return;
+  const cw = window.innerWidth, ch = window.innerHeight;
+  const iw = video.videoWidth,  ih = video.videoHeight;
   const ratio = Math.min(cw / iw, ch / ih);
-  const nw = iw * ratio;
-  const nh = ih * ratio;
-  const x = (cw - nw) / 2;
-  const y = (ch - nh) / 2;
+  const nw = iw * ratio, nh = ih * ratio;
+  const x  = (cw - nw) / 2,   y  = (ch - nh) / 2;
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.drawImage(img, x, y, nw, nh);
+  ctx.drawImage(video, x, y, nw, nh);
 }
 
+/* ── Scroll progress [0-1] within the sticky section ── */
 function getScrollProgress() {
-  const rect = section.getBoundingClientRect();
+  const rect  = section.getBoundingClientRect();
   const total = section.offsetHeight - window.innerHeight;
   const passed = Math.min(Math.max(-rect.top, 0), total);
   return total > 0 ? passed / total : 0;
 }
 
-function preloadAhead(frameIndex, direction) {
-  for (let i = 1; i <= LOOKAHEAD; i++) {
-    getOrLoad(frameIndex + i * direction);
-  }
-}
-
+/* ── RAF loop: seek video to scroll-mapped time ── */
 function animate() {
-  const progress = getScrollProgress();
-  targetFrame = progress * (frameCount - 1);
-  currentFrameFloat += (targetFrame - currentFrameFloat) * 0.25;
-
-  const frameIndex = Math.min(Math.max(Math.floor(currentFrameFloat), 0), frameCount - 1);
-
-  if (frameIndex !== currentFrame) {
-    const direction = frameIndex > currentFrame ? 1 : -1;
-    currentFrame = frameIndex;
-
-    preloadAhead(frameIndex, direction);
-
-    const img = getOrLoad(frameIndex);
-    if (img.complete && img.naturalWidth) {
-      drawFrame(img);
-    } else {
-      img.onload = () => drawFrame(img);
+  if (ready && !pendingSeek && video.duration) {
+    const targetTime = getScrollProgress() * video.duration;
+    if (Math.abs(video.currentTime - targetTime) > 0.02) {
+      pendingSeek = true;
+      video.currentTime = targetTime;
     }
   }
-
-  requestAnimationFrame(animate);
+  rafId = requestAnimationFrame(animate);
 }
 
-window.addEventListener("resize", resizeCanvas);
+/* ── Video events ── */
+video.addEventListener("seeked", function () {
+  pendingSeek = false;
+  drawVideoFrame();
+});
+
+video.addEventListener("canplay", function () {
+  if (!ready) {
+    ready = true;
+    if (loader) loader.style.display = "none";
+    drawVideoFrame();
+  }
+}, { once: true });
+
+video.addEventListener("progress", function () {
+  if (loader && loader.style.display !== "none" && video.buffered.length && video.duration) {
+    const pct = Math.round((video.buffered.end(video.buffered.length - 1) / video.duration) * 100);
+    loader.textContent = "Cargando " + pct + "%";
+  }
+});
+
+/* ── Pause RAF when section not visible ── */
+const observer = new IntersectionObserver(function (entries) {
+  if (entries[0].isIntersecting) {
+    if (!rafId) rafId = requestAnimationFrame(animate);
+  } else {
+    if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+  }
+}, { rootMargin: "200px" });
+
+observer.observe(section);
+
+window.addEventListener("resize", resizeCanvas, { passive: true });
 resizeCanvas();
-
-for (let i = 0; i < Math.min(12, frameCount); i++) {
-  getOrLoad(i);
-}
-
-animate();
