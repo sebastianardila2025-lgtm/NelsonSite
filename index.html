@@ -6,7 +6,7 @@
     <title>VoltGrid Ingeniería - Soluciones Eléctricas y Energía Solar en Bogotá</title>
     <meta name="description" content="VoltGrid Ingeniería - Inspecciones RETIE, instalaciones eléctricas y sistemas de energía solar en Bogotá. Precisión técnica para cumplir, seguridad para confiar.">
     <meta name="keywords" content="ingeniería eléctrica, RETIE, inspecciones eléctricas, energía solar, paneles solares, Bogotá">
-    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -509,7 +509,8 @@
     <!-- Floating Chat Widget -->
     <div class="chat-widget" id="chat-widget">
         <!-- Panel -->
-        <div class="chat-panel" id="chat-panel" aria-hidden="true">
+        <div class="chat-panel-wrap" id="chat-panel" aria-hidden="true">
+        <div class="chat-panel">
             <div class="chat-panel-header">
                 <div class="chat-panel-info">
                     <div class="chat-panel-avatar">VG</div>
@@ -559,6 +560,7 @@
                 </button>
             </div>
         </div>
+        </div>
         <!-- SVG liquid-distortion filter (low-frequency = smooth lens waves) -->
         <svg width="0" height="0" style="position:absolute;pointer-events:none" aria-hidden="true">
             <defs>
@@ -581,7 +583,7 @@
         </button>
     </div>
 
-    <script src="/script.js"></script>
-    <script src="/solar-scroll/script.js"></script>
+    <script src="script.js"></script>
+    <script src="solar-scroll/script.js"></script>
 </body>
 </html>
