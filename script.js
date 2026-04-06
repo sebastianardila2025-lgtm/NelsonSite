@@ -36,11 +36,33 @@
   showLeadForm();
 
   // ── Open / close with mac-style animations ──
+  var overlay = document.getElementById('chat-overlay');
+  if (overlay) {
+    overlay.addEventListener('click', function() { closePanel(); });
+  }
+
+  function isMobile() { return window.innerWidth <= 768; }
+
+  function showOverlay() {
+    if (!overlay || !isMobile()) return;
+    overlay.style.display = 'block';
+    requestAnimationFrame(function() {
+      requestAnimationFrame(function() { overlay.classList.add('is-visible'); });
+    });
+  }
+
+  function hideOverlay() {
+    if (!overlay) return;
+    overlay.classList.remove('is-visible');
+    setTimeout(function() { overlay.style.display = 'none'; }, 340);
+  }
+
   function openPanel(forceLeadForm) {
     if (isOpen) return;
     isOpen = true;
     clearTimeout(closeTimer);
     panel.style.display = 'block';
+    showOverlay();
     panel.classList.remove('is-closing', 'is-open');
     widget.classList.add('chat-widget--open');
     panel.setAttribute('aria-hidden', 'false');
@@ -70,6 +92,7 @@
     panel.classList.remove('is-opening', 'is-open');
     panel.classList.add('is-closing');
     panel.setAttribute('aria-hidden', 'true');
+    hideOverlay();
     clearTimeout(closeTimer);
     closeTimer = setTimeout(function() {
       panel.classList.remove('is-closing');

@@ -2528,6 +2528,130 @@ canvas {
     }
 }
 
+/* ── iOS Mobile Chat Bottom-Sheet ── */
+
+/* Dim overlay (tap to close, iOS feel) */
+.chat-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.42);
+  z-index: 9998;
+  opacity: 0;
+  -webkit-transition: opacity 340ms ease;
+  transition: opacity 340ms ease;
+}
+.chat-overlay.is-visible {
+  opacity: 1;
+}
+
+/* Slide-up / slide-down keyframes (global — overrides desktop on mobile) */
+@-webkit-keyframes chatSlideUp {
+  from { -webkit-transform: translateY(100%); transform: translateY(100%); }
+  to   { -webkit-transform: translateY(0);    transform: translateY(0); }
+}
+@keyframes chatSlideUp {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+@-webkit-keyframes chatSlideDown {
+  from { -webkit-transform: translateY(0);    transform: translateY(0); }
+  to   { -webkit-transform: translateY(100%); transform: translateY(100%); }
+}
+@keyframes chatSlideDown {
+  from { transform: translateY(0); }
+  to   { transform: translateY(100%); }
+}
+
+@media (max-width: 768px) {
+  /* ── Bubble: always fixed, fully independent of widget flow ── */
+  .chat-bubble.liquid-glass {
+    position: fixed !important;
+    bottom: 20px !important;
+    right: 20px !important;
+    z-index: 10001 !important;
+    /* isolate so nothing above clips it */
+    -webkit-transform: translateZ(0) !important;
+    transform: translateZ(0) !important;
+  }
+
+  /* ── Handle bar pseudo-element on wrap ── */
+  .chat-panel-wrap::before {
+    content: "";
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    -webkit-transform: translateX(-50%);
+    transform: translateX(-50%);
+    width: 36px;
+    height: 4px;
+    border-radius: 2px;
+    background: rgba(15, 45, 92, 0.18);
+    z-index: 10;
+    pointer-events: none;
+  }
+
+  /* ── Panel wrap: full-width bottom sheet ── */
+  .chat-panel-wrap {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    max-height: 88vh !important;
+    -webkit-transform-origin: bottom center !important;
+    transform-origin: bottom center !important;
+    border-radius: 20px 20px 0 0 !important;
+    z-index: 10000;
+    overflow: hidden;
+    /* safe area for home indicator */
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  /* ── Panel card: full width, rounded top only ── */
+  .chat-panel {
+    width: 100% !important;
+    max-height: 88vh;
+    border-radius: 20px 20px 0 0 !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* ── Override desktop keyframe animations with iOS slide-up ── */
+  .chat-panel-wrap.is-opening {
+    opacity: 1 !important;
+    -webkit-animation: chatSlideUp 360ms cubic-bezier(0.32, 0.72, 0, 1) forwards !important;
+    animation: chatSlideUp 360ms cubic-bezier(0.32, 0.72, 0, 1) forwards !important;
+  }
+  .chat-panel-wrap.is-open {
+    opacity: 1 !important;
+    -webkit-transform: translateY(0) !important;
+    transform: translateY(0) !important;
+  }
+  .chat-panel-wrap.is-closing {
+    opacity: 1 !important;
+    -webkit-animation: chatSlideDown 300ms cubic-bezier(0.4, 0, 1, 1) forwards !important;
+    animation: chatSlideDown 300ms cubic-bezier(0.4, 0, 1, 1) forwards !important;
+  }
+
+  /* ── iOS: 16px on all inputs prevents Safari auto-zoom on focus ── */
+  .lf-input,
+  .lf-select,
+  .lf-textarea,
+  .chat-lead-input,
+  .chat-input {
+    font-size: 16px !important;
+  }
+
+  /* ── Lead form mobile padding ── */
+  .lead-section { padding: 48px 0 !important; }
+  .lead-form-header { padding: 20px 16px 16px !important; }
+  .lead-form { padding: 16px 16px 20px !important; gap: 14px !important; }
+  .lf-success { padding: 36px 20px !important; }
+
+  /* ── Chat lead form header padding for handle bar ── */
+  .chat-panel-header { padding-top: 22px !important; }
+}
+
 /* Print styles */
 @media print {
     .navbar,
