@@ -40,6 +40,7 @@
     if (isOpen) return;
     isOpen = true;
     clearTimeout(closeTimer);
+    panel.style.display = 'block';
     panel.classList.remove('is-closing', 'is-open');
     widget.classList.add('chat-widget--open');
     panel.setAttribute('aria-hidden', 'false');
@@ -72,6 +73,7 @@
     clearTimeout(closeTimer);
     closeTimer = setTimeout(function() {
       panel.classList.remove('is-closing');
+      panel.style.display = 'none';
       widget.classList.remove('chat-widget--open');
     }, 360);
   }
@@ -136,7 +138,7 @@
     { test: /retie|inspección|inspeccion|certificacion|certificación/i, reply: 'Realizamos inspecciones y certificación RETIE para instalaciones residenciales, comerciales e industriales en Bogotá. ¿Quieres que un técnico te contacte?' },
     { test: /solar|fotovoltaico|paneles|fotovoltaica/i, reply: '¡Sí! Diseñamos e instalamos sistemas fotovoltaicos para reducir tus costos de energía. ¿Es para uso residencial o comercial?' },
     { test: /precio|costo|cuesta|tarifa|cobran/i, reply: 'Los precios dependen del tipo de proyecto. Para darte una cotización precisa, escríbenos por WhatsApp o déjanos tu número. 📲' },
-    { test: /contacto|whatsapp|teléfono|telefono|llamar|email|correo/i, reply: 'Puedes contactarnos por WhatsApp: <a href="https://wa.me/571234567890" target="_blank" style="color:#c9a84c;font-weight:600;">+57 1 234 5678</a> o al correo contacto@voltgrid.com.co 📧' },
+    { test: /contacto|whatsapp|teléfono|telefono|llamar|email|correo/i, reply: 'Puedes contactarnos por WhatsApp: <a href="https://wa.me/571234567890" target="_blank" style="color:#c9a84c;font-weight:600;">+57 1 234 5678</a> o al correo voltgridingenieria@gmail.com 📧' },
     { test: /bogota|bogotá|ubicacion|ubicación|donde|dónde/i, reply: 'Estamos ubicados en Bogotá, Colombia, y atendemos proyectos en toda la ciudad y alrededores. 📍' },
     { test: /hola|hello|buenas|buenos|hi\b/i, reply: '¡Hola! 👋 ¿En qué te puedo ayudar hoy? Cuéntame sobre tu proyecto eléctrico o solar.' },
     { test: /gracias|thanks|perfecto|genial|excelente/i, reply: '¡Con gusto! Si tienes más preguntas, estoy aquí. 😊' },
@@ -415,16 +417,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// Scroll event listeners
-window.addEventListener('scroll', function() {
-    handleScrollAnimation();
-    handleNavbarScroll();
-});
-
-// Resize event listener
-window.addEventListener('resize', function() {
-    handleScrollAnimation();
-});
+// Scroll and resize event listeners are registered below with debouncing
 
 // Add loading animation
 window.addEventListener('load', function() {
@@ -531,6 +524,7 @@ const debouncedNavbarScroll = debounce(handleNavbarScroll, 10);
 
 window.addEventListener('scroll', debouncedScrollAnimation, { passive: true });
 window.addEventListener('scroll', debouncedNavbarScroll, { passive: true });
+window.addEventListener('resize', debouncedScrollAnimation, { passive: true });
 
 // Lazy loading for images (if added later)
 function lazyLoadImages() {
@@ -608,6 +602,53 @@ function addAccessibilityFeatures() {
 
 // Initialize accessibility features
 addAccessibilityFeatures();
+
+// ── Lead Capture Form ──
+(function() {
+  var form    = document.getElementById('lead-capture-form');
+  var success = document.getElementById('lf-success');
+  var errEl   = document.getElementById('lf-error');
+  if (!form) return;
+
+  function clearErrors() {
+    errEl.textContent = '';
+    form.querySelectorAll('.lf-input--error').forEach(function(el) {
+      el.classList.remove('lf-input--error');
+    });
+  }
+
+  function setError(el, msg) {
+    el.classList.add('lf-input--error');
+    errEl.textContent = msg;
+    el.focus();
+  }
+
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    clearErrors();
+
+    var nombre   = document.getElementById('lf-nombre');
+    var telefono = document.getElementById('lf-telefono');
+    var tipo     = document.getElementById('lf-tipo');
+
+    if (!nombre.value.trim()) {
+      setError(nombre, 'Por favor ingresa tu nombre.');
+      return;
+    }
+    if (!telefono.value.trim()) {
+      setError(telefono, 'Por favor ingresa tu número de contacto.');
+      return;
+    }
+    if (!tipo.value) {
+      setError(tipo, 'Por favor selecciona el tipo de proyecto.');
+      return;
+    }
+
+    form.style.display = 'none';
+    success.style.display = 'flex';
+    success.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+})();
 
 // Console branding
 console.log('%cVoltGrid Ingeniería', 'font-size: 20px; font-weight: bold; color: #0d2341;');

@@ -506,7 +506,40 @@ section {
 .animate-on-scroll {
     opacity: 0;
     transform: translateY(30px);
-    transition: all 0.6s ease-out;
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+/* ── Scroll canvas section ── */
+.scroll-section {
+    position: relative;
+    height: 600vh;
+}
+
+.sticky-wrap {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow: hidden;
+}
+
+#solar-canvas {
+    display: block;
+    width: 100%;
+    height: 100vh;
+}
+
+#loader {
+    position: absolute;
+    left: 50%;
+    bottom: 24px;
+    transform: translateX(-50%);
+    padding: 10px 18px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.9);
+    color: #0d2341;
+    font-size: 14px;
+    font-weight: 500;
+    pointer-events: none;
 }
 
 /* ── Shared eyebrow ── */
@@ -1389,9 +1422,7 @@ canvas {
   font-family: inherit;
   color: #183153;
   background: rgba(255, 255, 255, 0.55);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.55);
   outline: none;
   box-sizing: border-box;
   transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
@@ -1415,8 +1446,6 @@ canvas {
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.28);
   background: rgba(15, 45, 92, 0.82);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
   font-size: 14px;
   font-weight: 700;
   font-family: inherit;
@@ -1461,6 +1490,12 @@ canvas {
   transition:
     transform 0.38s cubic-bezier(0.22, 1, 0.36, 1),
     box-shadow 0.38s cubic-bezier(0.22, 1, 0.36, 1);
+  /* iPhone Safari: removes 300ms tap delay and grey flash */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  /* Safari: forces backdrop-filter + compositing layer to clip to circle shape */
+  -webkit-mask-image: -webkit-radial-gradient(circle, white 100%, black 100%);
+  mask-image: radial-gradient(circle, white 100%, black 100%);
 }
 
 /* Layer 0 — isolated backdrop blur (no filter here, avoids Safari conflict) */
@@ -1512,7 +1547,8 @@ canvas {
 /* Applied ONLY to this gradient layer — icon above stays sharp */
 .liquid-glass__surface {
   position: absolute;
-  inset: -6px; /* oversized so displacement doesn't expose edges */
+  inset: 0; /* Safari: inset:-6px bleeds through overflow:hidden with SVG filter */
+  clip-path: inset(0 round 999px); /* force-clip Safari filter output to circle */
   border-radius: inherit;
   z-index: 3;
   pointer-events: none;
@@ -1599,6 +1635,18 @@ canvas {
 }
 
 /* ── Liquid Glass Panel ── */
+/* Animation wrapper — NO backdrop-filter, only handles transform/opacity */
+.chat-panel-wrap {
+  display: none; /* fully removed from layout when closed — fixes iOS touch-event bug */
+  flex-shrink: 0;
+  -webkit-transform-origin: bottom right;
+  transform-origin: bottom right;
+  opacity: 0;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+/* Visual shell — backdrop-filter lives here, never the animated element */
 .chat-panel {
   position: relative;
   width: 360px;
@@ -1610,10 +1658,8 @@ canvas {
   flex-direction: column;
   flex-shrink: 0;
 
-  /* liquid glass base — cool white */
-  background: rgba(255, 255, 255, 0.14);
-  -webkit-backdrop-filter: blur(28px) saturate(180%) contrast(108%);
-  backdrop-filter: blur(28px) saturate(180%) contrast(108%);
+  /* solid panel — removes backdrop-filter from animated subtree (Safari flicker fix) */
+  background: rgba(238, 244, 255, 0.97);
 
   /* outer depth + rim */
   border: 1px solid rgba(255, 255, 255, 0.24);
@@ -1623,12 +1669,6 @@ canvas {
     inset 0  1px 0   rgba(255, 255, 255, 0.50),
     inset 0 -1px 0   rgba(255, 255, 255, 0.06),
     inset 0  0  40px rgba(255, 255, 255, 0.06);
-
-  /* animation base state */
-  transform-origin: bottom right;
-  opacity: 0;
-  pointer-events: none;
-  will-change: transform, opacity, filter;
 }
 
 /* glossy top highlight cap */
@@ -1667,30 +1707,40 @@ canvas {
 }
 
 /* Panel animation states */
-.chat-panel.is-opening {
+.chat-panel-wrap.is-opening {
   pointer-events: auto;
+  -webkit-animation: chatExpandFromBubble 420ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
   animation: chatExpandFromBubble 420ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
-.chat-panel.is-open {
+.chat-panel-wrap.is-open {
   opacity: 1;
   pointer-events: auto;
   transform: translate(0, 0) scale(1);
-  filter: none;
 }
-.chat-panel.is-closing {
+.chat-panel-wrap.is-closing {
   pointer-events: none;
+  -webkit-animation: chatMinimizeToBubble 360ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
   animation: chatMinimizeToBubble 360ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
+@-webkit-keyframes chatExpandFromBubble {
+  0%   { opacity: 0; -webkit-transform: translate(18px, 28px) scale(0.78); transform: translate(18px, 28px) scale(0.78); }
+  60%  { opacity: 1; -webkit-transform: translate(0, 0) scale(1.015);     transform: translate(0, 0) scale(1.015); }
+  100% { opacity: 1; -webkit-transform: translate(0, 0) scale(1);          transform: translate(0, 0) scale(1); }
+}
 @keyframes chatExpandFromBubble {
-  0%   { opacity: 0; transform: translate(18px, 28px) scale(0.78); filter: blur(4px); }
-  60%  { opacity: 1; transform: translate(0, 0) scale(1.015);      filter: blur(0);   }
-  100% { opacity: 1; transform: translate(0, 0) scale(1);          filter: blur(0);   }
+  0%   { opacity: 0; transform: translate(18px, 28px) scale(0.78); }
+  60%  { opacity: 1; transform: translate(0, 0) scale(1.015); }
+  100% { opacity: 1; transform: translate(0, 0) scale(1); }
 }
 
+@-webkit-keyframes chatMinimizeToBubble {
+  0%   { opacity: 1; -webkit-transform: translate(0, 0) scale(1);           transform: translate(0, 0) scale(1); }
+  100% { opacity: 0; -webkit-transform: translate(22px, 30px) scale(0.72); transform: translate(22px, 30px) scale(0.72); }
+}
 @keyframes chatMinimizeToBubble {
-  0%   { opacity: 1; transform: translate(0, 0) scale(1);           filter: blur(0);   }
-  100% { opacity: 0; transform: translate(22px, 30px) scale(0.72); filter: blur(4px); }
+  0%   { opacity: 1; transform: translate(0, 0) scale(1); }
+  100% { opacity: 0; transform: translate(22px, 30px) scale(0.72); }
 }
 
 .chat-panel-header {
@@ -1703,8 +1753,6 @@ canvas {
   flex-shrink: 0;
   /* cool glass header */
   background: rgba(255, 255, 255, 0.08);
-  -webkit-backdrop-filter: blur(14px) saturate(160%);
-  backdrop-filter: blur(14px) saturate(160%);
   border-bottom: 1px solid rgba(255, 255, 255, 0.14);
   /* top highlight inside header */
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.22);
@@ -1755,8 +1803,6 @@ canvas {
 .chat-close {
   position: relative;
   background: rgba(255,255,255,0.14);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
   border: 1px solid rgba(255,255,255,0.22);
   border-radius: 50%;
   width: 30px;
@@ -1803,8 +1849,6 @@ canvas {
 /* bot bubble — frosted white glass */
 .chat-msg--bot {
   background: rgba(255,255,255,0.28);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
   border: 1px solid rgba(255,255,255,0.32);
   box-shadow:
     inset 0 1px 0 rgba(255,255,255,0.50),
@@ -1865,8 +1909,6 @@ canvas {
   border-radius: 999px;
   border: 1px solid rgba(15,45,92,0.18);
   background: rgba(255,255,255,0.55);
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
   color: #0f2d5c;
   cursor: pointer;
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.60);
@@ -1889,8 +1931,6 @@ canvas {
   flex-shrink: 0;
   /* cool glass input bar */
   background: rgba(255, 255, 255, 0.08);
-  -webkit-backdrop-filter: blur(16px) saturate(160%);
-  backdrop-filter: blur(16px) saturate(160%);
   border-top: 1px solid rgba(255, 255, 255, 0.14);
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.18);
 }
@@ -1904,8 +1944,6 @@ canvas {
   color: #183153;
   outline: none;
   background: rgba(255, 255, 255, 0.55);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.55);
   transition: background 0.2s, border-color 0.2s;
 }
@@ -1921,8 +1959,6 @@ canvas {
   height: 36px;
   border-radius: 50%;
   background: rgba(15, 45, 92, 0.82);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
   border: 1px solid rgba(255,255,255,0.22);
   display: flex;
   align-items: center;
@@ -1951,8 +1987,11 @@ canvas {
     width: 58px;
     height: 58px;
   }
-  .chat-panel {
+  .chat-panel-wrap {
     width: min(360px, calc(100vw - 18px));
+  }
+  .chat-panel {
+    width: 100%;
     max-height: 72svh;
     border-radius: 24px;
   }
@@ -2018,8 +2057,6 @@ canvas {
   inset: 0;
   z-index: 997;
   background: rgba(10, 24, 52, 0.22);
-  -webkit-backdrop-filter: blur(2px);
-  backdrop-filter: blur(2px);
   opacity: 0;
   pointer-events: none;
   transition: opacity 300ms ease;
@@ -2190,6 +2227,305 @@ canvas {
   .nav-container {
     padding: 0.85rem 1rem;
   }
+}
+
+/* ── Lead Capture Form Section ── */
+.lead-section {
+    padding: 96px 0;
+    background: #f8fafc;
+    border-top: 1px solid var(--border-light);
+    border-bottom: 1px solid var(--border-light);
+}
+
+.lead-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+    align-items: start;
+}
+
+/* Left info column */
+.lead-info-text {
+    font-size: 16px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin: 16px 0 36px;
+}
+
+.lead-benefits {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.lead-benefit {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.lead-benefit-icon {
+    font-size: 22px;
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    background: var(--white);
+    border: 1px solid var(--border-light);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(15, 45, 92, 0.07);
+}
+
+.lead-benefit strong {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--primary-blue);
+    margin-bottom: 2px;
+}
+
+.lead-benefit p {
+    font-size: 13px;
+    color: var(--text-light);
+    line-height: 1.5;
+    margin: 0;
+}
+
+/* Right form card */
+.lead-form-card {
+    background: var(--white);
+    border-radius: 20px;
+    border: 1px solid var(--border-light);
+    box-shadow:
+        0 4px 6px rgba(15, 45, 92, 0.04),
+        0 12px 40px rgba(15, 45, 92, 0.08);
+    overflow: hidden;
+}
+
+.lead-form-header {
+    padding: 28px 32px 24px;
+    border-bottom: 1px solid var(--border-light);
+    background: linear-gradient(135deg, #f0f4ff 0%, #f8fafc 100%);
+}
+
+.lead-form-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--primary-blue);
+    margin: 0 0 4px;
+}
+
+.lead-form-subtitle {
+    font-size: 13px;
+    color: var(--text-light);
+    margin: 0;
+}
+
+.lead-form {
+    padding: 28px 32px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.lf-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.lf-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+}
+
+.lf-required {
+    color: #e53e3e;
+    font-weight: 700;
+}
+
+.lf-optional {
+    color: var(--text-light);
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0;
+}
+
+.lf-input,
+.lf-select,
+.lf-textarea {
+    width: 100%;
+    padding: 12px 14px;
+    font-family: inherit;
+    font-size: 15px;
+    color: var(--text-primary);
+    background: #fafbfc;
+    border: 1.5px solid var(--border-light);
+    border-radius: 10px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.lf-input::placeholder,
+.lf-textarea::placeholder {
+    color: #a0aec0;
+}
+
+.lf-input:focus,
+.lf-select:focus,
+.lf-textarea:focus {
+    border-color: var(--primary-blue);
+    background: var(--white);
+    box-shadow: 0 0 0 3px rgba(13, 35, 65, 0.08);
+}
+
+.lf-input.lf-input--error,
+.lf-select.lf-input--error,
+.lf-textarea.lf-input--error {
+    border-color: #e53e3e;
+    box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.08);
+}
+
+.lf-select-wrap {
+    position: relative;
+}
+
+.lf-select-wrap .lf-select {
+    padding-right: 40px;
+    cursor: pointer;
+}
+
+.lf-select-arrow {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    color: var(--text-light);
+    pointer-events: none;
+}
+
+.lf-textarea {
+    resize: vertical;
+    min-height: 88px;
+    line-height: 1.55;
+}
+
+.lf-error {
+    font-size: 13px;
+    color: #e53e3e;
+    font-weight: 500;
+    min-height: 18px;
+    margin: -4px 0;
+}
+
+.lf-submit {
+    width: 100%;
+    padding: 14px 20px;
+    background: var(--primary-blue);
+    color: var(--white);
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 700;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    letter-spacing: 0.02em;
+    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+    box-shadow: 0 4px 14px rgba(13, 35, 65, 0.22);
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.lf-submit:hover {
+    background: var(--secondary-blue);
+    box-shadow: 0 6px 20px rgba(13, 35, 65, 0.30);
+}
+
+.lf-submit:active {
+    transform: scale(0.98);
+}
+
+.lf-trust {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 6px 20px;
+    font-size: 12px;
+    color: var(--text-light);
+    padding-top: 4px;
+}
+
+/* Success state */
+.lf-success {
+    padding: 52px 32px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.lf-success-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: #ebf8f0;
+    border: 2px solid #38a169;
+    color: #38a169;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+}
+
+.lf-success-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--primary-blue);
+    margin: 0;
+}
+
+.lf-success-text {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    max-width: 320px;
+    margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .lead-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+}
+
+@media (max-width: 768px) {
+    .lead-section {
+        padding: 64px 0;
+    }
+    .lead-form-header,
+    .lead-form {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+    .lf-trust {
+        flex-direction: column;
+        gap: 6px;
+    }
 }
 
 /* Print styles */

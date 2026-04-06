@@ -101,7 +101,7 @@
                 <p class="hero-services">Inspecciones RETIE · Instalaciones eléctricas · Sistemas fotovoltaicos</p>
                 <p class="hero-slogan">Precisión técnica para cumplir, seguridad para confiar</p>
                 <div class="hero-buttons">
-                    <button class="btn btn-primary" onclick="scrollToContact()">Solicitar inspección</button>
+                    <button class="btn btn-primary" onclick="scrollToContact()">Solicitar asesoría</button>
                     <a href="https://wa.me/571234567890?text=Hola%20VoltGrid,%20quiero%20información%20sobre%20sus%20servicios" 
                        class="btn btn-secondary" target="_blank">Contactar por WhatsApp</a>
                 </div>
@@ -419,6 +419,90 @@
         </div>
     </section>
 
+    <!-- Lead Capture Form Section -->
+    <section class="lead-section" id="lead-form-section">
+        <div class="container">
+            <div class="lead-grid">
+                <div class="lead-info">
+                    <div class="section-eyebrow">
+                        <span class="gold-bar"></span>
+                        <span class="eyebrow-text">Asesoría gratuita</span>
+                    </div>
+                    <h2 class="section-title">Solicita tu<br>asesoría eléctrica</h2>
+                    <p class="lead-info-text">Nuestro equipo técnico analiza tu caso y te responde con una propuesta clara, sin rodeos y sin compromiso.</p>
+                    <ul class="lead-benefits">
+                        <li class="lead-benefit">
+                            <span class="lead-benefit-icon">⚡</span>
+                            <div>
+                                <strong>Respuesta en menos de 24 h</strong>
+                                <p>Un técnico especializado te contacta directamente</p>
+                            </div>
+                        </li>
+                        <li class="lead-benefit">
+                            <span class="lead-benefit-icon">✔</span>
+                            <div>
+                                <strong>Sin compromiso</strong>
+                                <p>Recibe tu cotización sin ninguna obligación</p>
+                            </div>
+                        </li>
+                        <li class="lead-benefit">
+                            <span class="lead-benefit-icon">🔒</span>
+                            <div>
+                                <strong>Tus datos están protegidos</strong>
+                                <p>Información confidencial, solo para tu asesoría</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="lead-form-card">
+                    <div class="lead-form-header">
+                        <h3 class="lead-form-title">Cuéntanos tu proyecto</h3>
+                        <p class="lead-form-subtitle">Te respondemos en menos de 24 horas</p>
+                    </div>
+                    <form class="lead-form" id="lead-capture-form" novalidate>
+                        <div class="lf-field">
+                            <label class="lf-label" for="lf-nombre">Nombre <span class="lf-required">*</span></label>
+                            <input class="lf-input" id="lf-nombre" type="text" placeholder="Tu nombre" autocomplete="name" required />
+                        </div>
+                        <div class="lf-field">
+                            <label class="lf-label" for="lf-telefono">Teléfono / WhatsApp <span class="lf-required">*</span></label>
+                            <input class="lf-input" id="lf-telefono" type="tel" placeholder="Tu número de contacto" autocomplete="tel" required />
+                        </div>
+                        <div class="lf-field">
+                            <label class="lf-label" for="lf-tipo">Tipo de proyecto <span class="lf-required">*</span></label>
+                            <div class="lf-select-wrap">
+                                <select class="lf-select" id="lf-tipo" required>
+                                    <option value="" disabled selected>Selecciona una opción</option>
+                                    <option value="casa">Casa</option>
+                                    <option value="local">Local comercial</option>
+                                    <option value="industria">Industria</option>
+                                    <option value="otro">Otro</option>
+                                </select>
+                                <svg class="lf-select-arrow" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 8l5 5 5-5"/></svg>
+                            </div>
+                        </div>
+                        <div class="lf-field">
+                            <label class="lf-label" for="lf-mensaje">Mensaje <span class="lf-optional">(opcional)</span></label>
+                            <textarea class="lf-textarea" id="lf-mensaje" placeholder="Describe tu proyecto o necesidad" rows="3"></textarea>
+                        </div>
+                        <p class="lf-error" id="lf-error" aria-live="polite"></p>
+                        <button class="lf-submit" type="submit">Solicitar asesoría</button>
+                        <div class="lf-trust">
+                            <span>🔒 Tus datos están protegidos</span>
+                            <span>⚡ Respuesta rápida</span>
+                            <span>✔ Sin compromiso</span>
+                        </div>
+                    </form>
+                    <div class="lf-success" id="lf-success" style="display:none">
+                        <div class="lf-success-icon">✔</div>
+                        <h4 class="lf-success-title">¡Solicitud recibida!</h4>
+                        <p class="lf-success-text">Gracias. Hemos recibido tu solicitud. Te contactaremos en menos de 24 horas.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Contact Section -->
     <section class="contact" id="contact">
         <div class="container">
@@ -429,7 +513,7 @@
                         <span class="eyebrow-text">Contacto</span>
                     </div>
                     <h2 class="section-title">Contáctanos</h2>
-                    <p class="contact-subtitle">Solicite información o agende su inspección con nuestro equipo. Respondemos con rapidez y asesoramos sin compromiso.</p>
+                    <p class="contact-subtitle">Solicite información o agende su asesoría con nuestro equipo. Respondemos con rapidez y asesoramos sin compromiso.</p>
                     <div class="contact-items">
                         <a href="tel:+5712345678" class="contact-item">
                             <div class="contact-icon">
@@ -440,13 +524,13 @@
                                 <p class="contact-value">+57 1 234 5678</p>
                             </div>
                         </a>
-                        <a href="mailto:contacto@voltgrid.com.co" class="contact-item">
+                        <a href="mailto:voltgridingenieria@gmail.com" class="contact-item">
                             <div class="contact-icon">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"/></svg>
                             </div>
                             <div class="contact-details">
                                 <p class="contact-label">Correo electrónico</p>
-                                <p class="contact-value">contacto@voltgrid.com.co</p>
+                                <p class="contact-value">voltgridingenieria@gmail.com</p>
                             </div>
                         </a>
                     </div>
@@ -454,9 +538,9 @@
                 <div class="contact-right">
                     <div class="contact-card">
                         <p class="contact-card-label">Respuesta inmediata</p>
-                        <h3 class="contact-card-title">¿Listo para agendar su inspección?</h3>
+                        <h3 class="contact-card-title">¿Listo para agendar su asesoría?</h3>
                         <p class="contact-card-text">Contáctenos directamente por WhatsApp y reciba asesoría profesional de nuestro equipo técnico.</p>
-                        <a href="https://wa.me/571234567890?text=Hola%20VoltGrid,%20quiero%20agendar%20una%20inspección" target="_blank" class="btn btn-whatsapp btn-block">
+                        <a href="https://wa.me/571234567890?text=Hola%20VoltGrid,%20quiero%20agendar%20una%20asesor%C3%ADa" target="_blank" class="btn btn-whatsapp btn-block">
                             <svg viewBox="0 0 24 24" fill="currentColor" style="width:20px;height:20px"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.149-.67.149-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414-.074-.123-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
                             Contactar por WhatsApp
                         </a>
@@ -549,7 +633,7 @@
                 </div>
                 <div class="chat-suggestions">
                     <button class="chat-suggestion" data-msg="¿Qué servicios ofrecen?">Servicios</button>
-                    <button class="chat-suggestion" data-msg="¿Cómo solicito una inspección RETIE?">RETIE</button>
+                    <button class="chat-suggestion" data-msg="¿Cómo solicito una asesoría RETIE?">RETIE</button>
                     <button class="chat-suggestion" data-msg="¿Tienen energía solar?">Solar</button>
                     <button class="chat-suggestion" data-msg="¿Cómo los contacto?">Contacto</button>
                 </div>
@@ -565,10 +649,10 @@
         <!-- SVG liquid-distortion filter (low-frequency = smooth lens waves) -->
         <svg width="0" height="0" style="position:absolute;pointer-events:none" aria-hidden="true">
             <defs>
-                <filter id="liquid-distortion" x="-25%" y="-25%" width="150%" height="150%" color-interpolation-filters="sRGB">
+                <filter id="liquid-distortion" x="-8%" y="-8%" width="116%" height="116%" color-interpolation-filters="sRGB">
                     <feTurbulence type="fractalNoise" baseFrequency="0.012 0.018" numOctaves="3" seed="7" result="rawNoise"/>
                     <feGaussianBlur in="rawNoise" stdDeviation="0.6" result="noise"/>
-                    <feDisplacementMap in="SourceGraphic" in2="noise" scale="10" xChannelSelector="R" yChannelSelector="G"/>
+                    <feDisplacementMap in="SourceGraphic" in2="noise" scale="6" xChannelSelector="R" yChannelSelector="G"/>
                 </filter>
             </defs>
         </svg>
