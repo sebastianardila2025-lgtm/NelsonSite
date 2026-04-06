@@ -12,6 +12,12 @@
 
   if (!widget) return;
 
+  // On mobile: move panel to <body> so position:fixed works correctly in Safari
+  // (nested position:fixed inside a position:fixed parent breaks on iOS)
+  if (panel && window.innerWidth <= 768) {
+    document.body.appendChild(panel);
+  }
+
   // Lead data stored in memory for the session
   var leadData   = null;
   var isOpen     = false;

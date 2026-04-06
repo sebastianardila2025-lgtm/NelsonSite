@@ -1227,30 +1227,42 @@ canvas {
 }
 
 @media (max-width: 768px) {
+  /* Mobile: replace the 600vh scroll animation with a static banner */
   .scroll-section {
-    position: relative;
-    height: 220svh;
-    background: #ffffff;
+    height: auto !important;
+    min-height: 56vw;
   }
 
+  .scroll-section .sticky-wrap,
   .scroll-section .scroll-stage {
-    position: sticky;
-    top: 0;
-    height: 100svh;
+    position: relative !important;
+    height: auto !important;
+    min-height: 56vw;
+    background: linear-gradient(135deg, #0d2341 0%, #1a4080 60%, #0f5a8a 100%);
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: hidden;
-    background: #ffffff;
   }
 
-  .scroll-section canvas,
-  .scroll-section img {
-    width: 100%;
-    height: auto;
-    max-height: 100svh;
+  /* Hide canvas and loader — video scrubbing not supported on mobile */
+  #solar-canvas,
+  #loader,
+  #solar-video {
+    display: none !important;
+  }
+
+  /* Decorative mobile placeholder text over the gradient */
+  .scroll-section .sticky-wrap::after,
+  .scroll-section .scroll-stage::after {
+    content: "Soluciones fotovoltaicas · Bogotá";
     display: block;
-    background: #ffffff;
+    color: rgba(255, 255, 255, 0.55);
+    font-size: 13px;
+    font-family: Inter, sans-serif;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-align: center;
+    padding: 40px 24px;
   }
 }
 
