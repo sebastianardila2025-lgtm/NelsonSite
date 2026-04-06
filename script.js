@@ -66,12 +66,17 @@
     panel.classList.remove('is-closing', 'is-open');
     widget.classList.add('chat-widget--open');
     panel.setAttribute('aria-hidden', 'false');
-    panel.classList.add('is-opening');
-    clearTimeout(openTimer);
-    openTimer = setTimeout(function() {
-      panel.classList.remove('is-opening');
-      panel.classList.add('is-open');
-    }, 420);
+    requestAnimationFrame(function() {
+      requestAnimationFrame(function() {
+        if (!isOpen) return;
+        panel.classList.add('is-opening');
+        clearTimeout(openTimer);
+        openTimer = setTimeout(function() {
+          panel.classList.remove('is-opening');
+          panel.classList.add('is-open');
+        }, 420);
+      });
+    });
 
     if (!leadData || forceLeadForm) {
       showLeadForm();
