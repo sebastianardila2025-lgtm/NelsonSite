@@ -112,10 +112,29 @@
     }, 360);
   }
 
+  // touchstart fires immediately on iOS (no 300 ms delay);
+  // click fires ~300 ms later — guard with a flag to avoid double-fire
+  var touchHandled = false;
+  bubble.addEventListener('touchstart', function(e) {
+    e.preventDefault();
+    touchHandled = true;
+    if (isOpen) { closePanel(); } else { openPanel(false); }
+  }, { passive: false });
   bubble.addEventListener('click', function() {
+    if (touchHandled) { touchHandled = false; return; }
     if (isOpen) { closePanel(); } else { openPanel(false); }
   });
-  closeBtn.addEventListener('click', closePanel);
+
+  var closeBtnTouched = false;
+  closeBtn.addEventListener('touchstart', function(e) {
+    e.preventDefault();
+    closeBtnTouched = true;
+    closePanel();
+  }, { passive: false });
+  closeBtn.addEventListener('click', function() {
+    if (closeBtnTouched) { closeBtnTouched = false; return; }
+    closePanel();
+  });
 
   // Exposed globally so FAQ "Consultar ahora" button can trigger it
   window.openChatWithLeadForm = function() {

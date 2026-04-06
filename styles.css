@@ -1227,42 +1227,35 @@ canvas {
 }
 
 @media (max-width: 768px) {
-  /* Mobile: replace the 600vh scroll animation with a static banner */
+  /* Mobile: compact section — video plays natively, no 600vh scroll */
   .scroll-section {
     height: auto !important;
-    min-height: 56vw;
   }
 
   .scroll-section .sticky-wrap,
   .scroll-section .scroll-stage {
     position: relative !important;
-    height: auto !important;
-    min-height: 56vw;
-    background: linear-gradient(135deg, #0d2341 0%, #1a4080 60%, #0f5a8a 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    height: 62vw !important;   /* ~16:9 for phone width */
+    overflow: hidden;
+    background: #0d2341;       /* shown while video loads */
   }
 
-  /* Hide canvas and loader — video scrubbing not supported on mobile */
-  #solar-canvas,
-  #loader,
+  /* Show the video element directly — JS plays it on loop */
   #solar-video {
-    display: none !important;
+    display: block !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    -o-object-fit: cover;
+    object-fit: cover !important;
   }
 
-  /* Decorative mobile placeholder text over the gradient */
-  .scroll-section .sticky-wrap::after,
-  .scroll-section .scroll-stage::after {
-    content: "Soluciones fotovoltaicas · Bogotá";
-    display: block;
-    color: rgba(255, 255, 255, 0.55);
-    font-size: 13px;
-    font-family: Inter, sans-serif;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    text-align: center;
-    padding: 40px 24px;
+  /* Canvas and loader not needed on mobile */
+  #solar-canvas,
+  #loader {
+    display: none !important;
   }
 }
 
@@ -2622,6 +2615,7 @@ canvas {
   .chat-panel-wrap.is-opening,
   .chat-panel-wrap.is-open {
     opacity: 1 !important;
+    pointer-events: auto !important;
     -webkit-animation: none !important;
     animation: none !important;
     -webkit-transform: translateY(0) !important;
