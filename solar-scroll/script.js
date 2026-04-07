@@ -73,7 +73,7 @@ if (isMobile) {
     video.currentTime = 0;
   }).catch(function () { /* autoplay may already be queued */ });
 
-  /* canplay → switch to scrubbing mode */
+  /* canplay → switch to scrubbing mode, start RAF */
   video.addEventListener("canplay", function () {
     if (mobileReady) return;
     mobileReady = true;
@@ -81,6 +81,7 @@ if (isMobile) {
     video.currentTime = 0;
     if (loader) loader.style.display = "none";
     drawVideoFrame();
+    if (!mobileRafId) mobileRafId = requestAnimationFrame(mobileTick);
   }, { once: true });
 
   /* seeked → paint frame */
@@ -99,19 +100,30 @@ if (isMobile) {
     }
   });
 
-  /* Scroll-driven seek (throttled ~12 fps to keep iOS smooth) */
-  function mobileSeek() {
-    if (!mobileReady || mobilePending) return;
-    var now = Date.now();
-    if (now - lastSeekMs < 80) return;
-    lastSeekMs = now;
-    var target = getScrollProgress() * video.duration;
-    if (Math.abs(video.currentTime - target) > 0.04) {
-      mobilePending = true;
-      video.currentTime = target;
+  /* RAF loop: samples scroll at 60 fps (catches iOS momentum scroll too).
+     Actual seeks are gated by mobilePending so the decoder isn't flooded. */
+  var mobileRafId = null;
+
+  function mobileTick() {
+    if (mobileReady && !mobilePending && video.duration) {
+      var target = getScrollProgress() * video.duration;
+      if (Math.abs(video.currentTime - target) > 0.015) {
+        mobilePending = true;
+        video.currentTime = target;
+      }
     }
+    mobileRafId = requestAnimationFrame(mobileTick);
   }
-  window.addEventListener("scroll", mobileSeek, { passive: true });
+
+  /* Pause RAF when section leaves viewport to save battery */
+  var mobileVisObs = new IntersectionObserver(function (entries) {
+    if (entries[0].isIntersecting) {
+      if (mobileReady && !mobileRafId) mobileRafId = requestAnimationFrame(mobileTick);
+    } else {
+      if (mobileRafId) { cancelAnimationFrame(mobileRafId); mobileRafId = null; }
+    }
+  }, { threshold: 0 });
+  mobileVisObs.observe(section);
 
   /* Fallback: if canplay never fires after 5 s, just loop the video */
   setTimeout(function () {

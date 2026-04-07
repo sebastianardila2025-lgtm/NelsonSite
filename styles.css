@@ -2551,18 +2551,18 @@ canvas {
 }
 
 @media (max-width: 768px) {
-  /* ── Bubble: glass effect with mask to clip Safari compositing layer ── */
+  /* ── Bubble: overflow:hidden + border-radius clips backdrop-filter to circle ── */
   .chat-bubble.liquid-glass {
     position: fixed !important;
     bottom: 20px !important;
     right: 20px !important;
     z-index: 10001 !important;
-    -webkit-backdrop-filter: blur(20px) saturate(160%) !important;
-    backdrop-filter: blur(20px) saturate(160%) !important;
-    background: rgba(13, 35, 65, 0.55) !important;
-    /* -webkit-mask-image clips the backdrop-filter compositing rect to a circle */
-    -webkit-mask-image: -webkit-radial-gradient(circle at center, white 100%, black 0) !important;
-    mask-image: radial-gradient(circle at center, white 100%, black 0) !important;
+    overflow: hidden !important;
+    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+    backdrop-filter: blur(20px) saturate(180%) !important;
+    background: rgba(13, 35, 65, 0.42) !important;
+    -webkit-mask-image: none !important;
+    mask-image: none !important;
     will-change: auto !important;
   }
 
@@ -2582,7 +2582,7 @@ canvas {
     pointer-events: none;
   }
 
-  /* ── Panel wrap: full-width bottom sheet, CSS transition (not keyframes) ── */
+  /* ── Panel wrap: glass is HERE — backdrop-filter works on the outermost fixed el ── */
   .chat-panel-wrap {
     position: fixed !important;
     bottom: 0 !important;
@@ -2596,6 +2596,10 @@ canvas {
     padding-bottom: env(safe-area-inset-bottom);
     will-change: auto !important;
     opacity: 1 !important;
+    /* Glass effect on the wrap itself (not on children — overflow:hidden blocks it there) */
+    -webkit-backdrop-filter: blur(28px) saturate(200%) !important;
+    backdrop-filter: blur(28px) saturate(200%) !important;
+    background: rgba(232, 242, 255, 0.72) !important;
     /* parked below the screen; JS + double-rAF slides it up */
     -webkit-transform: translateY(100%);
     transform: translateY(100%);
@@ -2603,16 +2607,16 @@ canvas {
     transition: transform 360ms cubic-bezier(0.32, 0.72, 0, 1);
   }
 
-  /* ── Panel card: glass effect (panel is body child so backdrop-filter is safe) ── */
+  /* ── Panel card: transparent — glass is on the wrap above ── */
   .chat-panel {
     width: 100% !important;
     max-height: 88vh;
     border-radius: 20px 20px 0 0 !important;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
-    -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
-    backdrop-filter: blur(24px) saturate(180%) !important;
-    background: rgba(238, 244, 255, 0.82) !important;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+    background: transparent !important;
   }
 
   /* ── Open: cancel any desktop animation, slide into view via transition ── */
