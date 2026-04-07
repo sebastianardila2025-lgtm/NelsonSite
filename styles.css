@@ -2551,19 +2551,27 @@ canvas {
 }
 
 @media (max-width: 768px) {
-  /* ── Bubble: overflow:hidden + border-radius clips backdrop-filter to circle ── */
+  /* ── Bubble: overflow:hidden clips compositing to circle ──
+     The blur lives on .liquid-glass__backdrop child (already correct).
+     DO NOT add backdrop-filter to the parent — it would double-blur.
+     overflow:hidden is enough to clip Safari's rectangular compositing layer. */
   .chat-bubble.liquid-glass {
     position: fixed !important;
     bottom: 20px !important;
     right: 20px !important;
     z-index: 10001 !important;
     overflow: hidden !important;
-    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
-    backdrop-filter: blur(20px) saturate(180%) !important;
-    background: rgba(13, 35, 65, 0.42) !important;
+    background: transparent !important;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
     -webkit-mask-image: none !important;
     mask-image: none !important;
     will-change: auto !important;
+  }
+  /* Bubble inner backdrop — keep the blur here */
+  .liquid-glass__backdrop {
+    -webkit-backdrop-filter: blur(20px) saturate(190%) contrast(115%) !important;
+    backdrop-filter: blur(20px) saturate(190%) contrast(115%) !important;
   }
 
   /* ── Handle bar ── */
@@ -2582,7 +2590,10 @@ canvas {
     pointer-events: none;
   }
 
-  /* ── Panel wrap: glass is HERE — backdrop-filter works on the outermost fixed el ── */
+  /* ── Panel wrap: liquid glass sheet ──
+     backdrop-filter lives on the outermost fixed element.
+     Low background opacity (22%) = truly see-through frosted glass.
+     Strong blur + saturation = iOS Tahoe feel. */
   .chat-panel-wrap {
     position: fixed !important;
     bottom: 0 !important;
@@ -2596,10 +2607,13 @@ canvas {
     padding-bottom: env(safe-area-inset-bottom);
     will-change: auto !important;
     opacity: 1 !important;
-    /* Glass effect on the wrap itself (not on children — overflow:hidden blocks it there) */
-    -webkit-backdrop-filter: blur(28px) saturate(200%) !important;
-    backdrop-filter: blur(28px) saturate(200%) !important;
-    background: rgba(232, 242, 255, 0.72) !important;
+    -webkit-backdrop-filter: blur(52px) saturate(200%) brightness(1.12) !important;
+    backdrop-filter: blur(52px) saturate(200%) brightness(1.12) !important;
+    background: rgba(255, 255, 255, 0.22) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.50) !important;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.60),
+      0 -4px 32px rgba(15, 45, 92, 0.06) !important;
     /* parked below the screen; JS + double-rAF slides it up */
     -webkit-transform: translateY(100%);
     transform: translateY(100%);
@@ -2607,7 +2621,7 @@ canvas {
     transition: transform 360ms cubic-bezier(0.32, 0.72, 0, 1);
   }
 
-  /* ── Panel card: transparent — glass is on the wrap above ── */
+  /* ── Panel card: fully transparent so wrap glass shows through ── */
   .chat-panel {
     width: 100% !important;
     max-height: 88vh;
@@ -2617,6 +2631,27 @@ canvas {
     -webkit-backdrop-filter: none !important;
     backdrop-filter: none !important;
     background: transparent !important;
+    box-shadow: none !important;
+    isolation: auto !important;
+  }
+  /* All panel children transparent so the wrap glass bleeds through */
+  .chat-panel-header {
+    background: rgba(255, 255, 255, 0.12) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.22) !important;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+  .chat-messages {
+    background: transparent !important;
+  }
+  .chat-lead-form {
+    background: transparent !important;
+  }
+  .chat-input-row {
+    background: rgba(255, 255, 255, 0.12) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.22) !important;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
   }
 
   /* ── Open: cancel any desktop animation, slide into view via transition ── */
