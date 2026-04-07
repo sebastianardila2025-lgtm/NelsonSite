@@ -1651,7 +1651,16 @@ canvas {
   will-change: transform, opacity;
 }
 
-/* Visual shell — backdrop-filter lives here, never the animated element */
+/* glass-element wrapper — provides the visual glass shell */
+glass-element.chat-glass-panel {
+  display: block !important;
+  border-radius: 28px;
+  box-shadow:
+    0 20px 60px rgba(15, 45, 92, 0.16),
+    0 6px  20px rgba(15, 45, 92, 0.10);
+}
+
+/* Visual shell — background/border/shadow moved to glass-element above */
 .chat-panel {
   position: relative;
   width: 360px;
@@ -1663,17 +1672,10 @@ canvas {
   flex-direction: column;
   flex-shrink: 0;
 
-  /* solid panel — removes backdrop-filter from animated subtree (Safari flicker fix) */
-  background: rgba(238, 244, 255, 0.97);
-
-  /* outer depth + rim */
-  border: 1px solid rgba(255, 255, 255, 0.24);
-  box-shadow:
-    0 20px 60px rgba(15, 45, 92, 0.16),
-    0 6px  20px rgba(15, 45, 92, 0.10),
-    inset 0  1px 0   rgba(255, 255, 255, 0.50),
-    inset 0 -1px 0   rgba(255, 255, 255, 0.06),
-    inset 0  0  40px rgba(255, 255, 255, 0.06);
+  /* Transparent — glass-element.chat-glass-panel provides the visual */
+  background: transparent;
+  border: none;
+  box-shadow: none;
 }
 
 /* glossy top highlight cap */
@@ -2081,15 +2083,12 @@ canvas {
   max-width: 960px;
   margin: 0 auto;
   z-index: 998;
-  background: rgba(250, 252, 255, 0.93);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
-  backdrop-filter: blur(24px) saturate(180%);
-  border: 1px solid rgba(15, 45, 92, 0.10);
+  /* Visual handled by glass-element.nav-glass inside */
+  background: transparent;
+  border: none;
+  box-shadow: none;
   border-radius: 18px;
-  box-shadow:
-    0 4px 8px  rgba(15, 45, 92, 0.06),
-    0 22px 56px rgba(15, 45, 92, 0.13),
-    inset 0 1px 0 rgba(255, 255, 255, 0.90);
+  overflow: hidden;
   opacity: 0;
   transform: translateY(-10px) scale(0.985);
   pointer-events: none;
@@ -2098,6 +2097,21 @@ canvas {
     opacity   360ms cubic-bezier(0.22, 1, 0.36, 1),
     transform 360ms cubic-bezier(0.22, 1, 0.36, 1);
   will-change: transform, opacity;
+}
+
+/* Glass background layer inside nav panel */
+glass-element.nav-glass {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  pointer-events: none !important;
+  z-index: 0;
+}
+
+/* Nav content floats above glass layer */
+.nav-panel__inner {
+  position: relative;
+  z-index: 1;
 }
 .nav-panel.is-open {
   opacity: 1;
@@ -2193,6 +2207,7 @@ canvas {
     width: calc(100% - 1.5rem);
     border-radius: 14px;
   }
+  glass-element.nav-glass { border-radius: 14px !important; }
   .nav-panel__inner {
     padding: 20px 16px 24px;
     max-height: calc(100svh - 80px);
@@ -2226,6 +2241,7 @@ canvas {
     width: calc(100% - 1rem);
     border-radius: 12px;
   }
+  glass-element.nav-glass { border-radius: 12px !important; }
   .nav-panel__inner {
     padding: 16px 12px 20px;
   }

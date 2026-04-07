@@ -53,7 +53,13 @@
   function showOverlay() {
     if (!isMobile()) return;
     if (overlay) { overlay.style.display = 'block'; }
-    if (glassBg)  { glassBg.style.display  = 'block'; }
+    if (glassBg) {
+      glassBg.style.display = 'block';
+      // Tell glass-element the exact pixel dimensions so the SVG displacement
+      // filter is generated at the correct size for this viewport
+      glassBg.setAttribute('width',  String(window.innerWidth));
+      glassBg.setAttribute('height', String(Math.round(window.innerHeight * 0.88)));
+    }
     requestAnimationFrame(function() {
       requestAnimationFrame(function() {
         if (overlay) overlay.classList.add('is-visible');
@@ -283,6 +289,15 @@
     hamburger.setAttribute('aria-expanded', 'true');
     panel.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = '';
+    // Sync glass-element dimensions with the actual nav-panel size
+    var navGlass = document.getElementById('nav-glass');
+    if (navGlass) {
+      requestAnimationFrame(function() {
+        var r = panel.getBoundingClientRect();
+        navGlass.setAttribute('width',  String(Math.ceil(r.width)));
+        navGlass.setAttribute('height', String(Math.ceil(r.height)));
+      });
+    }
   }
 
   function closeNav() {
