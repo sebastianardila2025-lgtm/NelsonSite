@@ -11,6 +11,10 @@ class GlassElement extends HTMLElement {
         super();
         this.clicked = false;
         this.attachShadow({ mode: 'open' });
+        // Unique filter id per instance
+        if (!GlassElement._instanceCount) GlassElement._instanceCount = 0;
+        this._instanceId = ++GlassElement._instanceCount;
+        this._filterId   = 'glass-el-f' + this._instanceId;
         
         // Detectar soporte de filtros SVG en backdrop-filter (solo una vez por clase)
         if (GlassElement._svgFilterSupport === undefined) {
@@ -243,6 +247,51 @@ class GlassElement extends HTMLElement {
         }
     }
 
+    /**
+     * Inject the SVG displacement filter into the document DOM and return
+     * its id so backdrop-filter can reference it as url('#id').
+     * Chrome does NOT support backdrop-filter: url('data:...') — it requires
+     * a same-document fragment reference like url('#filterId').
+     */
+    _injectFilter(params) {
+        const { getDisplacementFilter } = window.DisplacementUtils;
+        const dataUri = getDisplacementFilter(params);
+
+        // Decode the data URI produced by displacement-utils.js
+        const encoded = dataUri
+            .replace(/#displace$/, '')
+            .replace('data:image/svg+xml;utf8,', '');
+        const svgString = decodeURIComponent(encoded)
+            .replace('id="displace"', `id="${this._filterId}"`);
+
+        // Ensure a shared, invisible host SVG exists in <body>
+        let host = document.getElementById('_glass-filters-host');
+        if (!host) {
+            host = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            host.id = '_glass-filters-host';
+            host.setAttribute('aria-hidden', 'true');
+            host.style.cssText = 'position:absolute;width:0;height:0;overflow:hidden;pointer-events:none';
+            document.body.appendChild(host);
+        }
+
+        // Parse the SVG and extract the <filter> element
+        const parser  = new DOMParser();
+        const svgDoc  = parser.parseFromString(svgString, 'image/svg+xml');
+        const filterEl = svgDoc.querySelector('filter');
+        if (!filterEl) return this._filterId;
+
+        const imported = document.adoptNode(filterEl);
+
+        // Replace stale filter or append new one
+        const existing = host.querySelector(`[id="${this._filterId}"]`);
+        if (existing) {
+            host.replaceChild(imported, existing);
+        } else {
+            host.appendChild(imported);
+        }
+        return this._filterId;
+    }
+
     applyDynamicStyles(element) {
         const { getDisplacementFilter, getDisplacementMap } = window.DisplacementUtils;
 
@@ -297,15 +346,16 @@ class GlassElement extends HTMLElement {
                 element.style.boxShadow = '1px 1px 1px 0px rgba(255,255,255, 0.60) inset, -1px -1px 1px 0px rgba(255,255,255, 0.60) inset, 0px 0px 16px 0px rgba(0,0,0, 0.04)';
                 element.style.border = '1px solid rgba(255, 255, 255, 0.3)';
             } else {
-                // Efecto completo con SVG filters
-                element.style.backdropFilter = `blur(${this.blur / 2}px) url('${getDisplacementFilter({
+                // Efecto completo con SVG filters — inyectar en DOM para url('#id')
+                const fid = this._injectFilter({
                     height: actualHeight,
                     width: actualWidth,
                     radius: this.radius,
                     depth: this.depth,
                     strength: this.strength,
                     chromaticAberration: this.chromaticAberration
-                })}') blur(${this.blur}px) brightness(1.1) saturate(1.5)`;
+                });
+                element.style.backdropFilter = `blur(${this.blur / 2}px) url('#${fid}') blur(${this.blur}px) brightness(1.1) saturate(1.5)`;
                 element.style.background = this.backgroundColor;
                 element.style.boxShadow = '1px 1px 1px 0px rgba(255,255,255, 0.60) inset, -1px -1px 1px 0px rgba(255,255,255, 0.60) inset, 0px 0px 16px 0px rgba(0,0,0, 0.04)';
             }
@@ -330,15 +380,16 @@ class GlassElement extends HTMLElement {
                 element.style.boxShadow = '1px 1px 1px 0px rgba(255,255,255, 0.60) inset, -1px -1px 1px 0px rgba(255,255,255, 0.60) inset, 0px 0px 16px 0px rgba(0,0,0, 0.04)';
                 element.style.border = '1px solid rgba(255, 255, 255, 0.3)';
             } else {
-                // Efecto completo con SVG filters
-                element.style.backdropFilter = `blur(${this.blur / 2}px) url('${getDisplacementFilter({
+                // Efecto completo con SVG filters — inyectar en DOM para url('#id')
+                const fid = this._injectFilter({
                     height: this.height,
                     width: this.width,
                     radius: this.radius,
                     depth: this.depth,
                     strength: this.strength,
                     chromaticAberration: this.chromaticAberration
-                })}') blur(${this.blur}px) brightness(1.1) saturate(1.5)`;
+                });
+                element.style.backdropFilter = `blur(${this.blur / 2}px) url('#${fid}') blur(${this.blur}px) brightness(1.1) saturate(1.5)`;
                 element.style.background = this.backgroundColor;
                 element.style.boxShadow = '1px 1px 1px 0px rgba(255,255,255, 0.60) inset, -1px -1px 1px 0px rgba(255,255,255, 0.60) inset, 0px 0px 16px 0px rgba(0,0,0, 0.04)';
             }
