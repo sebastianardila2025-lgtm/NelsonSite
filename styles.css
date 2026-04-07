@@ -1227,35 +1227,35 @@ canvas {
 }
 
 @media (max-width: 768px) {
-  /* Mobile: compact section — video plays natively, no 600vh scroll */
+  /* Mobile: shorter scroll distance (200vh) keeps the Apple-style effect */
   .scroll-section {
-    height: auto !important;
+    height: 200vh !important;
   }
 
   .scroll-section .sticky-wrap,
   .scroll-section .scroll-stage {
-    position: relative !important;
-    height: 62vw !important;   /* ~16:9 for phone width */
-    overflow: hidden;
-    background: #0d2341;       /* shown while video loads */
-  }
-
-  /* Show the video element directly — JS plays it on loop */
-  #solar-video {
-    display: block !important;
-    position: absolute !important;
+    position: sticky !important;
     top: 0 !important;
-    left: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-    -o-object-fit: cover;
-    object-fit: cover !important;
+    height: 100svh !important;
+    overflow: hidden;
+    background: #0d2341;
   }
 
-  /* Canvas and loader not needed on mobile */
-  #solar-canvas,
-  #loader {
+  /* Canvas visible — JS draws video frames to it */
+  #solar-canvas {
+    display: block !important;
+    width: 100% !important;
+    height: 100svh !important;
+  }
+
+  /* Video stays hidden (source for canvas) */
+  #solar-video {
     display: none !important;
+  }
+
+  /* Loader shown by JS during buffering */
+  #loader {
+    display: block !important;
   }
 }
 
@@ -2551,17 +2551,18 @@ canvas {
 }
 
 @media (max-width: 768px) {
-  /* ── Bubble: solid bg removes the Safari rectangular compositing border ── */
+  /* ── Bubble: glass effect with mask to clip Safari compositing layer ── */
   .chat-bubble.liquid-glass {
     position: fixed !important;
     bottom: 20px !important;
     right: 20px !important;
     z-index: 10001 !important;
-    -webkit-backdrop-filter: none !important;
-    backdrop-filter: none !important;
-    background: #0f2d5c !important;
-    box-shadow: 0 4px 24px rgba(13, 35, 65, 0.5),
-                inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(160%) !important;
+    backdrop-filter: blur(20px) saturate(160%) !important;
+    background: rgba(13, 35, 65, 0.55) !important;
+    /* -webkit-mask-image clips the backdrop-filter compositing rect to a circle */
+    -webkit-mask-image: -webkit-radial-gradient(circle at center, white 100%, black 0) !important;
+    mask-image: radial-gradient(circle at center, white 100%, black 0) !important;
     will-change: auto !important;
   }
 
@@ -2602,13 +2603,16 @@ canvas {
     transition: transform 360ms cubic-bezier(0.32, 0.72, 0, 1);
   }
 
-  /* ── Panel card ── */
+  /* ── Panel card: glass effect (panel is body child so backdrop-filter is safe) ── */
   .chat-panel {
     width: 100% !important;
     max-height: 88vh;
     border-radius: 20px 20px 0 0 !important;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
+    -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+    backdrop-filter: blur(24px) saturate(180%) !important;
+    background: rgba(238, 244, 255, 0.82) !important;
   }
 
   /* ── Open: cancel any desktop animation, slide into view via transition ── */
