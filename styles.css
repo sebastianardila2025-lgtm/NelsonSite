@@ -1639,6 +1639,40 @@ canvas {
   .chat-bubble-icon { width: 22px; height: 22px; }
 }
 
+/* ── glass-element chat bubble host ── */
+#chat-bubble-glass {
+  display: block;
+  cursor: pointer;
+  flex-shrink: 0;
+  transform: translateZ(0);
+  will-change: transform;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.38s cubic-bezier(0.22, 1, 0.36, 1);
+}
+#chat-bubble-glass:hover { transform: translateY(-4px) scale(1.04); }
+#chat-bubble-glass:active { transform: scale(0.95); }
+
+/* Inner button — transparent; glass-element provides background + backdrop */
+.chat-bubble {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 68px;
+  height: 68px;
+  border-radius: 999px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+@media (max-width: 768px) {
+  .chat-bubble { width: 60px; height: 60px; }
+}
+
 /* ── Liquid Glass Panel ── */
 /* Animation wrapper — NO backdrop-filter, only handles transform/opacity */
 .chat-panel-wrap {
@@ -2646,27 +2680,13 @@ glass-element.nav-glass {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.20);
   }
 
-  /* ── Bubble: overflow:hidden clips compositing to circle ──
-     The blur lives on .liquid-glass__backdrop child (already correct).
-     DO NOT add backdrop-filter to the parent — it would double-blur.
-     overflow:hidden is enough to clip Safari's rectangular compositing layer. */
-  .chat-bubble.liquid-glass {
+  /* ── glass-element bubble: fixed position for iOS Safari compositing ── */
+  #chat-bubble-glass {
     position: fixed !important;
     bottom: 20px !important;
     right: 20px !important;
     z-index: 10001 !important;
-    overflow: hidden !important;
-    background: transparent !important;
-    -webkit-backdrop-filter: none !important;
-    backdrop-filter: none !important;
-    -webkit-mask-image: none !important;
-    mask-image: none !important;
     will-change: auto !important;
-  }
-  /* Bubble inner backdrop — richer blur for iOS 26 look */
-  .liquid-glass__backdrop {
-    -webkit-backdrop-filter: blur(28px) saturate(220%) contrast(112%) brightness(1.08) !important;
-    backdrop-filter: blur(28px) saturate(220%) contrast(112%) brightness(1.08) !important;
   }
 
   /* ── Handle bar: hidden here — now rendered by #chat-glass-bg::after ── */

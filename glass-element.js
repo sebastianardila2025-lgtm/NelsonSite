@@ -297,6 +297,11 @@ class GlassElement extends HTMLElement {
 
         // Estilos base que siempre se aplican
         element.style.borderRadius = `${this.radius}px`;
+        // Reset host backdrop-filter (will be set per-path below for Chrome)
+        this.style.backdropFilter = 'none';
+        this.style.webkitBackdropFilter = 'none';
+        this.style.borderRadius = `${this.radius}px`;
+        this.style.overflow = 'hidden';
 
         if (this.autoSize) {
             // Auto-size: obtener dimensiones del contenido de manera más precisa
@@ -346,7 +351,9 @@ class GlassElement extends HTMLElement {
                 element.style.boxShadow = '1px 1px 1px 0px rgba(255,255,255, 0.60) inset, -1px -1px 1px 0px rgba(255,255,255, 0.60) inset, 0px 0px 16px 0px rgba(0,0,0, 0.04)';
                 element.style.border = '1px solid rgba(255, 255, 255, 0.3)';
             } else {
-                // Efecto completo con SVG filters — inyectar en DOM para url('#id')
+                // Efecto completo con SVG filters
+                // IMPORTANTE: aplicar backdrop-filter en el HOST (main document)
+                // porque url('#id') en shadow DOM no resuelve al documento principal
                 const fid = this._injectFilter({
                     height: actualHeight,
                     width: actualWidth,
@@ -355,9 +362,13 @@ class GlassElement extends HTMLElement {
                     strength: this.strength,
                     chromaticAberration: this.chromaticAberration
                 });
-                element.style.backdropFilter = `blur(${this.blur / 2}px) url('#${fid}') blur(${this.blur}px) brightness(1.1) saturate(1.5)`;
+                const bdf = `blur(${this.blur / 2}px) url('#${fid}') blur(${this.blur}px) brightness(1.18) saturate(2.2) contrast(1.08)`;
+                this.style.backdropFilter = bdf;
+                this.style.webkitBackdropFilter = bdf;
+                element.style.backdropFilter = 'none';
+                element.style.webkitBackdropFilter = 'none';
                 element.style.background = this.backgroundColor;
-                element.style.boxShadow = '1px 1px 1px 0px rgba(255,255,255, 0.60) inset, -1px -1px 1px 0px rgba(255,255,255, 0.60) inset, 0px 0px 16px 0px rgba(0,0,0, 0.04)';
+                element.style.boxShadow = '1px 1px 1px 0px rgba(255,255,255, 0.70) inset, -1px -1px 1px 0px rgba(255,255,255, 0.70) inset, 0px 0px 28px 0px rgba(0,0,0, 0.10)';
             }
         } else {
             // Fixed size: usar dimensiones específicas
@@ -380,7 +391,7 @@ class GlassElement extends HTMLElement {
                 element.style.boxShadow = '1px 1px 1px 0px rgba(255,255,255, 0.60) inset, -1px -1px 1px 0px rgba(255,255,255, 0.60) inset, 0px 0px 16px 0px rgba(0,0,0, 0.04)';
                 element.style.border = '1px solid rgba(255, 255, 255, 0.3)';
             } else {
-                // Efecto completo con SVG filters — inyectar en DOM para url('#id')
+                // Efecto completo con SVG filters — host element (main document)
                 const fid = this._injectFilter({
                     height: this.height,
                     width: this.width,
@@ -389,9 +400,13 @@ class GlassElement extends HTMLElement {
                     strength: this.strength,
                     chromaticAberration: this.chromaticAberration
                 });
-                element.style.backdropFilter = `blur(${this.blur / 2}px) url('#${fid}') blur(${this.blur}px) brightness(1.1) saturate(1.5)`;
+                const bdf = `blur(${this.blur / 2}px) url('#${fid}') blur(${this.blur}px) brightness(1.18) saturate(2.2) contrast(1.08)`;
+                this.style.backdropFilter = bdf;
+                this.style.webkitBackdropFilter = bdf;
+                element.style.backdropFilter = 'none';
+                element.style.webkitBackdropFilter = 'none';
                 element.style.background = this.backgroundColor;
-                element.style.boxShadow = '1px 1px 1px 0px rgba(255,255,255, 0.60) inset, -1px -1px 1px 0px rgba(255,255,255, 0.60) inset, 0px 0px 16px 0px rgba(0,0,0, 0.04)';
+                element.style.boxShadow = '1px 1px 1px 0px rgba(255,255,255, 0.70) inset, -1px -1px 1px 0px rgba(255,255,255, 0.70) inset, 0px 0px 28px 0px rgba(0,0,0, 0.10)';
             }
         }
     }

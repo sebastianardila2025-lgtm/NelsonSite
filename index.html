@@ -688,16 +688,24 @@
                 </filter>
             </defs>
         </svg>
-        <!-- Bubble -->
-        <button class="chat-bubble liquid-glass" id="chat-bubble" aria-label="Abrir chat">
-            <span class="liquid-glass__backdrop" aria-hidden="true"></span>
-            <span class="liquid-glass__surface"  aria-hidden="true"></span>
-            <span class="liquid-glass__highlight" aria-hidden="true"></span>
-            <span class="liquid-glass__icon">
-                <svg class="chat-bubble-icon chat-bubble-icon--open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-                <svg class="chat-bubble-icon chat-bubble-icon--close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
-            </span>
-        </button>
+        <!-- Bubble — glass-element: SVG displacement in Chrome/Edge, blur fallback elsewhere -->
+        <glass-element
+            id="chat-bubble-glass"
+            auto-size
+            radius="28"
+            depth="10"
+            blur="1"
+            strength="100"
+            chromatic-aberration="15"
+            background-color="rgba(13,35,65,0.10)"
+            style="--glass-padding:64px">
+            <button class="chat-bubble" id="chat-bubble" aria-label="Abrir chat">
+                <span class="liquid-glass__icon">
+                    <svg class="chat-bubble-icon chat-bubble-icon--open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+                    <svg class="chat-bubble-icon chat-bubble-icon--close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                </span>
+            </button>
+        </glass-element>
     </div>
 
 
