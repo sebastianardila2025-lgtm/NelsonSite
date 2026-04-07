@@ -657,6 +657,12 @@
                     <feGaussianBlur in="rawNoise" stdDeviation="0.6" result="noise"/>
                     <feDisplacementMap in="SourceGraphic" in2="noise" scale="6" xChannelSelector="R" yChannelSelector="G"/>
                 </filter>
+                <!-- Very subtle glass ripple for the panel specular layer -->
+                <filter id="panel-glass-ripple" x="-4%" y="-4%" width="108%" height="108%" color-interpolation-filters="sRGB">
+                    <feTurbulence type="fractalNoise" baseFrequency="0.006 0.008" numOctaves="2" seed="3" result="rawNoise"/>
+                    <feGaussianBlur in="rawNoise" stdDeviation="1.4" result="noise"/>
+                    <feDisplacementMap in="SourceGraphic" in2="noise" scale="3" xChannelSelector="R" yChannelSelector="G"/>
+                </filter>
             </defs>
         </svg>
         <!-- Bubble -->
@@ -670,6 +676,9 @@
             </span>
         </button>
     </div>
+
+    <!-- Separate static glass layer: backdrop-filter on a non-transformed fixed element = always works in Safari -->
+    <div id="chat-glass-bg" aria-hidden="true"></div>
 
     <script src="script.js"></script>
     <script src="solar-scroll/script.js"></script>

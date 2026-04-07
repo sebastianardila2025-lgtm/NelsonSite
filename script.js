@@ -42,7 +42,8 @@
   showLeadForm();
 
   // ── Open / close with mac-style animations ──
-  var overlay = document.getElementById('chat-overlay');
+  var overlay  = document.getElementById('chat-overlay');
+  var glassBg  = document.getElementById('chat-glass-bg');
   if (overlay) {
     overlay.addEventListener('click', function() { closePanel(); });
   }
@@ -50,17 +51,24 @@
   function isMobile() { return window.innerWidth <= 768; }
 
   function showOverlay() {
-    if (!overlay || !isMobile()) return;
-    overlay.style.display = 'block';
+    if (!isMobile()) return;
+    if (overlay) { overlay.style.display = 'block'; }
+    if (glassBg)  { glassBg.style.display  = 'block'; }
     requestAnimationFrame(function() {
-      requestAnimationFrame(function() { overlay.classList.add('is-visible'); });
+      requestAnimationFrame(function() {
+        if (overlay) overlay.classList.add('is-visible');
+        if (glassBg)  glassBg.classList.add('is-visible');
+      });
     });
   }
 
   function hideOverlay() {
-    if (!overlay) return;
-    overlay.classList.remove('is-visible');
-    setTimeout(function() { overlay.style.display = 'none'; }, 340);
+    if (overlay) overlay.classList.remove('is-visible');
+    if (glassBg)  glassBg.classList.remove('is-visible');
+    setTimeout(function() {
+      if (overlay) overlay.style.display = 'none';
+      if (glassBg)  glassBg.style.display  = 'none';
+    }, 420);
   }
 
   function openPanel(forceLeadForm) {
