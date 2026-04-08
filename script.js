@@ -194,35 +194,44 @@
     var typingEl = showTyping();
     setTimeout(function() {
       typingEl.remove();
-      addMessage('Gracias, <strong>' + leadData.name + '</strong>. Ya puedes escribirnos tu consulta y te ayudaremos lo antes posible. 😊', 'bot');
+      addMessage(getWelcome(leadData.name), 'bot');
       input.focus();
     }, 820);
   }
 
-  // ── Rule-based replies ──
-  var rules = [
-    { test: /servicio|ofrecen|hacen|haceis/i, reply: 'Ofrecemos: ✅ Inspecciones RETIE · ✅ Instalaciones eléctricas · ✅ Sistemas de energía solar fotovoltaica. ¿Te gustaría más detalles sobre alguno?' },
-    { test: /retie|inspección|inspeccion|certificacion|certificación/i, reply: 'Realizamos inspecciones y certificación RETIE para instalaciones residenciales, comerciales e industriales en Bogotá. ¿Quieres que un técnico te contacte?' },
-    { test: /solar|fotovoltaico|paneles|fotovoltaica/i, reply: '¡Sí! Diseñamos e instalamos sistemas fotovoltaicos para reducir tus costos de energía. ¿Es para uso residencial o comercial?' },
-    { test: /precio|costo|cuesta|tarifa|cobran/i, reply: 'Los precios dependen del tipo de proyecto. Para darte una cotización precisa, escríbenos por WhatsApp o déjanos tu número. 📲' },
-    { test: /contacto|whatsapp|teléfono|telefono|llamar|email|correo/i, reply: 'Puedes contactarnos por WhatsApp: <a href="https://wa.me/571234567890" target="_blank" style="color:#c9a84c;font-weight:600;">+57 1 234 5678</a> o al correo voltgridingenieria@gmail.com 📧' },
-    { test: /bogota|bogotá|ubicacion|ubicación|donde|dónde/i, reply: 'Estamos ubicados en Bogotá, Colombia, y atendemos proyectos en toda la ciudad y alrededores. 📍' },
-    { test: /hola|hello|buenas|buenos|hi\b/i, reply: '¡Hola! 👋 ¿En qué te puedo ayudar hoy? Cuéntame sobre tu proyecto eléctrico o solar.' },
-    { test: /gracias|thanks|perfecto|genial|excelente/i, reply: '¡Con gusto! Si tienes más preguntas, estoy aquí. 😊' },
+  // ── AI reply via /api/chat ──────────────────────────────────────────────────
+  // Fallbacks shown when the API is unreachable (no key, network error, etc.)
+  var apiFallbacks = [
+    'En este momento no puedo procesar tu consulta. Contáctanos por <a href="https://wa.me/571234567890" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a> para atención inmediata.',
+    'Nuestro equipo está disponible para ayudarte. Escríbenos por <a href="https://wa.me/571234567890" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a> y te respondemos a la brevedad.',
   ];
+  var apiFallbackIdx = 0;
+  function getApiFallback() { return apiFallbacks[apiFallbackIdx++ % apiFallbacks.length]; }
 
-  var fallbacks = [
-    'Entiendo. Para una respuesta más detallada, escríbenos por WhatsApp: <a href="https://wa.me/571234567890" target="_blank" style="color:#c9a84c;font-weight:600;">+57 1 234 5678</a>',
-    'Esa pregunta la puede responder mejor nuestro equipo técnico. ¿Te gustaría que te contactemos?',
-    'Gracias por tu mensaje. Nuestro equipo estará encantado de ayudarte. 📲',
+  // Varied welcome messages shown after lead form submission
+  var welcomeVariants = [
+    '¡Bienvenido, <strong>{name}</strong>! VoltGrid te ayuda. Cuéntame qué servicio necesitas y te oriento paso a paso. ⚡',
+    'Listo, <strong>{name}</strong>. Energía clara para decisiones seguras. ¿Sobre qué puedo orientarte hoy?',
+    'Gracias, <strong>{name}</strong>. Impulsando soluciones con precisión — cuéntame tu consulta.',
+    'Perfecto, <strong>{name}</strong>. Estoy aquí para ayudarte con RETIE, instalaciones eléctricas o energía solar. ¿Por dónde empezamos?',
   ];
-  var fallbackIdx = 0;
+  var welcomeIdx = 0;
+  function getWelcome(name) {
+    var tpl = welcomeVariants[welcomeIdx++ % welcomeVariants.length];
+    return tpl.replace(/{name}/g, name);
+  }
 
-  function getBotReply(text) {
-    for (var i = 0; i < rules.length; i++) {
-      if (rules[i].test.test(text)) return rules[i].reply;
-    }
-    return fallbacks[fallbackIdx++ % fallbacks.length];
+  // Sends a user message to the AI backend and calls cb(replyHTML, leadIntent)
+  var isSending = false;
+  function askAI(text, cb) {
+    fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: text, leadName: leadData ? leadData.name : null }),
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) { cb(data.reply || getApiFallback(), !!data.leadIntent); })
+    .catch(function()   { cb(getApiFallback(), false); });
   }
 
   function scrollMessages() {
@@ -254,10 +263,23 @@
     var chips = messages.querySelector('.chat-suggestions');
     if (chips) chips.style.display = 'none';
     var typingEl = showTyping();
-    setTimeout(function() {
+    isSending = true;
+    input.disabled = true;
+    sendBtn.disabled = true;
+    askAI(text, function(reply, leadIntent) {
+      isSending = false;
+      input.disabled = false;
+      sendBtn.disabled = false;
       typingEl.remove();
-      addMessage(getBotReply(text), 'bot');
-    }, 900 + Math.random() * 400);
+      addMessage(reply, 'bot');
+      // If the user shows buying/contact intent, offer a WhatsApp nudge
+      if (leadIntent) {
+        setTimeout(function() {
+          addMessage('¿Te gustaría hablar con un asesor? Escríbenos directamente por <a href="https://wa.me/571234567890" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a> para atención inmediata. 📲', 'bot');
+        }, 700);
+      }
+      input.focus();
+    });
   }
 
   sendBtn.addEventListener('click', function() { sendMessage(input.value); });
