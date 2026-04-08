@@ -217,71 +217,202 @@
   }
 
   // ── AI reply via /api/chat ──────────────────────────────────────────────────
-  // Smart local fallback — answers from knowledge base when API is unavailable
+  // Smart local rules — cover the most common chat scenarios without the API.
+  // Order matters: more specific rules first to avoid false matches.
   var localRules = [
+
+    // ── Emergencias eléctricas ────────────────────────────────────────────────
     {
-      test: /qu[eé] ofrecen|qu[eé] hacen|servicios|qu[eé] hace voltgrid|a qu[eé] se dedican/i,
-      reply: 'VoltGrid Ingeniería ofrece los siguientes servicios:<br><br>⚡ <strong>Certificación RETIE</strong> — inspección técnica, verificación normativa y acompañamiento en el proceso.<br>🔌 <strong>Instalaciones eléctricas</strong> — residenciales, comerciales e industriales.<br>☀️ <strong>Energía solar</strong> — análisis de viabilidad, diseño e instalación fotovoltaica.<br>📋 <strong>Asesorías técnicas</strong> — cumplimiento RETIE, diseño eléctrico y diagnóstico de fallas.<br><br>¿Te gustaría saber más sobre alguno?'
+      test: /corto.?circuito|chispa[s]?|huele a quemado|olor a quemado|se incendi|humo en (el|un) (tomacorriente|breaker|interruptor|cable|panel)|est[aá] quemad/i,
+      reply: '⚠️ <strong>Esto suena a una emergencia eléctrica.</strong> Por seguridad, desconecta el breaker general si puedes hacerlo sin riesgo y no toques cables expuestos.<br><br>Contáctanos de inmediato por <a href="https://wa.me/571234567890" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a> para orientación rápida con nuestro equipo técnico. 🚨'
     },
     {
-      test: /retie|certificaci[oó]n|inspecci[oó]n|norma|cumplimiento/i,
-      reply: 'Realizamos <strong>certificación RETIE</strong> para garantizar que las instalaciones eléctricas cumplan la normativa vigente en Colombia. Incluye inspección técnica, verificación de cumplimiento, recomendaciones de mejora y acompañamiento en todo el proceso.<br><br>¿Es para un proyecto residencial, comercial o industrial?'
+      test: /se fue la luz|no hay luz|sin energ[ií]a|cortaron la luz|apag[oó]n|se fue la energ[ií]a|no tengo energ[ií]a|se tripp?[oó]|se trip[oó]|se fue el servicio/i,
+      reply: 'Si la interrupción es en toda la zona, puede ser una falla del proveedor de energía — revisa con tus vecinos. Si solo es en tu inmueble, es posible que un breaker haya saltado o haya una falla interna.<br><br>Si necesitas una revisión técnica, contáctanos por <a href="https://wa.me/571234567890" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a>. 🔦'
     },
     {
-      test: /solar|fotovoltai|paneles|energ[ií]a solar/i,
-      reply: 'Ofrecemos soluciones completas en <strong>energía solar fotovoltaica</strong>: análisis de viabilidad, diseño del sistema, instalación y recomendaciones de uso eficiente.<br><br>Podemos ayudarte a reducir costos de energía tanto en viviendas como en empresas. ¿Cuéntame de tu proyecto?'
+      test: /urgente|emergencia|r[aá]pido|lo antes posible|lo m[aá]s pronto|cuanto antes|necesito ayuda ya|auxilio/i,
+      reply: 'Entendemos que es urgente. Escríbenos directamente por <a href="https://wa.me/571234567890" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a> para que nuestro equipo te atienda a la brevedad. Estamos disponibles para ayudarte. ⚡'
     },
+
+    // ── Saludos ───────────────────────────────────────────────────────────────
     {
-      test: /instalaci[oó]n el[eé]ctrica|instalar|cableado|el[eé]ctrico/i,
-      reply: 'Diseñamos, ejecutamos y optimizamos <strong>instalaciones eléctricas</strong> para viviendas, locales comerciales, oficinas y proyectos industriales. Incluye instalaciones nuevas, mantenimiento, adecuaciones y ampliaciones.'
+      test: /^(hola|hola!|ola|buenas?|buenos? d[ií]as?|buenos? tardes?|buenos? noches?|hi\b|hey\b|saludos|buen d[ií]a|qu[eé] tal|qu[eé] hubo|qu[eé] m[aá]s|qu[eé] hay)/i,
+      reply: '¡Hola! Bienvenido a VoltGrid Ingeniería. ¿En qué te puedo ayudar hoy? Puedo orientarte sobre certificación RETIE, instalaciones eléctricas y energía solar. ⚡'
     },
+
+    // ── Despedidas ────────────────────────────────────────────────────────────
     {
-      test: /asesor[ií]a|diagn[oó]stico|falla|optimizaci[oó]n/i,
-      reply: 'Brindamos <strong>asesorías técnicas especializadas</strong> en cumplimiento RETIE, diseño de sistemas eléctricos, diagnóstico de fallas y optimización energética. El objetivo es ayudarte a tomar decisiones técnicas seguras y eficientes.'
+      test: /adi[oó]s|chao|hasta luego|hasta pronto|nos vemos|bye\b|hasta ma[ñn]ana|cu[ií]date|hasta cualquier rato/i,
+      reply: '¡Hasta pronto! Si en algún momento necesitas orientación sobre tus proyectos eléctricos o de energía solar, aquí estamos. VoltGrid te ayuda. 😊⚡'
     },
+
+    // ── Agradecimientos ───────────────────────────────────────────────────────
     {
-      test: /proceso|pasos|c[oó]mo funciona|c[oó]mo inician|c[oó]mo empiezan/i,
-      reply: 'Nuestro proceso es sencillo:<br><br>1️⃣ <strong>Contacto inicial</strong> — nos describes tu proyecto.<br>2️⃣ <strong>Evaluación</strong> — analizamos y realizamos visita técnica si es necesario.<br>3️⃣ <strong>Cotización</strong> — propuesta clara con alcance, tiempos y costos.<br>4️⃣ <strong>Ejecución</strong> — realizamos el trabajo técnico.<br>5️⃣ <strong>Seguimiento</strong> — verificamos el cumplimiento y brindamos acompañamiento.<br><br>¿Quieres empezar?'
-    },
-    {
-      test: /tiempo|cu[aá]nto tarda|demora|d[ií]as|plazo/i,
-      reply: 'Los tiempos dependen del tipo de proyecto. En instalaciones residenciales pequeñas, la certificación RETIE puede tardar entre 2 y 5 días hábiles. Proyectos más grandes requieren más tiempo por inspecciones y validaciones adicionales.<br><br>Para darte un tiempo exacto, cuéntanos sobre tu proyecto.'
-    },
-    {
-      test: /precio|costo|cu[aá]nto cuesta|tarifa|cobran|cotizaci[oó]n|presupuesto/i,
-      reply: 'Los precios varían según el tipo y tamaño del proyecto. Para darte una cotización precisa y sin compromisos, contáctanos por <a href="https://wa.me/571234567890" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a> o déjanos tu número y te respondemos a la brevedad. 📲'
-    },
-    {
-      test: /bogot[aá]|d[oó]nde|ubicaci[oó]n|cobertura|municipio|cundinamarca/i,
-      reply: 'Prestamos servicios en toda la ciudad de <strong>Bogotá</strong> y municipios de <strong>Cundinamarca</strong> dependiendo del tipo de proyecto. Para zonas fuera de estas áreas, realizamos una evaluación previa. 📍'
-    },
-    {
-      test: /contacto|whatsapp|tel[eé]fono|llamar|correo|email|escribir/i,
-      reply: 'Puedes contactarnos directamente por <a href="https://wa.me/571234567890" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a> o al correo <strong>voltgridingenieria@gmail.com</strong>. Te respondemos a la brevedad. 📧'
-    },
-    {
-      test: /residencial|casa|apartamento|hogar|vivienda/i,
-      reply: 'Sí, trabajamos con proyectos <strong>residenciales</strong>: instalaciones nuevas, mantenimiento, certificación RETIE y sistemas de energía solar para casas y apartamentos. ¿Tienes un proyecto específico en mente?'
-    },
-    {
-      test: /comercial|empresa|oficina|local|industrial/i,
-      reply: 'Atendemos proyectos <strong>comerciales e industriales</strong>: instalaciones eléctricas, certificación RETIE, asesorías técnicas y soluciones en energía solar adaptadas a cada negocio. ¿Cuéntame sobre tu proyecto?'
-    },
-    {
-      test: /hola|buenos|buenas|hi\b|hey/i,
-      reply: '¡Hola! ¿En qué te puedo ayudar hoy? Puedo orientarte sobre nuestros servicios de RETIE, instalaciones eléctricas y energía solar. ⚡'
-    },
-    {
-      test: /gracias|perfecto|genial|excelente|listo/i,
+      test: /gracias|muchas gracias|mil gracias|te agradezco|muy amable|excelente|perfecto|genial|est[aá] bien|listo|ok\b|okay\b|claro|entendido|understood/i,
       reply: '¡Con mucho gusto! Si tienes más preguntas, aquí estoy. VoltGrid te ayuda. 😊'
     },
+
+    // ── Servicios generales ───────────────────────────────────────────────────
     {
-      test: /cu[aá]ntos a[ñn]os|qu[eé] edad|eres humano|eres una? (ia|inteligencia|m[aá]quina|robot|bot)|eres (real|persona)|sientes|piensas|tienes sentimientos/i,
-      reply: 'Soy un asistente virtual, así que no tengo edad ni emociones como tal 😄 Pero estoy aquí para ayudarte con todo lo relacionado a VoltGrid Ingeniería: RETIE, instalaciones eléctricas y energía solar. ¿En qué te puedo orientar?'
+      test: /qu[eé] ofrece[sn]?|qu[eé] hacen|qu[eé] hace voltgrid|a qu[eé] se dedican|qu[eé] tienen disponible|qu[eé] tipos? de (trabajo|servicio)|en qu[eé] (se especializan|trabajan|ayudan)|tienen electricistas?|tienen ingenieros?|qu[eé] manejan/i,
+      reply: 'VoltGrid Ingeniería ofrece los siguientes servicios:<br><br>⚡ <strong>Certificación RETIE</strong> — inspección y acompañamiento normativo.<br>🔌 <strong>Instalaciones eléctricas</strong> — residenciales, comerciales e industriales.<br>☀️ <strong>Energía solar</strong> — análisis, diseño e instalación fotovoltaica.<br>📋 <strong>Asesorías técnicas</strong> — diseño eléctrico, diagnóstico de fallas y optimización.<br>🔧 <strong>Mantenimiento</strong> — revisiones periódicas y correctivas.<br><br>¿Te gustaría saber más sobre alguno?'
     },
+
+    // ── RETIE ─────────────────────────────────────────────────────────────────
     {
-      test: /cu[aá]l es tu (trabajo|funci[oó]n|prop[oó]sito|rol)|para qu[eé] sirves|en qu[eé] me ayudas/i,
-      reply: 'Estoy aquí para orientarte sobre los servicios de VoltGrid Ingeniería: certificación RETIE, instalaciones eléctricas, energía solar y asesorías técnicas. ¿Sobre cuál te gustaría saber más?'
+      test: /retie|certificaci[oó]n (el[eé]ctrica|retie)|me exigen|exige la norma|reglamento t[eé]cnico|norma (el[eé]ctrica|retie)|inspecci[oó]n (el[eé]ctrica|retie)|cumplimiento (retie|normativo)|me piden (retie|inspecci[oó]n|certificado)|paz y salvo el[eé]ctrico/i,
+      reply: 'Realizamos <strong>certificación RETIE</strong> para garantizar que las instalaciones eléctricas cumplan la normativa vigente en Colombia. El servicio incluye inspección técnica, verificación de cumplimiento, recomendaciones de mejora y acompañamiento completo en el proceso.<br><br>¿Es para un inmueble residencial, comercial o industrial?'
+    },
+
+    // ── Energía solar ─────────────────────────────────────────────────────────
+    {
+      test: /solar|fotovoltai|paneles? (solares?)?|energ[ií]a solar|sistema solar|autoconsumo|generaci[oó]n propia|factura (de energ[ií]a|de luz) (alta|cara|muy (alta|cara))|bajar (la factura|el recibo|el consumo)|ahorro de energ[ií]a|independencia energ[eé]tica/i,
+      reply: 'Ofrecemos soluciones completas en <strong>energía solar fotovoltaica</strong>: análisis de viabilidad, diseño del sistema, instalación y recomendaciones de uso eficiente.<br><br>Es una excelente forma de reducir tu factura de energía a largo plazo, tanto en viviendas como en negocios. ¿Es para uso residencial o comercial?'
+    },
+
+    // ── Instalaciones eléctricas ──────────────────────────────────────────────
+    {
+      test: /instalaci[oó]n el[eé]ctrica|instalar (tomacorriente|interruptor|breaker|panel|luz|cable|red el[eé]ctrica)|cableado|red el[eé]ctrica|puntos (de luz|el[eé]ctricos)|toma.?corriente|rosetas?|ampliaci[oó]n el[eé]ctrica|adecuaci[oó]n el[eé]ctrica|obra el[eé]ctrica/i,
+      reply: 'Diseñamos, ejecutamos y optimizamos <strong>instalaciones eléctricas</strong> para viviendas, locales comerciales, oficinas y proyectos industriales. Incluye instalaciones nuevas, mantenimiento, adecuaciones, ampliaciones y optimización de redes existentes.<br><br>¿Cuéntame sobre tu proyecto?'
+    },
+
+    // ── Mantenimiento ─────────────────────────────────────────────────────────
+    {
+      test: /mantenimiento|revisi[oó]n (el[eé]ctrica|de la instalaci[oó]n|peri[oó]dica)|inspecci[oó]n de (la instalaci[oó]n|redes|cables)|chequeo|verificaci[oó]n el[eé]ctrica|rutina el[eé]ctrica/i,
+      reply: 'Sí, realizamos <strong>mantenimiento eléctrico</strong> preventivo y correctivo: revisión de instalaciones, detección de fallas, verificación de breakers y paneles, y adecuaciones necesarias. Es importante hacerlo periódicamente para garantizar seguridad.<br><br>¿Es para una casa, local o empresa?'
+    },
+
+    // ── Diagnóstico / fallas ──────────────────────────────────────────────────
+    {
+      test: /diagn[oó]stico|falla|averia|da[ñn]o el[eé]ctrico|no (funciona|enciende|prende)|problem[a]? el[eé]ctrico|por qu[eé] (se va|salta|se dispara) (el breaker|el taco|el interruptor)|asesor[ií]a t[eé]cnica|revisi[oó]n de (fallas?|da[ñn]os?)/i,
+      reply: 'Brindamos <strong>diagnóstico y asesoría técnica</strong> para identificar fallas eléctricas, problemas con breakers o paneles, y evaluar el estado general de la instalación. Nuestro objetivo es darte una solución segura y eficiente.<br><br>¿Quieres que un técnico te contacte?'
+    },
+
+    // ── Proceso / cómo funciona ───────────────────────────────────────────────
+    {
+      test: /c[oó]mo (es el proceso|funciona|trabajan|contratar|empezar|iniciar|solicitar|pedir|agendar)|pasos? (para|a seguir)|proceso (de trabajo|de servicio|de contrataci[oó]n)|qu[eé] (hago|tengo que hacer|necesito hacer) para (empezar|contratar|solicitar)/i,
+      reply: 'Nuestro proceso es claro y sencillo:<br><br>1️⃣ <strong>Contacto</strong> — nos describes tu proyecto por WhatsApp o formulario.<br>2️⃣ <strong>Evaluación</strong> — analizamos y agendamos visita técnica si aplica.<br>3️⃣ <strong>Cotización</strong> — propuesta detallada con alcance, tiempos y costos.<br>4️⃣ <strong>Ejecución</strong> — realizamos el trabajo con personal calificado.<br>5️⃣ <strong>Seguimiento</strong> — verificamos resultados y brindamos acompañamiento.<br><br>¿Quieres empezar ahora?'
+    },
+
+    // ── Tiempos / duración ────────────────────────────────────────────────────
+    {
+      test: /cu[aá]nto (tarda|demora|se demora|tiempo toma|tiempo lleva)|cu[aá]ntos d[ií]as|plazo de entrega|en cu[aá]nto tiempo|cu[aá]ndo estar[ií]a listo|tiempo de ejecuci[oó]n|cu[aá]ndo (pueden|pueden venir|empiezan)/i,
+      reply: 'Los tiempos varían según el tipo de proyecto:<br><br>🔹 <strong>Certificación RETIE residencial</strong>: 2–5 días hábiles.<br>🔹 <strong>Instalaciones pequeñas</strong>: 1–3 días.<br>🔹 <strong>Proyectos comerciales o industriales</strong>: depende del alcance.<br><br>Para darte un tiempo exacto, cuéntanos sobre tu proyecto o escríbenos por <a href="https://wa.me/571234567890" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a>.'
+    },
+
+    // ── Precios / cotización ──────────────────────────────────────────────────
+    {
+      test: /precio|costo|cu[aá]nto (cobran|cuesta|vale|sale)|tarifa|cobran|cotizaci[oó]n|presupuesto|son caros?|es caro|qu[eé] tan costoso|maneja[sn]? precios|valor del servicio/i,
+      reply: 'Los precios dependen del tipo, tamaño y complejidad de cada proyecto. Para darte una <strong>cotización precisa y sin compromisos</strong>, escríbenos por <a href="https://wa.me/571234567890" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a> con los detalles de tu proyecto. 📲'
+    },
+
+    // ── Formas de pago ────────────────────────────────────────────────────────
+    {
+      test: /forma[s]? de pago|m[eé]todos? de pago|pagan?|aceptan (tarjeta|efectivo|transferencia|nequi|daviplata|pse)|pago contra entrega|financiamiento|cr[eé]dito|cuotas|abono/i,
+      reply: 'Para información sobre métodos de pago disponibles, te recomendamos consultarlo directamente con nuestro equipo por <a href="https://wa.me/571234567890" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a>. Así te confirmamos las opciones para tu proyecto específico. 💳'
+    },
+
+    // ── Cobertura / ubicación ─────────────────────────────────────────────────
+    {
+      test: /bogot[aá]|d[oó]nde (est[aá]n|quedan|operan|trabajan)|ubicaci[oó]n|cobertura|municipio|cundinamarca|soacha|ch[ií]a|zipaquir[aá]|facatativ[aá]|funza|madrid|mosquera|la calera|bosa|suba|usme|kennedy|engativ[aá]|van a |atienden en|trabajan en/i,
+      reply: 'Prestamos servicios en toda la ciudad de <strong>Bogotá</strong> y municipios de <strong>Cundinamarca</strong> según el tipo de proyecto. Para zonas más lejanas, realizamos una evaluación previa de viabilidad. 📍<br><br>¿En qué zona o municipio necesitas el servicio?'
+    },
+
+    // ── Visita técnica ────────────────────────────────────────────────────────
+    {
+      test: /visita (t[eé]cnica|a (mi casa|el local|la empresa|el inmueble|el sitio))|pueden venir|ir al lugar|desplazarse|vienen a ver|hacen visita|revisi[oó]n en (sitio|el lugar)|inspecci[oó]n en (sitio|el lugar)/i,
+      reply: 'Sí, realizamos <strong>visitas técnicas</strong> para evaluar el estado de las instalaciones y definir el alcance del trabajo. En muchos casos es parte del proceso de cotización.<br><br>Escríbenos por <a href="https://wa.me/571234567890" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a> para agendar. 📅'
+    },
+
+    // ── Horario / disponibilidad ──────────────────────────────────────────────
+    {
+      test: /horario|trabajan (los fines de semana|s[aá]bado|domingo|festivos?)|disponibilidad|cu[aá]ndo atienden|en qu[eé] horario|est[aá]n disponibles|atienden hoy/i,
+      reply: 'Para conocer nuestra disponibilidad y horarios de atención actualizados, escríbenos por <a href="https://wa.me/571234567890" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a>. Nuestro equipo te confirma cuándo pueden atenderte. 🗓️'
+    },
+
+    // ── Garantía ──────────────────────────────────────────────────────────────
+    {
+      test: /garant[ií]a|qu[eé] pasa si (algo sale mal|falla|hay un problema)|responden por|responsabilidad|posventa|servicio postventa|qu[eé] incluye la garant[ií]a/i,
+      reply: 'En VoltGrid Ingeniería nos comprometemos con la calidad de cada trabajo. Para conocer los términos de garantía aplicables a tu servicio específico, te recomendamos consultarlo con nuestro equipo por <a href="https://wa.me/571234567890" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a>. 🛡️'
+    },
+
+    // ── Documentos / certificados ─────────────────────────────────────────────
+    {
+      test: /documentos?|certificados?|qu[eé] (entregan|dan|incluye)|factura|soporte|informe t[eé]cnico|memoria t[eé]cnica|planos?|reportes?/i,
+      reply: 'Al finalizar el servicio entregamos los documentos técnicos correspondientes según el tipo de trabajo (informe de inspección, certificado RETIE, memoria técnica, etc.). Para saber exactamente qué aplica a tu caso, escríbenos por <a href="https://wa.me/571234567890" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a>. 📄'
+    },
+
+    // ── Requisitos para contratar ─────────────────────────────────────────────
+    {
+      test: /qu[eé] (necesito|requiero|debo tener|me piden|documentos necesito)|requisitos|qu[eé] me piden|c[oó]mo (me preparo|empiezo)|qu[eé] informaci[oó]n necesitan/i,
+      reply: 'Para la mayoría de servicios solo necesitamos información básica de tu proyecto: ubicación del inmueble, tipo de uso (residencial, comercial, industrial) y descripción de lo que necesitas.<br><br>Nuestro equipo te guía en el proceso desde el primer contacto. ¿Quieres empezar ahora por <a href="https://wa.me/571234567890" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a>?'
+    },
+
+    // ── Ahorro / rentabilidad solar ───────────────────────────────────────────
+    {
+      test: /cu[aá]nto (ahorro|bajo|reduzco|bajo|economizo)|es rentable (la solar|los paneles|la energ[ií]a solar)|retorno de inversi[oó]n|ROI|cu[aá]ndo se paga|se paga solo|vale la pena (la solar|los paneles)/i,
+      reply: 'La energía solar puede reducir tu factura entre un <strong>50% y 90%</strong> dependiendo del sistema y tu consumo actual. El tiempo de retorno de inversión en Colombia suele estar entre 4 y 8 años, con una vida útil de los paneles de más de 25 años.<br><br>Para calcular el ahorro exacto para tu caso, escríbenos por <a href="https://wa.me/571234567890" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a>. ☀️'
+    },
+
+    // ── Cuántos paneles necesito ──────────────────────────────────────────────
+    {
+      test: /cu[aá]ntos? paneles? (necesito|son necesarios|requiero|me hacen falta)|capacidad del sistema|kw|kilo.?watt|potencia del sistema/i,
+      reply: 'El número de paneles depende de tu consumo eléctrico mensual (kWh) y el espacio disponible. En promedio, una casa en Bogotá necesita entre 6 y 16 paneles para cubrir su consumo.<br><br>Para una propuesta personalizada, escríbenos por <a href="https://wa.me/571234567890" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a> con tu última factura de energía. ☀️'
+    },
+
+    // ── Proyectos residenciales ───────────────────────────────────────────────
+    {
+      test: /residencial|mi casa|mi apartamento|mi hogar|mi vivienda|para la casa|en casa|inmueble residencial/i,
+      reply: 'Trabajamos con todo tipo de proyectos <strong>residenciales</strong>: instalaciones nuevas, mantenimiento eléctrico, certificación RETIE y sistemas de energía solar para casas y apartamentos.<br><br>¿Qué servicio específico necesitas?'
+    },
+
+    // ── Proyectos comerciales / industriales ──────────────────────────────────
+    {
+      test: /comercial|mi empresa|mi negocio|mi local|mi oficina|industrial|bodega|f[aá]brica|planta/i,
+      reply: 'Atendemos proyectos <strong>comerciales e industriales</strong>: instalaciones eléctricas, certificación RETIE, asesorías técnicas y energía solar adaptada a cada negocio. Contamos con experiencia en locales, oficinas, bodegas e instalaciones industriales.<br><br>¿Cuéntame sobre tu proyecto?'
+    },
+
+    // ── Contacto / hablar con alguien ─────────────────────────────────────────
+    {
+      test: /contacto|whatsapp|tel[eé]fono|n[uú]mero|llamar|correo|email|escribir|comunicarme|hablar con (un|alguien|el|una|el equipo)|asesor humano|persona real|t[eé]cnico|representante|agente/i,
+      reply: 'Puedes contactar a nuestro equipo directamente por <a href="https://wa.me/571234567890" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a> o escribirnos al correo <strong>voltgridingenieria@gmail.com</strong>. Te atendemos a la brevedad. 📧'
+    },
+
+    // ── Referencias / trabajos anteriores ─────────────────────────────────────
+    {
+      test: /referencias?|trabajos? anteriores?|trabajos? realizados?|portafolio|fotos? de (trabajos?|proyectos?)|pueden mostrar|ejemplos? de|clientes? anteriores?|testimonios?|opiniones?|rese[ñn]as?/i,
+      reply: 'Para ver ejemplos de nuestros trabajos y referencias, te invitamos a escribirnos por <a href="https://wa.me/571234567890" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a>. Nuestro equipo con gusto compartirá información de proyectos anteriores según el tipo de servicio que necesitas. 📸'
+    },
+
+    // ── Confiabilidad / certificaciones empresa ───────────────────────────────
+    {
+      test: /confiable[s]?|son buenos?|son serios?|seguros?|est[aá]n certificados?|tienen licencia|est[aá]n registrados?|respaldo|calidad|profesionales?|qu[eé] tan buenos?|puedo confiar/i,
+      reply: 'VoltGrid Ingeniería trabaja bajo la <strong>normativa RETIE</strong> vigente en Colombia, garantizando que cada instalación cumpla los estándares de seguridad y calidad. Contamos con personal técnico calificado y acompañamiento en cada etapa del proyecto. 🛡️<br><br>¿Te gustaría más información sobre nuestro proceso?'
+    },
+
+    // ── Experiencia / trayectoria empresa ────────────────────────────────────
+    {
+      test: /cu[aá]ntos? a[ñn]os (tiene[sn]?|lleva[sn]?|operan|en el mercado|de experiencia|laborando|trabajando|fundad)|experiencia|trayectoria|desde cu[aá]ndo (existen|trabajan|est[aá]n|operan)|hace cu[aá]nto/i,
+      reply: 'VoltGrid Ingeniería tiene experiencia en el sector eléctrico en Colombia, con un enfoque en calidad técnica y cumplimiento normativo. Para conocer más sobre nuestra trayectoria, escríbenos por <a href="https://wa.me/571234567890" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a>. 💼'
+    },
+
+    // ── Queja / problema con servicio ────────────────────────────────────────
+    {
+      test: /queja|reclamo|problem[a]? con (el servicio|su trabajo|la instalaci[oó]n)|no (funcion[oó]|qued[oó] bien|est[aá] bien)|mal trabajo|insatisfecho|inconveniente/i,
+      reply: 'Lamentamos escuchar eso. En VoltGrid Ingeniería nos importa la satisfacción de cada cliente. Por favor escríbenos directamente por <a href="https://wa.me/571234567890" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a> para revisar tu caso y encontrar una solución lo antes posible. 🙏'
+    },
+
+    // ── Identidad del bot ─────────────────────────────────────────────────────
+    {
+      test: /cu[aá]ntos? a[ñn]os tienes|qu[eé] edad tienes|eres humano|eres (una? )?(ia|inteligencia artificial|m[aá]quina|robot|bot)|eres (real|persona)|sientes|piensas|tienes sentimientos|eres (un programa|software)/i,
+      reply: 'Soy un asistente virtual 🤖 No tengo edad ni emociones, pero estoy aquí para ayudarte con todo lo relacionado a VoltGrid Ingeniería. ¿En qué te puedo orientar?'
+    },
+
+    // ── Propósito del bot ─────────────────────────────────────────────────────
+    {
+      test: /cu[aá]l es tu (trabajo|funci[oó]n|prop[oó]sito|rol|objetivo)|para qu[eé] (sirves|est[aá]s)|en qu[eé] (me ayudas|puedes ayudar)|qu[eé] (puedes hacer|sabes hacer|puedes responder)/i,
+      reply: 'Estoy aquí para orientarte sobre los servicios de VoltGrid Ingeniería: certificación RETIE, instalaciones eléctricas, energía solar, asesorías técnicas y más. También puedo ayudarte a iniciar el proceso de contacto con nuestro equipo. ¿Sobre qué te gustaría saber?'
     },
   ];
   var genericFallbacks = [
@@ -291,7 +422,7 @@
   var genericIdx = 0;
 
   // Lead intent detector (mirrors server-side logic)
-  var leadIntentRe = /cotiz|presupuesto|cu[aá]nto cuesta|precio|contratar|quiero (aplicar|instalar|hacer|pedir|solicitar|comprar)|me gustar[ií]a|quisiera (instalar|aplicar|contratar|hacer)|agendar|necesito un (servicio|t[eé]cnico|instalador|ingeniero)/i;
+  var leadIntentRe = /cotiz|presupuesto|cu[aá]nto cuesta|precio|contratar|quiero (aplicar|instalar|hacer|pedir|solicitar|comprar|poner)|me gustar[ií]a|quisiera (instalar|aplicar|contratar|hacer|poner)|agendar|necesito un (servicio|t[eé]cnico|instalador|ingeniero)/i;
   function localLeadIntent(text) { return leadIntentRe.test(text); }
 
   // Returns a matched reply or null (null = let AI handle it)
