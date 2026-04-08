@@ -203,6 +203,19 @@
   var assistantNames = ['Carlos', 'Santiago', 'Andrés', 'Camilo', 'Juanita', 'Valentina', 'Felipe', 'Manuela'];
   var assistantName  = assistantNames[Math.floor(Math.random() * assistantNames.length)];
 
+  // Name-question patterns — answered locally without API call
+  var nameQuestionRe = /cómo te llamas|como te llamas|cuál es tu nombre|cual es tu nombre|tu nombre|quién eres|quien eres|cómo te dicen|como te dicen/i;
+  var nameReplies = [
+    'Me llamo <strong>{name}</strong>, asistente de VoltGrid Ingeniería. ¿En qué te puedo orientar hoy?',
+    '¡Hola! Soy <strong>{name}</strong> — el asistente de VoltGrid. Cuéntame tu consulta.',
+    'Mi nombre es <strong>{name}</strong>. Estoy aquí para ayudarte con servicios de VoltGrid Ingeniería. ¿Qué necesitas?',
+  ];
+  var nameReplyIdx = 0;
+  function getNameReply() {
+    var tpl = nameReplies[nameReplyIdx++ % nameReplies.length];
+    return tpl.replace(/{name}/g, assistantName);
+  }
+
   // ── AI reply via /api/chat ──────────────────────────────────────────────────
   // Fallbacks shown when the API is unreachable (no key, network error, etc.)
   var apiFallbacks = [
@@ -266,6 +279,17 @@
     input.value = '';
     var chips = messages.querySelector('.chat-suggestions');
     if (chips) chips.style.display = 'none';
+
+    // Intercept name questions — no API call needed
+    if (nameQuestionRe.test(text)) {
+      var typingShort = showTyping();
+      setTimeout(function() {
+        typingShort.remove();
+        addMessage(getNameReply(), 'bot');
+      }, 600);
+      return;
+    }
+
     var typingEl = showTyping();
     isSending = true;
     input.disabled = true;
