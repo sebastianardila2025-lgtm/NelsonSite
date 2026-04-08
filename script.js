@@ -282,14 +282,19 @@
   ];
   var genericIdx = 0;
 
-  function getLocalReply(text) {
+  // Returns a matched reply or null (null = let AI handle it)
+  function getLocalMatch(text) {
     for (var i = 0; i < localRules.length; i++) {
       if (localRules[i].test.test(text)) return localRules[i].reply;
     }
-    return genericFallbacks[genericIdx++ % genericFallbacks.length];
+    return null;
   }
 
-  function getApiFallback(text) { return getLocalReply(text); }
+  // Used only when the API call itself fails (network error, no key, etc.)
+  function getApiFallback(text) {
+    var match = getLocalMatch(text);
+    return match || genericFallbacks[genericIdx++ % genericFallbacks.length];
+  }
 
   // Varied welcome messages shown after lead form submission
   var welcomeVariants = [
@@ -356,6 +361,19 @@
       return;
     }
 
+    // Check local rules first — instant answer, no API call needed
+    var localMatch = getLocalMatch(text);
+    if (localMatch) {
+      var typingLocal = showTyping();
+      setTimeout(function() {
+        typingLocal.remove();
+        addMessage(localMatch, 'bot');
+        input.focus();
+      }, 500);
+      return;
+    }
+
+    // No local match — send to AI for open-ended questions
     var typingEl = showTyping();
     isSending = true;
     input.disabled = true;
