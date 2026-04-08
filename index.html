@@ -707,5 +707,28 @@
     <script src="glass-element.js"></script>
     <script src="script.js"></script>
     <script src="solar-scroll/script.js"></script>
+    <script>
+        const originalTitle = "VoltGrid Ingeniería";
+        const awayMessages = [
+            "⚡ ¡Vuelve pronto!",
+            "🔆 ¿Olvidaste algo?",
+            "⚡ VoltGrid te espera",
+            "🔆 ¡Tu asesoría aquí!"
+        ];
+        let interval = null;
+        let msgIndex = 0;
+        document.addEventListener("visibilitychange", () => {
+            if (document.hidden) {
+                interval = setInterval(() => {
+                    document.title = awayMessages[msgIndex % awayMessages.length];
+                    msgIndex++;
+                }, 1500);
+            } else {
+                clearInterval(interval);
+                document.title = originalTitle;
+                msgIndex = 0;
+            }
+        });
+    </script>
 </body>
 </html>
