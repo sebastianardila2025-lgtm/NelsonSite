@@ -275,12 +275,24 @@
       test: /gracias|perfecto|genial|excelente|listo/i,
       reply: '¡Con mucho gusto! Si tienes más preguntas, aquí estoy. VoltGrid te ayuda. 😊'
     },
+    {
+      test: /cu[aá]ntos a[ñn]os|qu[eé] edad|eres humano|eres una? (ia|inteligencia|m[aá]quina|robot|bot)|eres (real|persona)|sientes|piensas|tienes sentimientos/i,
+      reply: 'Soy un asistente virtual, así que no tengo edad ni emociones como tal 😄 Pero estoy aquí para ayudarte con todo lo relacionado a VoltGrid Ingeniería: RETIE, instalaciones eléctricas y energía solar. ¿En qué te puedo orientar?'
+    },
+    {
+      test: /cu[aá]l es tu (trabajo|funci[oó]n|prop[oó]sito|rol)|para qu[eé] sirves|en qu[eé] me ayudas/i,
+      reply: 'Estoy aquí para orientarte sobre los servicios de VoltGrid Ingeniería: certificación RETIE, instalaciones eléctricas, energía solar y asesorías técnicas. ¿Sobre cuál te gustaría saber más?'
+    },
   ];
   var genericFallbacks = [
     'Para esa consulta específica, te recomiendo hablar directamente con nuestro equipo. Escríbenos por <a href="https://wa.me/571234567890" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a> y te atendemos de inmediato. 📲',
     'Esa pregunta la puede responder mejor uno de nuestros asesores. ¿Te gustaría que te contactemos por <a href="https://wa.me/571234567890" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a>?',
   ];
   var genericIdx = 0;
+
+  // Lead intent detector (mirrors server-side logic)
+  var leadIntentRe = /cotiz|presupuesto|cu[aá]nto cuesta|precio|contratar|quiero (aplicar|instalar|hacer|pedir|solicitar|comprar)|me gustar[ií]a|quisiera (instalar|aplicar|contratar|hacer)|agendar|necesito un (servicio|t[eé]cnico|instalador|ingeniero)/i;
+  function localLeadIntent(text) { return leadIntentRe.test(text); }
 
   // Returns a matched reply or null (null = let AI handle it)
   function getLocalMatch(text) {
@@ -365,9 +377,15 @@
     var localMatch = getLocalMatch(text);
     if (localMatch) {
       var typingLocal = showTyping();
+      var hasIntent = localLeadIntent(text);
       setTimeout(function() {
         typingLocal.remove();
         addMessage(localMatch, 'bot');
+        if (hasIntent) {
+          setTimeout(function() {
+            addMessage('Parece que tienes un proyecto en mente. ¿Te gustaría que uno de nuestros asesores te contacte? Escríbenos por <a href="https://wa.me/571234567890" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a> y te atendemos de inmediato. 📲', 'bot');
+          }, 700);
+        }
         input.focus();
       }, 500);
       return;
