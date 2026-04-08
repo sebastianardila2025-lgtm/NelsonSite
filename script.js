@@ -203,6 +203,20 @@
   var assistantNames = ['Carlos', 'Santiago', 'Andrés', 'Camilo', 'Juanita', 'Valentina', 'Felipe', 'Manuela'];
   var assistantName  = assistantNames[Math.floor(Math.random() * assistantNames.length)];
 
+  // ── Avatar (random per session from 6 icons) ───────────────────────────────
+  var avatarFiles = [
+    'chat-avatars/avatar-1-agent.png',
+    'chat-avatars/avatar-2-bulb.png',
+    'chat-avatars/avatar-3-tower.png',
+    'chat-avatars/avatar-4-factory.png',
+    'chat-avatars/avatar-5-brain.png',
+    'chat-avatars/avatar-6-compass.png',
+  ];
+  var avatarImg = document.getElementById('chat-avatar-img');
+  if (avatarImg) {
+    avatarImg.src = avatarFiles[Math.floor(Math.random() * avatarFiles.length)];
+  }
+
   // Name-question patterns — answered locally without API call
   var nameQuestionRe = /cómo te llamas|como te llamas|cuál es tu nombre|cual es tu nombre|tu nombre|quién eres|quien eres|cómo te dicen|como te dicen/i;
   var nameReplies = [
