@@ -217,13 +217,79 @@
   }
 
   // ── AI reply via /api/chat ──────────────────────────────────────────────────
-  // Fallbacks shown when the API is unreachable (no key, network error, etc.)
-  var apiFallbacks = [
-    'En este momento no puedo procesar tu consulta. Contáctanos por <a href="https://wa.me/571234567890" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a> para atención inmediata.',
-    'Nuestro equipo está disponible para ayudarte. Escríbenos por <a href="https://wa.me/571234567890" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a> y te respondemos a la brevedad.',
+  // Smart local fallback — answers from knowledge base when API is unavailable
+  var localRules = [
+    {
+      test: /qu[eé] ofrecen|qu[eé] hacen|servicios|qu[eé] hace voltgrid|a qu[eé] se dedican/i,
+      reply: 'VoltGrid Ingeniería ofrece los siguientes servicios:<br><br>⚡ <strong>Certificación RETIE</strong> — inspección técnica, verificación normativa y acompañamiento en el proceso.<br>🔌 <strong>Instalaciones eléctricas</strong> — residenciales, comerciales e industriales.<br>☀️ <strong>Energía solar</strong> — análisis de viabilidad, diseño e instalación fotovoltaica.<br>📋 <strong>Asesorías técnicas</strong> — cumplimiento RETIE, diseño eléctrico y diagnóstico de fallas.<br><br>¿Te gustaría saber más sobre alguno?'
+    },
+    {
+      test: /retie|certificaci[oó]n|inspecci[oó]n|norma|cumplimiento/i,
+      reply: 'Realizamos <strong>certificación RETIE</strong> para garantizar que las instalaciones eléctricas cumplan la normativa vigente en Colombia. Incluye inspección técnica, verificación de cumplimiento, recomendaciones de mejora y acompañamiento en todo el proceso.<br><br>¿Es para un proyecto residencial, comercial o industrial?'
+    },
+    {
+      test: /solar|fotovoltai|paneles|energ[ií]a solar/i,
+      reply: 'Ofrecemos soluciones completas en <strong>energía solar fotovoltaica</strong>: análisis de viabilidad, diseño del sistema, instalación y recomendaciones de uso eficiente.<br><br>Podemos ayudarte a reducir costos de energía tanto en viviendas como en empresas. ¿Cuéntame de tu proyecto?'
+    },
+    {
+      test: /instalaci[oó]n el[eé]ctrica|instalar|cableado|el[eé]ctrico/i,
+      reply: 'Diseñamos, ejecutamos y optimizamos <strong>instalaciones eléctricas</strong> para viviendas, locales comerciales, oficinas y proyectos industriales. Incluye instalaciones nuevas, mantenimiento, adecuaciones y ampliaciones.'
+    },
+    {
+      test: /asesor[ií]a|diagn[oó]stico|falla|optimizaci[oó]n/i,
+      reply: 'Brindamos <strong>asesorías técnicas especializadas</strong> en cumplimiento RETIE, diseño de sistemas eléctricos, diagnóstico de fallas y optimización energética. El objetivo es ayudarte a tomar decisiones técnicas seguras y eficientes.'
+    },
+    {
+      test: /proceso|pasos|c[oó]mo funciona|c[oó]mo inician|c[oó]mo empiezan/i,
+      reply: 'Nuestro proceso es sencillo:<br><br>1️⃣ <strong>Contacto inicial</strong> — nos describes tu proyecto.<br>2️⃣ <strong>Evaluación</strong> — analizamos y realizamos visita técnica si es necesario.<br>3️⃣ <strong>Cotización</strong> — propuesta clara con alcance, tiempos y costos.<br>4️⃣ <strong>Ejecución</strong> — realizamos el trabajo técnico.<br>5️⃣ <strong>Seguimiento</strong> — verificamos el cumplimiento y brindamos acompañamiento.<br><br>¿Quieres empezar?'
+    },
+    {
+      test: /tiempo|cu[aá]nto tarda|demora|d[ií]as|plazo/i,
+      reply: 'Los tiempos dependen del tipo de proyecto. En instalaciones residenciales pequeñas, la certificación RETIE puede tardar entre 2 y 5 días hábiles. Proyectos más grandes requieren más tiempo por inspecciones y validaciones adicionales.<br><br>Para darte un tiempo exacto, cuéntanos sobre tu proyecto.'
+    },
+    {
+      test: /precio|costo|cu[aá]nto cuesta|tarifa|cobran|cotizaci[oó]n|presupuesto/i,
+      reply: 'Los precios varían según el tipo y tamaño del proyecto. Para darte una cotización precisa y sin compromisos, contáctanos por <a href="https://wa.me/571234567890" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a> o déjanos tu número y te respondemos a la brevedad. 📲'
+    },
+    {
+      test: /bogot[aá]|d[oó]nde|ubicaci[oó]n|cobertura|municipio|cundinamarca/i,
+      reply: 'Prestamos servicios en toda la ciudad de <strong>Bogotá</strong> y municipios de <strong>Cundinamarca</strong> dependiendo del tipo de proyecto. Para zonas fuera de estas áreas, realizamos una evaluación previa. 📍'
+    },
+    {
+      test: /contacto|whatsapp|tel[eé]fono|llamar|correo|email|escribir/i,
+      reply: 'Puedes contactarnos directamente por <a href="https://wa.me/571234567890" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a> o al correo <strong>voltgridingenieria@gmail.com</strong>. Te respondemos a la brevedad. 📧'
+    },
+    {
+      test: /residencial|casa|apartamento|hogar|vivienda/i,
+      reply: 'Sí, trabajamos con proyectos <strong>residenciales</strong>: instalaciones nuevas, mantenimiento, certificación RETIE y sistemas de energía solar para casas y apartamentos. ¿Tienes un proyecto específico en mente?'
+    },
+    {
+      test: /comercial|empresa|oficina|local|industrial/i,
+      reply: 'Atendemos proyectos <strong>comerciales e industriales</strong>: instalaciones eléctricas, certificación RETIE, asesorías técnicas y soluciones en energía solar adaptadas a cada negocio. ¿Cuéntame sobre tu proyecto?'
+    },
+    {
+      test: /hola|buenos|buenas|hi\b|hey/i,
+      reply: '¡Hola! ¿En qué te puedo ayudar hoy? Puedo orientarte sobre nuestros servicios de RETIE, instalaciones eléctricas y energía solar. ⚡'
+    },
+    {
+      test: /gracias|perfecto|genial|excelente|listo/i,
+      reply: '¡Con mucho gusto! Si tienes más preguntas, aquí estoy. VoltGrid te ayuda. 😊'
+    },
   ];
-  var apiFallbackIdx = 0;
-  function getApiFallback() { return apiFallbacks[apiFallbackIdx++ % apiFallbacks.length]; }
+  var genericFallbacks = [
+    'Para esa consulta específica, te recomiendo hablar directamente con nuestro equipo. Escríbenos por <a href="https://wa.me/571234567890" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a> y te atendemos de inmediato. 📲',
+    'Esa pregunta la puede responder mejor uno de nuestros asesores. ¿Te gustaría que te contactemos por <a href="https://wa.me/571234567890" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a>?',
+  ];
+  var genericIdx = 0;
+
+  function getLocalReply(text) {
+    for (var i = 0; i < localRules.length; i++) {
+      if (localRules[i].test.test(text)) return localRules[i].reply;
+    }
+    return genericFallbacks[genericIdx++ % genericFallbacks.length];
+  }
+
+  function getApiFallback(text) { return getLocalReply(text); }
 
   // Varied welcome messages shown after lead form submission
   var welcomeVariants = [
@@ -247,8 +313,8 @@
       body: JSON.stringify({ message: text, leadName: leadData ? leadData.name : null, assistantName: assistantName }),
     })
     .then(function(r) { return r.json(); })
-    .then(function(data) { cb(data.reply || getApiFallback(), !!data.leadIntent); })
-    .catch(function()   { cb(getApiFallback(), false); });
+    .then(function(data) { cb(data.reply || getApiFallback(text), !!data.leadIntent); })
+    .catch(function()   { cb(getApiFallback(text), false); });
   }
 
   function scrollMessages() {
