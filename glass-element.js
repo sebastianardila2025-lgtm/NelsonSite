@@ -248,10 +248,9 @@ class GlassElement extends HTMLElement {
     }
 
     /**
-     * Inject the SVG displacement filter into the document DOM and return
-     * its id so backdrop-filter can reference it as url('#id').
-     * Chrome does NOT support backdrop-filter: url('data:...') — it requires
-     * a same-document fragment reference like url('#filterId').
+     * Inject the SVG displacement filter into the main document and return
+     * its id so the HOST element's backdrop-filter can reference it as url('#id').
+     * The HOST lives in the main document, so url('#id') resolves correctly.
      */
     _injectFilter(params) {
         const { getDisplacementFilter } = window.DisplacementUtils;
@@ -264,7 +263,7 @@ class GlassElement extends HTMLElement {
         const svgString = decodeURIComponent(encoded)
             .replace('id="displace"', `id="${this._filterId}"`);
 
-        // Ensure a shared, invisible host SVG exists in <body>
+        // Ensure a shared invisible SVG host exists in <body>
         let host = document.getElementById('_glass-filters-host');
         if (!host) {
             host = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -297,11 +296,13 @@ class GlassElement extends HTMLElement {
 
         // Estilos base que siempre se aplican
         element.style.borderRadius = `${this.radius}px`;
-        // Reset host backdrop-filter (will be set per-path below for Chrome)
-        this.style.backdropFilter = 'none';
-        this.style.webkitBackdropFilter = 'none';
+        // Clear any host overrides from previous renders
+        this.style.backdropFilter = '';
+        this.style.webkitBackdropFilter = '';
+        this.style.background = '';
+        this.style.boxShadow = '';
+        // Border-radius on host so background/backdrop clips correctly (not a square)
         this.style.borderRadius = `${this.radius}px`;
-        this.style.overflow = 'hidden';
 
         if (this.autoSize) {
             // Auto-size: obtener dimensiones del contenido de manera más precisa
@@ -351,9 +352,7 @@ class GlassElement extends HTMLElement {
                 element.style.boxShadow = '1px 1px 1px 0px rgba(255,255,255, 0.60) inset, -1px -1px 1px 0px rgba(255,255,255, 0.60) inset, 0px 0px 16px 0px rgba(0,0,0, 0.04)';
                 element.style.border = '1px solid rgba(255, 255, 255, 0.3)';
             } else {
-                // Efecto completo con SVG filters
-                // IMPORTANTE: aplicar backdrop-filter en el HOST (main document)
-                // porque url('#id') en shadow DOM no resuelve al documento principal
+                // HOST element is in main document → url('#id') resolves to main-doc filter
                 const fid = this._injectFilter({
                     height: actualHeight,
                     width: actualWidth,
@@ -365,10 +364,11 @@ class GlassElement extends HTMLElement {
                 const bdf = `blur(${this.blur / 2}px) url('#${fid}') blur(${this.blur}px) brightness(1.18) saturate(2.2) contrast(1.08)`;
                 this.style.backdropFilter = bdf;
                 this.style.webkitBackdropFilter = bdf;
+                this.style.background = this.backgroundColor;
                 element.style.backdropFilter = 'none';
                 element.style.webkitBackdropFilter = 'none';
-                element.style.background = this.backgroundColor;
-                element.style.boxShadow = '1px 1px 1px 0px rgba(255,255,255, 0.70) inset, -1px -1px 1px 0px rgba(255,255,255, 0.70) inset, 0px 0px 28px 0px rgba(0,0,0, 0.10)';
+                element.style.background = 'transparent';
+                element.style.boxShadow = 'none';
             }
         } else {
             // Fixed size: usar dimensiones específicas
@@ -391,7 +391,7 @@ class GlassElement extends HTMLElement {
                 element.style.boxShadow = '1px 1px 1px 0px rgba(255,255,255, 0.60) inset, -1px -1px 1px 0px rgba(255,255,255, 0.60) inset, 0px 0px 16px 0px rgba(0,0,0, 0.04)';
                 element.style.border = '1px solid rgba(255, 255, 255, 0.3)';
             } else {
-                // Efecto completo con SVG filters — host element (main document)
+                // HOST element is in main document → url('#id') resolves to main-doc filter
                 const fid = this._injectFilter({
                     height: this.height,
                     width: this.width,
@@ -403,10 +403,11 @@ class GlassElement extends HTMLElement {
                 const bdf = `blur(${this.blur / 2}px) url('#${fid}') blur(${this.blur}px) brightness(1.18) saturate(2.2) contrast(1.08)`;
                 this.style.backdropFilter = bdf;
                 this.style.webkitBackdropFilter = bdf;
+                this.style.background = this.backgroundColor;
                 element.style.backdropFilter = 'none';
                 element.style.webkitBackdropFilter = 'none';
-                element.style.background = this.backgroundColor;
-                element.style.boxShadow = '1px 1px 1px 0px rgba(255,255,255, 0.70) inset, -1px -1px 1px 0px rgba(255,255,255, 0.70) inset, 0px 0px 28px 0px rgba(0,0,0, 0.10)';
+                element.style.background = 'transparent';
+                element.style.boxShadow = 'none';
             }
         }
     }
@@ -419,8 +420,7 @@ class GlassElement extends HTMLElement {
                 }
                 
                 .glass-box {
-                    background: rgba(255, 255, 255, 0.4);
-                    box-shadow: 1px 1px 1px 0px rgba(255,255,255, 0.60) inset, -1px -1px 1px 0px rgba(255,255,255, 0.60) inset, 0px 0px 16px 0px rgba(0,0,0, 0.04);
+                    background: transparent;
                     position: relative;
                     pointer-events: none;
                     ${this.autoSize ? `display: inline-block; width: fit-content; min-width: ${this.minWidth}px; min-height: ${this.minHeight}px;` : ''}

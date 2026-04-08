@@ -289,15 +289,6 @@
     hamburger.setAttribute('aria-expanded', 'true');
     panel.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = '';
-    // Sync glass-element dimensions with the actual nav-panel size
-    var navGlass = document.getElementById('nav-glass');
-    if (navGlass) {
-      requestAnimationFrame(function() {
-        var r = panel.getBoundingClientRect();
-        navGlass.setAttribute('width',  String(Math.ceil(r.width)));
-        navGlass.setAttribute('height', String(Math.ceil(r.height)));
-      });
-    }
   }
 
   function closeNav() {

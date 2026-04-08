@@ -20,11 +20,23 @@
                 <span class="brand-suffix">Ingeniería</span>
             </div>
             <div class="nav-actions">
-                <button class="nav-hamburger" id="nav-hamburger" aria-label="Abrir menú" aria-expanded="false" aria-controls="nav-panel">
-                    <span class="nav-hamburger__line"></span>
-                    <span class="nav-hamburger__line"></span>
-                    <span class="nav-hamburger__line"></span>
-                </button>
+                <glass-element
+                    id="nav-hamburger-glass"
+                    width="44"
+                    height="44"
+                    radius="22"
+                    depth="5"
+                    blur="1"
+                    strength="40"
+                    chromatic-aberration="2"
+                    background-color="rgba(255,255,255,0.4)"
+                    style="--glass-padding:0; z-index:1001; flex-shrink:0;">
+                    <button class="nav-hamburger" id="nav-hamburger" aria-label="Abrir menú" aria-expanded="false" aria-controls="nav-panel">
+                        <span class="nav-hamburger__line"></span>
+                        <span class="nav-hamburger__line"></span>
+                        <span class="nav-hamburger__line"></span>
+                    </button>
+                </glass-element>
                 <button class="nav-cta" onclick="scrollToContact()">Contactar</button>
             </div>
         </div>
@@ -33,19 +45,6 @@
     <!-- Premium floating nav panel -->
     <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
     <div class="nav-panel" id="nav-panel" role="dialog" aria-label="Menú de navegación" aria-hidden="true">
-        <!-- Glass background layer: positioned absolute so content z-index sits on top -->
-        <glass-element
-            class="nav-glass"
-            id="nav-glass"
-            width="900"
-            height="300"
-            radius="18"
-            depth="10"
-            blur="3"
-            strength="50"
-            chromatic-aberration="2"
-            background-color="rgba(250,252,255,0.75)">
-        </glass-element>
         <div class="nav-panel__inner">
             <div class="nav-panel__grid">
 
@@ -611,15 +610,6 @@
     <div class="chat-widget" id="chat-widget">
         <!-- Panel -->
         <div class="chat-panel-wrap" id="chat-panel" aria-hidden="true">
-        <glass-element
-            class="chat-glass-panel"
-            auto-size
-            radius="28"
-            depth="8"
-            blur="5"
-            strength="50"
-            chromatic-aberration="2"
-            background-color="rgba(238,244,255,0.82)">
         <div class="chat-panel">
             <div class="chat-panel-header">
                 <div class="chat-panel-info">
@@ -670,7 +660,6 @@
                 </button>
             </div>
         </div>
-        </glass-element>
         </div>
         <!-- SVG liquid-distortion filter (low-frequency = smooth lens waves) -->
         <svg width="0" height="0" style="position:absolute;pointer-events:none" aria-hidden="true">
