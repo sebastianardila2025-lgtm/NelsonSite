@@ -199,6 +199,10 @@
     }, 820);
   }
 
+  // ── Assistant identity (random per session) ────────────────────────────────
+  var assistantNames = ['Carlos', 'Santiago', 'Andrés', 'Camilo', 'Juanita', 'Valentina', 'Felipe', 'Manuela'];
+  var assistantName  = assistantNames[Math.floor(Math.random() * assistantNames.length)];
+
   // ── AI reply via /api/chat ──────────────────────────────────────────────────
   // Fallbacks shown when the API is unreachable (no key, network error, etc.)
   var apiFallbacks = [
@@ -227,7 +231,7 @@
     fetch('/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: text, leadName: leadData ? leadData.name : null }),
+      body: JSON.stringify({ message: text, leadName: leadData ? leadData.name : null, assistantName: assistantName }),
     })
     .then(function(r) { return r.json(); })
     .then(function(data) { cb(data.reply || getApiFallback(), !!data.leadIntent); })

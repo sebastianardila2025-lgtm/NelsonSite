@@ -95,7 +95,7 @@ module.exports = async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST')   return res.status(405).json({ error: 'Method not allowed' });
 
-  const { message, leadName } = req.body || {};
+  const { message, leadName, assistantName } = req.body || {};
 
   if (!message || typeof message !== 'string' || !message.trim()) {
     return res.status(400).json({ error: 'Missing or empty message' });
@@ -113,7 +113,12 @@ module.exports = async function handler(req, res) {
   const leadIntent = hasLeadIntent(message);
 
   // System prompt — defines VoltGrid assistant personality and constraints
-  const systemPrompt = `Eres el asistente virtual de VoltGrid Ingeniería, empresa colombiana especializada en certificación RETIE, instalaciones eléctricas, asesorías técnicas y energía solar fotovoltaica.
+  const name = assistantName || 'Carlos';
+  const systemPrompt = `Eres ${name}, el asistente virtual de VoltGrid Ingeniería, empresa colombiana especializada en certificación RETIE, instalaciones eléctricas, asesorías técnicas y energía solar fotovoltaica.
+
+IDENTIDAD:
+- Tu nombre es ${name}. Si alguien te pregunta cómo te llamas, respóndeles con tu nombre de forma natural y breve, sin explicar que eres una IA a menos que el usuario lo pregunte directamente.
+- Mantén tu nombre consistente durante toda la conversación.
 
 PERSONALIDAD Y TONO:
 - Profesional, cálido, elegante y orientado al cliente
