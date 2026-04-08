@@ -238,15 +238,15 @@
     // ── Emergencias eléctricas ────────────────────────────────────────────────
     {
       test: /corto.?circuito|chispa[s]?|huele a quemado|olor a quemado|se incendi|humo en (el|un) (tomacorriente|breaker|interruptor|cable|panel)|est[aá] quemad/i,
-      reply: '⚠️ <strong>Esto suena a una emergencia eléctrica.</strong> Por seguridad, desconecta el breaker general si puedes hacerlo sin riesgo y no toques cables expuestos.<br><br>Contáctanos de inmediato por <a href="https://wa.me/571234567890" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a> para orientación rápida con nuestro equipo técnico. 🚨'
+      reply: '⚠️ <strong>Esto suena a una emergencia eléctrica.</strong> Por seguridad, desconecta el breaker general si puedes hacerlo sin riesgo y no toques cables expuestos.<br><br>Contáctanos de inmediato por <a href="https://wa.me/573057639585" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a> para orientación rápida con nuestro equipo técnico. 🚨'
     },
     {
       test: /se fue la luz|no hay luz|sin energ[ií]a|cortaron la luz|apag[oó]n|se fue la energ[ií]a|no tengo energ[ií]a|se tripp?[oó]|se trip[oó]|se fue el servicio/i,
-      reply: 'Si la interrupción es en toda la zona, puede ser una falla del proveedor de energía — revisa con tus vecinos. Si solo es en tu inmueble, es posible que un breaker haya saltado o haya una falla interna.<br><br>Si necesitas una revisión técnica, contáctanos por <a href="https://wa.me/571234567890" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a>. 🔦'
+      reply: 'Si la interrupción es en toda la zona, puede ser una falla del proveedor de energía — revisa con tus vecinos. Si solo es en tu inmueble, es posible que un breaker haya saltado o haya una falla interna.<br><br>Si necesitas una revisión técnica, contáctanos por <a href="https://wa.me/573057639585" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a>. 🔦'
     },
     {
       test: /urgente|emergencia|r[aá]pido|lo antes posible|lo m[aá]s pronto|cuanto antes|necesito ayuda ya|auxilio/i,
-      reply: 'Entendemos que es urgente. Escríbenos directamente por <a href="https://wa.me/571234567890" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a> para que nuestro equipo te atienda a la brevedad. Estamos disponibles para ayudarte. ⚡'
+      reply: 'Entendemos que es urgente. Escríbenos directamente por <a href="https://wa.me/573057639585" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a> para que nuestro equipo te atienda a la brevedad. Estamos disponibles para ayudarte. ⚡'
     },
 
     // ── Saludos ───────────────────────────────────────────────────────────────
@@ -312,19 +312,19 @@
     // ── Tiempos / duración ────────────────────────────────────────────────────
     {
       test: /cu[aá]nto (tarda|demora|se demora|tiempo toma|tiempo lleva)|cu[aá]ntos d[ií]as|plazo de entrega|en cu[aá]nto tiempo|cu[aá]ndo estar[ií]a listo|tiempo de ejecuci[oó]n|cu[aá]ndo (pueden|pueden venir|empiezan)/i,
-      reply: 'Los tiempos varían según el tipo de proyecto:<br><br>🔹 <strong>Certificación RETIE residencial</strong>: 2–5 días hábiles.<br>🔹 <strong>Instalaciones pequeñas</strong>: 1–3 días.<br>🔹 <strong>Proyectos comerciales o industriales</strong>: depende del alcance.<br><br>Para darte un tiempo exacto, cuéntanos sobre tu proyecto o escríbenos por <a href="https://wa.me/571234567890" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a>.'
+      reply: 'Los tiempos varían según el tipo de proyecto:<br><br>🔹 <strong>Certificación RETIE residencial</strong>: 2–5 días hábiles.<br>🔹 <strong>Instalaciones pequeñas</strong>: 1–3 días.<br>🔹 <strong>Proyectos comerciales o industriales</strong>: depende del alcance.<br><br>Para darte un tiempo exacto, cuéntanos sobre tu proyecto o escríbenos por <a href="https://wa.me/573057639585" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a>.'
     },
 
     // ── Precios / cotización ──────────────────────────────────────────────────
     {
       test: /precio|costo|cu[aá]nto (cobran|cuesta|vale|sale)|tarifa|cobran|cotizaci[oó]n|presupuesto|son caros?|es caro|qu[eé] tan costoso|maneja[sn]? precios|valor del servicio/i,
-      reply: 'Los precios dependen del tipo, tamaño y complejidad de cada proyecto. Para darte una <strong>cotización precisa y sin compromisos</strong>, escríbenos por <a href="https://wa.me/571234567890" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a> con los detalles de tu proyecto. 📲'
+      reply: 'Los precios dependen del tipo, tamaño y complejidad de cada proyecto. Para darte una <strong>cotización precisa y sin compromisos</strong>, escríbenos por <a href="https://wa.me/573057639585" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a> con los detalles de tu proyecto. 📲'
     },
 
     // ── Formas de pago ────────────────────────────────────────────────────────
     {
       test: /forma[s]? de pago|m[eé]todos? de pago|pagan?|aceptan (tarjeta|efectivo|transferencia|nequi|daviplata|pse)|pago contra entrega|financiamiento|cr[eé]dito|cuotas|abono/i,
-      reply: 'Para información sobre métodos de pago disponibles, te recomendamos consultarlo directamente con nuestro equipo por <a href="https://wa.me/571234567890" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a>. Así te confirmamos las opciones para tu proyecto específico. 💳'
+      reply: 'Para información sobre métodos de pago disponibles, te recomendamos consultarlo directamente con nuestro equipo por <a href="https://wa.me/573057639585" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a>. Así te confirmamos las opciones para tu proyecto específico. 💳'
     },
 
     // ── Cobertura / ubicación ─────────────────────────────────────────────────
@@ -336,43 +336,43 @@
     // ── Visita técnica ────────────────────────────────────────────────────────
     {
       test: /visita (t[eé]cnica|a (mi casa|el local|la empresa|el inmueble|el sitio))|pueden venir|ir al lugar|desplazarse|vienen a ver|hacen visita|revisi[oó]n en (sitio|el lugar)|inspecci[oó]n en (sitio|el lugar)/i,
-      reply: 'Sí, realizamos <strong>visitas técnicas</strong> para evaluar el estado de las instalaciones y definir el alcance del trabajo. En muchos casos es parte del proceso de cotización.<br><br>Escríbenos por <a href="https://wa.me/571234567890" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a> para agendar. 📅'
+      reply: 'Sí, realizamos <strong>visitas técnicas</strong> para evaluar el estado de las instalaciones y definir el alcance del trabajo. En muchos casos es parte del proceso de cotización.<br><br>Escríbenos por <a href="https://wa.me/573057639585" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a> para agendar. 📅'
     },
 
     // ── Horario / disponibilidad ──────────────────────────────────────────────
     {
       test: /horario|trabajan (los fines de semana|s[aá]bado|domingo|festivos?)|disponibilidad|cu[aá]ndo atienden|en qu[eé] horario|est[aá]n disponibles|atienden hoy/i,
-      reply: 'Para conocer nuestra disponibilidad y horarios de atención actualizados, escríbenos por <a href="https://wa.me/571234567890" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a>. Nuestro equipo te confirma cuándo pueden atenderte. 🗓️'
+      reply: 'Para conocer nuestra disponibilidad y horarios de atención actualizados, escríbenos por <a href="https://wa.me/573057639585" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a>. Nuestro equipo te confirma cuándo pueden atenderte. 🗓️'
     },
 
     // ── Garantía ──────────────────────────────────────────────────────────────
     {
       test: /garant[ií]a|qu[eé] pasa si (algo sale mal|falla|hay un problema)|responden por|responsabilidad|posventa|servicio postventa|qu[eé] incluye la garant[ií]a/i,
-      reply: 'En VoltGrid Ingeniería nos comprometemos con la calidad de cada trabajo. Para conocer los términos de garantía aplicables a tu servicio específico, te recomendamos consultarlo con nuestro equipo por <a href="https://wa.me/571234567890" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a>. 🛡️'
+      reply: 'En VoltGrid Ingeniería nos comprometemos con la calidad de cada trabajo. Para conocer los términos de garantía aplicables a tu servicio específico, te recomendamos consultarlo con nuestro equipo por <a href="https://wa.me/573057639585" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a>. 🛡️'
     },
 
     // ── Documentos / certificados ─────────────────────────────────────────────
     {
       test: /documentos?|certificados?|qu[eé] (entregan|dan|incluye)|factura|soporte|informe t[eé]cnico|memoria t[eé]cnica|planos?|reportes?/i,
-      reply: 'Al finalizar el servicio entregamos los documentos técnicos correspondientes según el tipo de trabajo (informe de inspección, certificado RETIE, memoria técnica, etc.). Para saber exactamente qué aplica a tu caso, escríbenos por <a href="https://wa.me/571234567890" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a>. 📄'
+      reply: 'Al finalizar el servicio entregamos los documentos técnicos correspondientes según el tipo de trabajo (informe de inspección, certificado RETIE, memoria técnica, etc.). Para saber exactamente qué aplica a tu caso, escríbenos por <a href="https://wa.me/573057639585" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a>. 📄'
     },
 
     // ── Requisitos para contratar ─────────────────────────────────────────────
     {
       test: /qu[eé] (necesito|requiero|debo tener|me piden|documentos necesito)|requisitos|qu[eé] me piden|c[oó]mo (me preparo|empiezo)|qu[eé] informaci[oó]n necesitan/i,
-      reply: 'Para la mayoría de servicios solo necesitamos información básica de tu proyecto: ubicación del inmueble, tipo de uso (residencial, comercial, industrial) y descripción de lo que necesitas.<br><br>Nuestro equipo te guía en el proceso desde el primer contacto. ¿Quieres empezar ahora por <a href="https://wa.me/571234567890" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a>?'
+      reply: 'Para la mayoría de servicios solo necesitamos información básica de tu proyecto: ubicación del inmueble, tipo de uso (residencial, comercial, industrial) y descripción de lo que necesitas.<br><br>Nuestro equipo te guía en el proceso desde el primer contacto. ¿Quieres empezar ahora por <a href="https://wa.me/573057639585" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a>?'
     },
 
     // ── Ahorro / rentabilidad solar ───────────────────────────────────────────
     {
       test: /cu[aá]nto (ahorro|bajo|reduzco|bajo|economizo)|es rentable (la solar|los paneles|la energ[ií]a solar)|retorno de inversi[oó]n|ROI|cu[aá]ndo se paga|se paga solo|vale la pena (la solar|los paneles)/i,
-      reply: 'La energía solar puede reducir tu factura entre un <strong>50% y 90%</strong> dependiendo del sistema y tu consumo actual. El tiempo de retorno de inversión en Colombia suele estar entre 4 y 8 años, con una vida útil de los paneles de más de 25 años.<br><br>Para calcular el ahorro exacto para tu caso, escríbenos por <a href="https://wa.me/571234567890" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a>. ☀️'
+      reply: 'La energía solar puede reducir tu factura entre un <strong>50% y 90%</strong> dependiendo del sistema y tu consumo actual. El tiempo de retorno de inversión en Colombia suele estar entre 4 y 8 años, con una vida útil de los paneles de más de 25 años.<br><br>Para calcular el ahorro exacto para tu caso, escríbenos por <a href="https://wa.me/573057639585" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a>. ☀️'
     },
 
     // ── Cuántos paneles necesito ──────────────────────────────────────────────
     {
       test: /cu[aá]ntos? paneles? (necesito|son necesarios|requiero|me hacen falta)|capacidad del sistema|kw|kilo.?watt|potencia del sistema/i,
-      reply: 'El número de paneles depende de tu consumo eléctrico mensual (kWh) y el espacio disponible. En promedio, una casa en Bogotá necesita entre 6 y 16 paneles para cubrir su consumo.<br><br>Para una propuesta personalizada, escríbenos por <a href="https://wa.me/571234567890" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a> con tu última factura de energía. ☀️'
+      reply: 'El número de paneles depende de tu consumo eléctrico mensual (kWh) y el espacio disponible. En promedio, una casa en Bogotá necesita entre 6 y 16 paneles para cubrir su consumo.<br><br>Para una propuesta personalizada, escríbenos por <a href="https://wa.me/573057639585" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a> con tu última factura de energía. ☀️'
     },
 
     // ── Proyectos residenciales ───────────────────────────────────────────────
@@ -390,13 +390,13 @@
     // ── Contacto / hablar con alguien ─────────────────────────────────────────
     {
       test: /contacto|whatsapp|tel[eé]fono|n[uú]mero|llamar|correo|email|escribir|comunicarme|hablar con (un|alguien|el|una|el equipo)|asesor humano|persona real|t[eé]cnico|representante|agente/i,
-      reply: 'Puedes contactar a nuestro equipo directamente por <a href="https://wa.me/571234567890" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a> o escribirnos al correo <strong>voltgridingenieria@gmail.com</strong>. Te atendemos a la brevedad. 📧'
+      reply: 'Puedes contactar a nuestro equipo directamente por <a href="https://wa.me/573057639585" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a> o escribirnos al correo <strong>voltgridingenieria@gmail.com</strong>. Te atendemos a la brevedad. 📧'
     },
 
     // ── Referencias / trabajos anteriores ─────────────────────────────────────
     {
       test: /referencias?|trabajos? anteriores?|trabajos? realizados?|portafolio|fotos? de (trabajos?|proyectos?)|pueden mostrar|ejemplos? de|clientes? anteriores?|testimonios?|opiniones?|rese[ñn]as?/i,
-      reply: 'Para ver ejemplos de nuestros trabajos y referencias, te invitamos a escribirnos por <a href="https://wa.me/571234567890" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a>. Nuestro equipo con gusto compartirá información de proyectos anteriores según el tipo de servicio que necesitas. 📸'
+      reply: 'Para ver ejemplos de nuestros trabajos y referencias, te invitamos a escribirnos por <a href="https://wa.me/573057639585" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a>. Nuestro equipo con gusto compartirá información de proyectos anteriores según el tipo de servicio que necesitas. 📸'
     },
 
     // ── Confiabilidad / certificaciones empresa ───────────────────────────────
@@ -408,13 +408,13 @@
     // ── Experiencia / trayectoria empresa ────────────────────────────────────
     {
       test: /cu[aá]ntos? a[ñn]os (tiene[sn]?|lleva[sn]?|operan|en el mercado|de experiencia|laborando|trabajando|fundad)|experiencia|trayectoria|desde cu[aá]ndo (existen|trabajan|est[aá]n|operan)|hace cu[aá]nto/i,
-      reply: 'VoltGrid Ingeniería tiene experiencia en el sector eléctrico en Colombia, con un enfoque en calidad técnica y cumplimiento normativo. Para conocer más sobre nuestra trayectoria, escríbenos por <a href="https://wa.me/571234567890" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a>. 💼'
+      reply: 'VoltGrid Ingeniería tiene experiencia en el sector eléctrico en Colombia, con un enfoque en calidad técnica y cumplimiento normativo. Para conocer más sobre nuestra trayectoria, escríbenos por <a href="https://wa.me/573057639585" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a>. 💼'
     },
 
     // ── Queja / problema con servicio ────────────────────────────────────────
     {
       test: /queja|reclamo|problem[a]? con (el servicio|su trabajo|la instalaci[oó]n)|no (funcion[oó]|qued[oó] bien|est[aá] bien)|mal trabajo|insatisfecho|inconveniente/i,
-      reply: 'Lamentamos escuchar eso. En VoltGrid Ingeniería nos importa la satisfacción de cada cliente. Por favor escríbenos directamente por <a href="https://wa.me/571234567890" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a> para revisar tu caso y encontrar una solución lo antes posible. 🙏'
+      reply: 'Lamentamos escuchar eso. En VoltGrid Ingeniería nos importa la satisfacción de cada cliente. Por favor escríbenos directamente por <a href="https://wa.me/573057639585" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a> para revisar tu caso y encontrar una solución lo antes posible. 🙏'
     },
 
     // ── Identidad del bot ─────────────────────────────────────────────────────
@@ -430,8 +430,8 @@
     },
   ];
   var genericFallbacks = [
-    'Para esa consulta específica, te recomiendo hablar directamente con nuestro equipo. Escríbenos por <a href="https://wa.me/571234567890" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a> y te atendemos de inmediato. 📲',
-    'Esa pregunta la puede responder mejor uno de nuestros asesores. ¿Te gustaría que te contactemos por <a href="https://wa.me/571234567890" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a>?',
+    'Para esa consulta específica, te recomiendo hablar directamente con nuestro equipo. Escríbenos por <a href="https://wa.me/573057639585" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a> y te atendemos de inmediato. 📲',
+    'Esa pregunta la puede responder mejor uno de nuestros asesores. ¿Te gustaría que te contactemos por <a href="https://wa.me/573057639585" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a>?',
   ];
   var genericIdx = 0;
 
@@ -528,7 +528,7 @@
         addMessage(localMatch, 'bot');
         if (hasIntent) {
           setTimeout(function() {
-            addMessage('Parece que tienes un proyecto en mente. ¿Te gustaría que uno de nuestros asesores te contacte? Escríbenos por <a href="https://wa.me/571234567890" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a> y te atendemos de inmediato. 📲', 'bot');
+            addMessage('Parece que tienes un proyecto en mente. ¿Te gustaría que uno de nuestros asesores te contacte? Escríbenos por <a href="https://wa.me/573057639585" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a> y te atendemos de inmediato. 📲', 'bot');
           }, 700);
         }
         input.focus();
@@ -550,7 +550,7 @@
       // If the user shows buying/contact intent, offer a WhatsApp nudge
       if (leadIntent) {
         setTimeout(function() {
-          addMessage('¿Te gustaría hablar con un asesor? Escríbenos directamente por <a href="https://wa.me/571234567890" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a> para atención inmediata. 📲', 'bot');
+          addMessage('¿Te gustaría hablar con un asesor? Escríbenos directamente por <a href="https://wa.me/573057639585" target="_blank" style="color:#c9a84c;font-weight:600;">WhatsApp</a> para atención inmediata. 📲', 'bot');
         }, 700);
       }
       input.focus();
