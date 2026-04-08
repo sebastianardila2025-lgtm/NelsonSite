@@ -421,14 +421,9 @@ class GlassElement extends HTMLElement {
                 .glass-box {
                     background: rgba(255, 255, 255, 0.4);
                     box-shadow: 1px 1px 1px 0px rgba(255,255,255, 0.60) inset, -1px -1px 1px 0px rgba(255,255,255, 0.60) inset, 0px 0px 16px 0px rgba(0,0,0, 0.04);
-                    cursor: pointer;
-                    transition: transform 0.1s ease;
                     position: relative;
+                    pointer-events: none;
                     ${this.autoSize ? `display: inline-block; width: fit-content; min-width: ${this.minWidth}px; min-height: ${this.minHeight}px;` : ''}
-                }
-                
-                .glass-box:active {
-                    transform: scale(0.98);
                 }
 
                 .content {
@@ -439,7 +434,12 @@ class GlassElement extends HTMLElement {
                     color: white;
                     text-align: center;
                     font-family: sans-serif;
+                    pointer-events: none;
                     ${this.autoSize ? 'padding: var(--glass-padding, 16px 24px);' : ''}
+                }
+
+                ::slotted(*) {
+                    pointer-events: auto;
                 }
             </style>
             <div class="glass-box">
