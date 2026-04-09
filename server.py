@@ -3,25 +3,29 @@
 Servidor de desarrollo con soporte HTTP Range + endpoint /api/chat.
 Chrome requiere respuestas 206 Partial Content para hacer scrubbing de video.
 Crear un archivo .env en la raíz con: OPENAI_API_KEY=sk-...
+Variables adicionales: NOTION_TOKEN y NOTION_DATABASE_ID para el endpoint /api/lead.
 """
 import http.server, os, json, re, urllib.request
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-# ── Load API key from .env or environment ─────────────────────────────────────
-def _load_api_key():
-    key = os.environ.get('OPENAI_API_KEY', '')
-    if key:
-        return key
+# ── Load a named variable from .env or environment ───────────────────────────
+def _load_env(var_name):
+    val = os.environ.get(var_name, '')
+    if val:
+        return val
     for fname in ('.env', '.env.local'):
         env_path = os.path.join(BASE_DIR, fname)
         if os.path.exists(env_path):
             with open(env_path) as f:
                 for line in f:
                     line = line.strip()
-                    if line.startswith('OPENAI_API_KEY='):
+                    if line.startswith(var_name + '='):
                         return line.split('=', 1)[1].strip().strip('"\'')
     return ''
+
+def _load_api_key():
+    return _load_env('OPENAI_API_KEY')
 
 # ── Load knowledge base .md files ────────────────────────────────────────────
 def _load_knowledge_base():
@@ -90,6 +94,8 @@ class RangeHandler(http.server.SimpleHTTPRequestHandler):
     def do_POST(self):
         if self.path == '/api/chat':
             self._handle_chat()
+        elif self.path == '/api/lead':
+            self._handle_lead()
         else:
             self.send_error(404, 'Not found')
 
@@ -141,6 +147,72 @@ class RangeHandler(http.server.SimpleHTTPRequestHandler):
             reply = 'En este momento no puedo procesar tu consulta. Contáctanos directamente por WhatsApp.'
 
         self._json({'reply': reply, 'leadIntent': lead_intent})
+
+    def _handle_lead(self):
+        length = int(self.headers.get('Content-Length', 0))
+        body   = json.loads(self.rfile.read(length) or b'{}')
+
+        nombre   = (body.get('nombre')   or '').strip()
+        whatsapp = (body.get('whatsapp') or '').strip()
+        servicio = (body.get('servicio') or '').strip()
+        mensaje  = (body.get('mensaje')  or '').strip()
+        email    = (body.get('email')    or '').strip()
+
+        if not nombre:
+            self._json({'error': 'El nombre es obligatorio.'}, 400)
+            return
+        if not whatsapp:
+            self._json({'error': 'El número de WhatsApp es obligatorio.'}, 400)
+            return
+        if not servicio:
+            self._json({'error': 'El tipo de proyecto es obligatorio.'}, 400)
+            return
+
+        token       = _load_env('NOTION_TOKEN')
+        database_id = _load_env('NOTION_DATABASE_ID')
+
+        if not token or not database_id:
+            print('[lead] ⚠️  Faltan NOTION_TOKEN o NOTION_DATABASE_ID en .env')
+            self._json({'error': 'Server misconfiguration'}, 500)
+            return
+
+        today = __import__('datetime').date.today().isoformat()
+
+        def rt(v): return [{'text': {'content': v[:2000]}}]
+
+        properties = {
+            'Nombre':   {'title': rt(nombre)},
+            'WhatsApp': {'rich_text': rt(whatsapp)},
+            'Sector':   {'select': {'name': servicio}},
+            'Mensaje':  {'rich_text': rt(mensaje)},
+            'Fecha':    {'date': {'start': today}},
+            'Estado':   {'select': {'name': 'Nuevo'}},
+            'Prioridad':{'select': {'name': 'Media'}},
+        }
+        if email:
+            properties['Email'] = {'email': email}
+
+        payload = json.dumps({'parent': {'database_id': database_id}, 'properties': properties}).encode('utf-8')
+        req = urllib.request.Request(
+            'https://api.notion.com/v1/pages',
+            data=payload,
+            headers={
+                'Authorization': f'Bearer {token}',
+                'Content-Type': 'application/json',
+                'Notion-Version': '2022-06-28',
+            },
+        )
+        try:
+            with urllib.request.urlopen(req, timeout=15) as r:
+                data = json.loads(r.read())
+            self._json({'ok': True, 'id': data.get('id', '')})
+        except urllib.error.HTTPError as e:
+            err_body = e.read().decode('utf-8', errors='replace')
+            print(f'[lead] Notion HTTP error {e.code}: {err_body}')
+            self._json({'error': 'No se pudo registrar en Notion.', 'detail': err_body}, 502)
+        except Exception as ex:
+            print(f'[lead] Error: {ex}')
+            self._json({'error': 'Error interno al contactar Notion.'}, 500)
 
     def _json(self, obj, status=200):
         body = json.dumps(obj, ensure_ascii=False).encode('utf-8')

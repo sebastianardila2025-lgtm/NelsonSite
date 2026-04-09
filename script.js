@@ -994,6 +994,8 @@ addAccessibilityFeatures();
     var nombre   = document.getElementById('lf-nombre');
     var telefono = document.getElementById('lf-telefono');
     var tipo     = document.getElementById('lf-tipo');
+    var mensaje  = document.getElementById('lf-mensaje');
+    var submitBtn = form.querySelector('.lf-submit');
 
     if (!nombre.value.trim()) {
       setError(nombre, 'Por favor ingresa tu nombre.');
@@ -1008,9 +1010,37 @@ addAccessibilityFeatures();
       return;
     }
 
-    form.style.display = 'none';
-    success.style.display = 'flex';
-    success.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    // Disable button while submitting
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Enviando…';
+
+    fetch('/api/lead', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        nombre:   nombre.value.trim(),
+        whatsapp: telefono.value.trim(),
+        servicio: tipo.value,
+        mensaje:  mensaje ? mensaje.value.trim() : '',
+      }),
+    })
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+      if (data.ok) {
+        form.style.display = 'none';
+        success.style.display = 'flex';
+        success.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } else {
+        errEl.textContent = data.error || 'Ocurrió un error. Inténtalo de nuevo.';
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Solicitar asesoría';
+      }
+    })
+    .catch(function() {
+      errEl.textContent = 'No se pudo enviar la solicitud. Verifica tu conexión e inténtalo de nuevo.';
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Solicitar asesoría';
+    });
   });
 })();
 
