@@ -2840,3 +2840,210 @@ canvas {
         padding: 2rem 0;
     }
 }
+
+/* Blog y Noticias Section */
+.blog-news-section {
+  padding: 100px 0;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.blog-news-header {
+  text-align: center;
+  margin-bottom: 80px;
+}
+
+.blog-news-title {
+  font-size: 3.5rem;
+  font-weight: 700;
+  color: #0f2d5c;
+  margin-bottom: 20px;
+  background: linear-gradient(135deg, #0f2d5c, #d4af37);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.blog-news-subtitle {
+  font-size: 1.25rem;
+  color: #64748b;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Ebooks Zone */
+.ebooks-zone {
+  margin-top: 60px;
+}
+
+.ebooks-zone-header {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.ebooks-zone-title {
+  font-size: 2.5rem;
+  font-weight: 600;
+  color: #0f2d5c;
+  margin-bottom: 15px;
+}
+
+.ebooks-zone-subtitle {
+  font-size: 1.125rem;
+  color: #64748b;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+/* Contenedor Liquid Glass para Ebooks */
+.ebooks-container-wrap {
+  position: relative;
+  height: 300px;
+  margin: 0 auto;
+  max-width: 1200px;
+  border-radius: 24px;
+  overflow: hidden;
+  backdrop-filter: blur(20px) brightness(1.12) saturate(1.9);
+  background: rgba(255,255,255,0.4);
+  border: 1px solid rgba(255,255,255,0.55);
+  box-shadow: 0 8px 32px rgba(15,45,92,0.12);
+}
+
+.ebooks-container {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  padding: 40px 20px;
+  gap: 30px;
+  animation: scrollLeft 20s linear infinite;
+  width: fit-content;
+}
+
+@keyframes scrollLeft {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+/* Ebook Items */
+.ebook-item {
+  flex-shrink: 0;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.ebook-cover {
+  width: 140px;
+  height: 200px;
+  background: linear-gradient(135deg, #0f2d5c, #1e3a8a);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  color: white;
+  box-shadow: 0 4px 20px rgba(15,45,92,0.2);
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+.ebook-cover::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
+  pointer-events: none;
+}
+
+.ebook-icon {
+  font-size: 3rem;
+  margin-bottom: 15px;
+  opacity: 0.9;
+}
+
+.ebook-title {
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-align: center;
+  line-height: 1.3;
+}
+
+/* Efecto Apple al pasar cerca de la esquina */
+.ebook-item:nth-child(1),
+.ebook-item:nth-child(7) {
+  opacity: 0;
+  transform: scale(0.8) translateX(-20px);
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.ebook-item:nth-child(2),
+.ebook-item:nth-child(8) {
+  opacity: 0.3;
+  transform: scale(0.9) translateX(-10px);
+}
+
+.ebook-item:nth-child(3),
+.ebook-item:nth-child(9) {
+  opacity: 0.6;
+  transform: scale(0.95) translateX(-5px);
+}
+
+.ebook-item:nth-child(4),
+.ebook-item:nth-child(10) {
+  opacity: 1;
+  transform: scale(1) translateX(0);
+}
+
+.ebook-item:nth-child(5),
+.ebook-item:nth-child(11) {
+  opacity: 0.8;
+  transform: scale(0.95) translateX(5px);
+}
+
+.ebook-item:nth-child(6),
+.ebook-item:nth-child(12) {
+  opacity: 0.4;
+  transform: scale(0.9) translateX(10px);
+}
+
+/* Responsive para blog y noticias */
+@media (max-width: 768px) {
+  .blog-news-section {
+    padding: 60px 0;
+  }
+  
+  .blog-news-title {
+    font-size: 2.5rem;
+  }
+  
+  .ebooks-zone-title {
+    font-size: 2rem;
+  }
+  
+  .ebooks-container-wrap {
+    height: 250px;
+    margin: 0 20px;
+  }
+  
+  .ebook-cover {
+    width: 120px;
+    height: 170px;
+  }
+  
+  .ebook-icon {
+    font-size: 2.5rem;
+  }
+  
+  .ebook-title {
+    font-size: 0.75rem;
+  }
+}
