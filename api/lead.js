@@ -72,6 +72,15 @@ module.exports = async function handler(req, res) {
     properties.Email = { email: email.trim() };
   }
 
+  const notionPayload = {
+    parent:     { database_id: databaseId },
+    properties,
+  };
+
+  // ── DEBUG: log exact payload ──────────────────────────────────────────────
+  console.log('[lead] Sending to Notion. Database ID:', databaseId);
+  console.log('[lead] Payload:', JSON.stringify(notionPayload, null, 2));
+
   // ── Call Notion API ───────────────────────────────────────────────────────
   try {
     const notionRes = await fetch(NOTION_API, {
@@ -81,25 +90,35 @@ module.exports = async function handler(req, res) {
         'Content-Type':   'application/json',
         'Notion-Version': NOTION_VERSION,
       },
-      body: JSON.stringify({
-        parent:     { database_id: databaseId },
-        properties,
-      }),
+      body: JSON.stringify(notionPayload),
     });
 
     const data = await notionRes.json();
 
     if (!notionRes.ok) {
-      console.error('[lead] Notion error:', data);
+      // Log full Notion error for debugging
+      console.error('[lead] Notion HTTP status:', notionRes.status);
+      console.error('[lead] Notion error code:', data.code);
+      console.error('[lead] Notion error message:', data.message);
+      console.error('[lead] Notion full response:', JSON.stringify(data, null, 2));
+
+      // Return full error details temporarily for debugging
       return res.status(502).json({
-        error: 'No se pudo registrar el lead en Notion.',
-        detail: data.message || '',
+        error:          'No se pudo registrar el lead en Notion.',
+        notion_status:  notionRes.status,
+        notion_code:    data.code    || null,
+        notion_message: data.message || null,
+        notion_full:    data,
+        payload_sent:   notionPayload,
       });
     }
 
     return res.status(200).json({ ok: true, id: data.id });
   } catch (err) {
-    console.error('[lead] Fetch error:', err);
-    return res.status(500).json({ error: 'Error interno al contactar Notion.' });
+    console.error('[lead] Fetch error:', err.message);
+    return res.status(500).json({
+      error:   'Error interno al contactar Notion.',
+      detail:  err.message,
+    });
   }
 };
