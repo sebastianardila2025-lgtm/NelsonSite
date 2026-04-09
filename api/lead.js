@@ -67,10 +67,8 @@ module.exports = async function handler(req, res) {
     },
   };
 
-  // Email is optional — only include if provided and field exists in DB
-  if (email && email.trim()) {
-    properties.Email = { email: email.trim() };
-  }
+  // Email is now required
+  properties.Email = { email: email.trim() };
 
   const notionPayload = {
     parent:     { database_id: databaseId },

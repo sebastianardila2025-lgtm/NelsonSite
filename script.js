@@ -993,6 +993,7 @@ addAccessibilityFeatures();
 
     var nombre   = document.getElementById('lf-nombre');
     var telefono = document.getElementById('lf-telefono');
+    var email    = document.getElementById('lf-email');
     var tipo     = document.getElementById('lf-tipo');
     var mensaje  = document.getElementById('lf-mensaje');
     var submitBtn = form.querySelector('.lf-submit');
@@ -1003,6 +1004,16 @@ addAccessibilityFeatures();
     }
     if (!telefono.value.trim()) {
       setError(telefono, 'Por favor ingresa tu número de contacto.');
+      return;
+    }
+    if (!email.value.trim()) {
+      setError(email, 'Por favor ingresa tu correo electrónico.');
+      return;
+    }
+    // Simple email format validation
+    var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email.value.trim())) {
+      setError(email, 'Por favor ingresa un correo válido.');
       return;
     }
     if (!tipo.value) {
@@ -1020,6 +1031,7 @@ addAccessibilityFeatures();
       body: JSON.stringify({
         nombre:   nombre.value.trim(),
         whatsapp: telefono.value.trim(),
+        email:    email.value.trim(),
         servicio: tipo.value,
         mensaje:  mensaje ? mensaje.value.trim() : '',
       }),
@@ -1030,6 +1042,14 @@ addAccessibilityFeatures();
         form.style.display = 'none';
         success.style.display = 'flex';
         success.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+        // Build WhatsApp message and redirect after 3 seconds
+        setTimeout(function() {
+          var sectorLabel = tipo.options[tipo.selectedIndex].text || tipo.value;
+          var waMsg = 'Hola, soy ' + nombre.value.trim() + '. Acabo de enviar una solicitud en VoltGrid.\n\nTipo de proyecto: ' + sectorLabel + '\nMensaje: ' + (mensaje.value.trim() || 'No especificó');
+          var encoded = encodeURIComponent(waMsg);
+          window.location.href = 'https://wa.me/573057639585?text=' + encoded;
+        }, 3000);
       } else {
         errEl.textContent = data.error || 'Ocurrió un error. Inténtalo de nuevo.';
         submitBtn.disabled = false;

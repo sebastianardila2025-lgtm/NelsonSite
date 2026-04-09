@@ -189,8 +189,7 @@ class RangeHandler(http.server.SimpleHTTPRequestHandler):
             'Estado':   {'select': {'name': 'Nuevo'}},
             'Prioridad':{'select': {'name': 'Media'}},
         }
-        if email:
-            properties['Email'] = {'email': email}
+        properties['Email'] = {'email': email}
 
         payload = json.dumps({'parent': {'database_id': database_id}, 'properties': properties}).encode('utf-8')
         req = urllib.request.Request(
