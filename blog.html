@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>Blog y Noticias | VoltGrid Ingeniería</title>
+    <meta name="description" content="Blog y noticias de VoltGrid Ingeniería. Mantente informado sobre las últimas tendencias en ingeniería eléctrica.">
+    <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
+    <link rel="icon" href="/favicon.png" sizes="512x512" type="image/png">
+    <link rel="shortcut icon" href="/favicon-32.png">
+    <link rel="apple-touch-icon" href="/favicon.png">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Open Graph metadata -->
+    <meta property="og:title" content="Blog y Noticias | VoltGrid Ingeniería">
+    <meta property="og:description" content="Blog y noticias de VoltGrid Ingeniería. Mantente informado sobre las últimas tendencias en ingeniería eléctrica.">
+    <meta property="og:type" content="website">
+</head>
+<body>
+
+    <!-- Custom Cursor with Liquid Glass -->
+    <div class="custom-cursor" id="custom-cursor">
+        <div class="cursor-inner"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <h1 class="brand-name">VoltGrid</h1>
+                <span class="brand-suffix">Ingeniería</span>
+            </div>
+            <div class="nav-actions">
+                <button class="nav-cta" onclick="goBack()">Volver al Inicio</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Blog y Noticias Section -->
+    <section class="blog-news-section" id="blog-news">
+        <div class="container">
+            <div class="blog-news-header">
+                <h2 class="blog-news-title">Blog y Noticias</h2>
+                <p class="blog-news-subtitle">Mantente informado sobre las últimas tendencias en ingeniería eléctrica</p>
+            </div>
+
+            <!-- Zona de Descarga de Ebooks -->
+            <div class="ebooks-zone">
+                <div class="ebooks-zone-header">
+                    <h3 class="ebooks-zone-title">Zona de Descarga de Ebooks</h3>
+                    <p class="ebooks-zone-subtitle">Recursos gratuitos para profesionales del sector eléctrico</p>
+                </div>
+
+                <!-- Contenedor Liquid Glass para Ebooks -->
+                <div class="ebooks-container-wrap">
+                    <div class="ebooks-container">
+                        <!-- Ebooks animados -->
+                        <div class="ebook-item">
+                            <div class="ebook-cover">
+                                <div class="ebook-icon">book</div>
+                                <span class="ebook-title">Guía RETIE</span>
+                            </div>
+                        </div>
+                        <div class="ebook-item">
+                            <div class="ebook-cover">
+                                <div class="ebook-icon">book</div>
+                                <span class="ebook-title">Solar 101</span>
+                            </div>
+                        </div>
+                        <div class="ebook-item">
+                            <div class="ebook-cover">
+                                <div class="ebook-icon">book</div>
+                                <span class="ebook-title">Instalaciones</span>
+                            </div>
+                        </div>
+                        <div class="ebook-item">
+                            <div class="ebook-cover">
+                                <div class="ebook-icon">book</div>
+                                <span class="ebook-title">Mantenimiento</span>
+                            </div>
+                        </div>
+                        <div class="ebook-item">
+                            <div class="ebook-cover">
+                                <div class="ebook-icon">book</div>
+                                <span class="ebook-title">Normativa</span>
+                            </div>
+                        </div>
+                        <div class="ebook-item">
+                            <div class="ebook-cover">
+                                <div class="ebook-icon">book</div>
+                                <span class="ebook-title">Seguridad</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Glass Elements -->
+    <div class="glass-element" id="ebooks-glass" auto-size="true" radius="20" depth="5" blur="1" strength="40" ca="2" bg="rgba(255,255,255,0.4)"></div>
+    <div class="glass-element" id="cursor-glass" auto-size="true" radius="30" depth="5" blur="1" strength="40" ca="2" bg="rgba(255,255,255,0.6)"></div>
+
+    <!-- Scripts -->
+    <script src="liquid-glass.js"></script>
+    <script src="glass-element.js"></script>
+    
+    <script>
+        // Custom cursor with liquid glass effect
+        const cursor = document.getElementById('custom-cursor');
+        const cursorGlass = document.getElementById('cursor-glass');
+        let mouseX = 0, mouseY = 0;
+        let cursorX = 0, cursorY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        function animateCursor() {
+            const dx = mouseX - cursorX;
+            const dy = mouseY - cursorY;
+            
+            cursorX += dx * 0.1;
+            cursorY += dy * 0.1;
+            
+            cursor.style.left = cursorX + 'px';
+            cursor.style.top = cursorY + 'px';
+            
+            requestAnimationFrame(animateCursor);
+        }
+        animateCursor();
+
+        // Hide default cursor on this page
+        document.body.style.cursor = 'none';
+
+        // Add hover effects for interactive elements
+        const interactiveElements = document.querySelectorAll('.ebook-cover, .blog-news-title, .ebooks-zone-title, .ebook-title');
+        
+        interactiveElements.forEach(element => {
+            element.addEventListener('mouseenter', () => {
+                cursor.style.transform = 'scale(1.5)';
+                cursor.style.background = 'rgba(212, 175, 60, 0.3)';
+                cursor.style.backdropFilter = 'blur(10px) brightness(1.2)';
+            });
+            
+            element.addEventListener('mouseleave', () => {
+                cursor.style.transform = 'scale(1)';
+                cursor.style.background = 'rgba(255, 255, 255, 0.6)';
+                cursor.style.backdropFilter = 'blur(20px) brightness(1.12) saturate(1.9)';
+            });
+        });
+
+        // Go back function
+        function goBack() {
+            window.location.href = '/';
+        }
+
+        // Initialize glass elements
+        if (window.glassElement) {
+            window.glassElement.init();
+        }
+    </script>
+
+</body>
+</html>
