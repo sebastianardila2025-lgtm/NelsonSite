@@ -2935,22 +2935,91 @@ canvas {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.ebook-cover {
+/* Cuadros con Efecto Liquid Glass */
+.ebook-card {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
   width: 140px;
   height: 200px;
-  background: linear-gradient(135deg, #0f2d5c, #1e3a8a);
-  border-radius: 12px;
+}
+
+.ebook-card:hover {
+  transform: translateY(-5px);
+}
+
+.ebook-card-glass {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(20px) brightness(1.12) saturate(1.9);
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  z-index: 1;
+}
+
+.ebook-card-content {
+  position: relative;
+  padding: 1.5rem;
+  z-index: 2;
+  color: white;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 20px;
-  color: white;
-  box-shadow: 0 4px 20px rgba(15,45,92,0.2);
-  position: relative;
-  overflow: hidden;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255,255,255,0.2);
+  height: 100%;
+}
+
+/* Libros Flotantes con Sombra tipo Apple */
+.floating-book {
+  animation: float 3s ease-in-out infinite;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.book-icon {
+  font-size: 2.5rem;
+  color: #ffffff;
+  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3),
+               0 8px 16px rgba(0, 0, 0, 0.2),
+               0 12px 24px rgba(0, 0, 0, 0.1);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.book-title {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #ffffff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4),
+               0 4px 8px rgba(0, 0, 0, 0.2),
+               0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.9;
+  }
+  50% {
+    opacity: 1;
+  }
 }
 
 .ebook-cover::before {
@@ -3051,26 +3120,34 @@ canvas {
 /* Custom Cursor with Liquid Glass Effect */
 .custom-cursor {
   position: fixed;
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
+  width: 80px;
+  height: 80px;
   pointer-events: none;
   z-index: 9999;
   transform: translate(-50%, -50%);
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  backdrop-filter: blur(20px) brightness(1.12) saturate(1.9);
-  background: rgba(255, 255, 255, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.55);
-  box-shadow: 0 8px 32px rgba(15, 45, 92, 0.12);
-  mix-blend-mode: difference;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .cursor-inner {
   width: 100%;
   height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%; /* Mantener completamente circular */
+}
+
+.cursor-dot {
+  width: 10px;
+  height: 10px;
+  background: rgba(255, 255, 255, 0.9);
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(212, 175, 60, 0.3) 0%, transparent 70%);
-  animation: pulse 2s infinite;
+  box-shadow: 0 0 16px rgba(255, 255, 255, 0.8);
+}
+
+/* Glass element cursor styles */
+#cursor-glass {
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 @keyframes pulse {
@@ -3110,11 +3187,7 @@ canvas {
 
 .blog-news-title:hover,
 .ebooks-zone-title:hover {
-  background: linear-gradient(135deg, #d4af37, #f4e4bc);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  filter: drop-shadow(0 0 20px rgba(212, 175, 60, 0.5));
+  color: inherit;
 }
 
 .ebook-title:hover {
@@ -3148,5 +3221,736 @@ canvas {
   }
   100% {
     transform: translateX(100%) translateY(100%);
+  }
+}
+
+/* Fondo de Energía Renovable - Elegante */
+.renewable-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, 
+    #1a1a2e 0%, 
+    #16213e 15%, 
+    #0f3460 30%, 
+    #533483 45%, 
+    #e94560 60%, 
+    #ff6b6b 75%, 
+    #4ecdc4 90%, 
+    #1a4d2e 100%);
+  z-index: -1;
+  overflow: hidden;
+}
+
+.solar-panels-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    repeating-linear-gradient(90deg, transparent, transparent 50px, rgba(30, 30, 30, 0.1) 50px, rgba(30, 30, 30, 0.1) 52px),
+    repeating-linear-gradient(0deg, transparent, transparent 30px, rgba(30, 30, 30, 0.1) 30px, rgba(30, 30, 30, 0.1) 32px);
+  opacity: 0.3;
+}
+
+.wind-turbines-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.05) 0%, transparent 50%),
+              radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.03) 0%, transparent 40%),
+              radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.02) 0%, transparent 60%);
+  animation: windMovement 20s ease-in-out infinite;
+}
+
+.green-fields-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, transparent 0%, rgba(34, 139, 34, 0.1) 50%, transparent 100%);
+  opacity: 0.4;
+}
+
+@keyframes windMovement {
+  0%, 100% {
+    transform: translateX(0) translateY(0);
+  }
+  25% {
+    transform: translateX(10px) translateY(-5px);
+  }
+  50% {
+    transform: translateX(-5px) translateY(10px);
+  }
+  75% {
+    transform: translateX(5px) translateY(5px);
+  }
+}
+
+/* Contenedor de Noticias */
+.news-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
+  padding: 2rem 0;
+  position: relative;
+  z-index: 1;
+}
+
+.loading-message {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1.2rem;
+  padding: 2rem;
+}
+
+/* Cuadro de Noticia con Liquid Glass */
+.news-card {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+.news-card:hover {
+  transform: translateY(-5px);
+}
+
+.news-card-glass {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(20px) brightness(1.12) saturate(1.9);
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  z-index: 1;
+}
+
+/* Contorno Liquid Glass en Esquinas */
+.news-card::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, 
+    transparent 0%, 
+    rgba(212, 175, 60, 0.4) 10%, 
+    transparent 20%,
+    transparent 30%,
+    rgba(255, 255, 255, 0.3) 40%,
+    transparent 50%,
+    transparent 60%,
+    rgba(212, 175, 60, 0.4) 70%,
+    transparent 80%,
+    transparent 90%,
+    rgba(255, 255, 255, 0.3) 100%
+  );
+  border-radius: 16px;
+  z-index: 0;
+  opacity: 0.7;
+  animation: cornerGlow 3s ease-in-out infinite;
+}
+
+.news-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, 
+    transparent 0%, 
+    rgba(255, 255, 255, 0.2) 25%, 
+    transparent 50%,
+    rgba(212, 175, 60, 0.2) 75%,
+    transparent 100%
+  );
+  border-radius: 16px;
+  z-index: 0;
+  opacity: 0.5;
+  animation: cornerShimmer 4s linear infinite;
+}
+
+@keyframes cornerGlow {
+  0%, 100% {
+    opacity: 0.7;
+    transform: rotate(0deg);
+  }
+  50% {
+    opacity: 0.9;
+    transform: rotate(180deg);
+  }
+}
+
+@keyframes cornerShimmer {
+  0% {
+    transform: translateX(-100%) translateY(-100%);
+  }
+  100% {
+    transform: translateX(100%) translateY(100%);
+  }
+}
+
+.news-card-content {
+  position: relative;
+  padding: 1.5rem;
+  z-index: 2;
+  color: white;
+}
+
+.news-card-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+}
+
+.news-card-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: #ffffff;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 0, 0, 0.5);
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.2));
+  padding: 0.5rem;
+  border-radius: 8px;
+  backdrop-filter: blur(5px);
+}
+
+.news-card-description {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #ffffff;
+  margin-bottom: 1rem;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.3);
+  padding: 0.75rem;
+  border-radius: 8px;
+  backdrop-filter: blur(3px);
+}
+
+.news-card-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.news-card-source {
+  font-weight: 500;
+}
+
+.news-card-date {
+  opacity: 0.8;
+}
+
+/* Efecto hover mejorado */
+.news-card:hover .news-card-glass {
+  backdrop-filter: blur(25px) brightness(1.15) saturate(2);
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.4);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+.news-card:hover .news-card-title {
+  color: #ffffff;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+/* Enlace a Ebooks */
+.ebooks-link-container {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.ebooks-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 2rem;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px) brightness(1.12) saturate(1.9);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50px;
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.ebooks-link:hover {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(25px) brightness(1.15) saturate(2);
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.ebooks-link-icon {
+  font-size: 1.5rem;
+}
+
+.ebooks-link-text {
+  font-size: 1.1rem;
+}
+
+/* Fondo con Imagen de Wallpaper */
+.field-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('Wallpapers/c34a2f0b-2f46-40d7-848f-e231b2966b2f.png');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.ebooks-zone {
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 2rem 0;
+}
+
+.ebooks-zone .container {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Apple Dock ─────────────────────────────────────────────────── */
+.dock-wrap {
+  position: relative;
+  width: 85%;
+  max-width: 960px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 10vh;
+  height: 170px;
+  padding: 0;
+  border-radius: 24px;
+  backdrop-filter: blur(28px) brightness(1.1) saturate(1.8);
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  box-shadow: 0 8px 48px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.6);
+  overflow-x: clip;
+  overflow-y: visible;
+  z-index: 2;
+  display: flex;
+  align-items: flex-end;
+  padding-bottom: 16px;
+  transition: width 0.38s cubic-bezier(0.34, 1.56, 0.64, 1),
+              max-width 0.38s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.38s ease;
+}
+
+.dock-wrap.is-hovered {
+  width: 96%;
+  max-width: 1100px;
+  box-shadow: 0 12px 60px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.7);
+}
+
+.dock-track {
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  width: max-content;
+  padding: 0 48px;
+  will-change: transform;
+}
+
+.dock-item {
+  --scale: 1;
+  flex-shrink: 0;
+  width:  calc(8rem * var(--scale));
+  height: calc(8rem * var(--scale));
+  cursor: pointer;
+  position: relative;
+  top: calc((8rem * var(--scale) - 8rem) / 2 * -1);
+  transition: none;
+  will-change: width, height, top;
+}
+
+.dock-card {
+  width: 100%;
+  height: 100%;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow:
+    0 8px 32px rgba(0,0,0,0.18),
+    0 2px 8px rgba(0,0,0,0.1),
+    inset 0 1px 0 rgba(255,255,255,0.7);
+  position: relative;
+  overflow: hidden;
+  transition: box-shadow 0.2s ease;
+  background: rgba(15,45,92,0.25);
+}
+
+.dock-card:hover {
+  box-shadow:
+    0 16px 48px rgba(0,0,0,0.25),
+    0 4px 16px rgba(0,0,0,0.12),
+    inset 0 1px 0 rgba(255,255,255,0.8);
+}
+
+.dock-book-icon {
+  font-size: clamp(2.4rem, calc(2.8rem * var(--scale, 1)), 4.2rem);
+  line-height: 1;
+  filter: drop-shadow(0 6px 14px rgba(0,0,0,0.4)) drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+  animation: bookFloat 3s ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+  pointer-events: none;
+}
+
+.dock-book-shadow {
+  width: 55%;
+  height: 8px;
+  background: radial-gradient(ellipse, rgba(0,0,0,0.35) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: shadowPulse 3s ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+.dock-book-img {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 20px;
+  display: block;
+  pointer-events: none;
+}
+
+.dock-book-label {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 1px 6px rgba(0,0,0,0.9);
+  text-align: center;
+  letter-spacing: 0.3px;
+  padding: 14px 6px 6px;
+  background: linear-gradient(transparent, rgba(0,0,0,0.65));
+  border-radius: 0 0 20px 20px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  z-index: 1;
+  pointer-events: none;
+}
+
+@keyframes bookFloat {
+  0%, 100% { transform: translateY(0px);  }
+  50%       { transform: translateY(-7px); }
+}
+
+@keyframes shadowPulse {
+  0%, 100% { transform: scaleX(1);    opacity: 0.35; }
+  50%       { transform: scaleX(0.7); opacity: 0.15; }
+}
+
+/* Desfase de animación entre libros */
+.dock-item:nth-child(1)  .dock-book-icon,
+.dock-item:nth-child(1)  .dock-book-shadow { animation-delay: 0s; }
+.dock-item:nth-child(2)  .dock-book-icon,
+.dock-item:nth-child(2)  .dock-book-shadow { animation-delay: 0.4s; }
+.dock-item:nth-child(3)  .dock-book-icon,
+.dock-item:nth-child(3)  .dock-book-shadow { animation-delay: 0.8s; }
+.dock-item:nth-child(4)  .dock-book-icon,
+.dock-item:nth-child(4)  .dock-book-shadow { animation-delay: 1.2s; }
+.dock-item:nth-child(5)  .dock-book-icon,
+.dock-item:nth-child(5)  .dock-book-shadow { animation-delay: 1.6s; }
+.dock-item:nth-child(6)  .dock-book-icon,
+.dock-item:nth-child(6)  .dock-book-shadow { animation-delay: 2.0s; }
+.dock-item:nth-child(7)  .dock-book-icon,
+.dock-item:nth-child(7)  .dock-book-shadow { animation-delay: 2.4s; }
+.dock-item:nth-child(8)  .dock-book-icon,
+.dock-item:nth-child(8)  .dock-book-shadow { animation-delay: 2.8s; }
+
+/* ── Layout zona ebooks ─────────────────────────────────────────── */
+.ebooks-zone-header {
+  position: absolute;
+  top: 24%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  z-index: 2;
+  text-align: center;
+  padding: 0;
+}
+
+/* Espacio para bajar el contenido */
+.content-spacer {
+  height: 15vh;
+}
+
+/* Títulos de la zona de ebooks */
+.ebooks-zone-header {
+  text-align: center;
+  margin-bottom: 1.2rem;
+}
+
+.ebooks-zone-title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #0f2d5c;
+  text-shadow: 0 2px 12px rgba(255,255,255,0.9), 0 0 30px rgba(255,255,255,0.7);
+  letter-spacing: -0.5px;
+  margin-bottom: 0.5rem;
+}
+
+.ebooks-zone-subtitle {
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: #1a3a6b;
+  text-shadow: 0 1px 8px rgba(255,255,255,0.9), 0 0 20px rgba(255,255,255,0.6);
+  letter-spacing: 0.2px;
+}
+
+/* Estilos para página de Ebooks */
+.ebooks-zone {
+  min-height: 100vh;
+  position: relative;
+  padding: 2rem 0;
+}
+
+.ebooks-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.ebooks-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 1rem;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+}
+
+.ebooks-subtitle {
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.9);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+}
+
+.ebooks-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  padding: 2rem 0;
+  position: relative;
+  z-index: 1;
+}
+
+.ebooks-wrapper {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.ebook-card {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  min-height: 300px;
+}
+
+.ebook-card:hover {
+  transform: translateY(-5px);
+}
+
+.ebook-card-glass {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(20px) brightness(1.12) saturate(1.9);
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  z-index: 1;
+}
+
+/* Contorno Liquid Glass en Esquinas para Ebooks */
+.ebook-card::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, 
+    transparent 0%, 
+    rgba(212, 175, 60, 0.4) 10%, 
+    transparent 20%,
+    transparent 30%,
+    rgba(255, 255, 255, 0.3) 40%,
+    transparent 50%,
+    transparent 60%,
+    rgba(212, 175, 60, 0.4) 70%,
+    transparent 80%,
+    transparent 90%,
+    rgba(255, 255, 255, 0.3) 100%
+  );
+  border-radius: 16px;
+  z-index: 0;
+  opacity: 0.7;
+  animation: cornerGlow 3s ease-in-out infinite;
+}
+
+.ebook-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, 
+    transparent 0%, 
+    rgba(255, 255, 255, 0.2) 25%, 
+    transparent 50%,
+    rgba(212, 175, 60, 0.2) 75%,
+    transparent 100%
+  );
+  border-radius: 16px;
+  z-index: 0;
+  opacity: 0.5;
+  animation: cornerShimmer 4s linear infinite;
+}
+
+.ebook-card-content {
+  position: relative;
+  padding: 2rem;
+  z-index: 2;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  height: 100%;
+}
+
+.ebook-icon-container {
+  width: 80px;
+  height: 80px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.ebook-icon {
+  font-size: 2rem;
+  color: #d4af37;
+}
+
+.ebook-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #ffffff;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+}
+
+.ebook-description {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 1.5rem;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+}
+
+.ebook-download-btn {
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, #d4af37, #f4e4bc);
+  border: none;
+  border-radius: 25px;
+  color: #1a4d2e;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+}
+
+.ebook-download-btn:hover {
+  background: linear-gradient(135deg, #f4e4bc, #d4af37);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(212, 175, 60, 0.4);
+}
+
+/* Responsive para noticias */
+@media (max-width: 768px) {
+  .news-container {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding: 1rem 0;
+  }
+  
+  .news-card-content {
+    padding: 1rem;
+  }
+  
+  .news-card-image {
+    height: 150px;
+  }
+  
+  .news-card-title {
+    font-size: 1.1rem;
+  }
+  
+  .news-card-description {
+    font-size: 0.9rem;
+  }
+  
+  .ebooks-container {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .ebooks-title {
+    font-size: 2rem;
+  }
+  
+  .ebooks-subtitle {
+    font-size: 1rem;
+  }
+  
+  .ebook-card-content {
+    padding: 1.5rem;
   }
 }

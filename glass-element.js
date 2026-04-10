@@ -11,10 +11,6 @@ class GlassElement extends HTMLElement {
         super();
         this.clicked = false;
         this.attachShadow({ mode: 'open' });
-        // Unique filter id per instance
-        if (!GlassElement._instanceCount) GlassElement._instanceCount = 0;
-        this._instanceId = ++GlassElement._instanceCount;
-        this._filterId   = 'glass-el-f' + this._instanceId;
         
         // Detectar soporte de filtros SVG en backdrop-filter (solo una vez por clase)
         if (GlassElement._svgFilterSupport === undefined) {
@@ -247,62 +243,11 @@ class GlassElement extends HTMLElement {
         }
     }
 
-    /**
-     * Inject the SVG displacement filter into the main document and return
-     * its id so the HOST element's backdrop-filter can reference it as url('#id').
-     * The HOST lives in the main document, so url('#id') resolves correctly.
-     */
-    _injectFilter(params) {
-        const { getDisplacementFilter } = window.DisplacementUtils;
-        const dataUri = getDisplacementFilter(params);
-
-        // Decode the data URI produced by displacement-utils.js
-        const encoded = dataUri
-            .replace(/#displace$/, '')
-            .replace('data:image/svg+xml;utf8,', '');
-        const svgString = decodeURIComponent(encoded)
-            .replace('id="displace"', `id="${this._filterId}"`);
-
-        // Ensure a shared invisible SVG host exists in <body>
-        let host = document.getElementById('_glass-filters-host');
-        if (!host) {
-            host = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-            host.id = '_glass-filters-host';
-            host.setAttribute('aria-hidden', 'true');
-            host.style.cssText = 'position:absolute;width:0;height:0;overflow:hidden;pointer-events:none';
-            document.body.appendChild(host);
-        }
-
-        // Parse the SVG and extract the <filter> element
-        const parser  = new DOMParser();
-        const svgDoc  = parser.parseFromString(svgString, 'image/svg+xml');
-        const filterEl = svgDoc.querySelector('filter');
-        if (!filterEl) return this._filterId;
-
-        const imported = document.adoptNode(filterEl);
-
-        // Replace stale filter or append new one
-        const existing = host.querySelector(`[id="${this._filterId}"]`);
-        if (existing) {
-            host.replaceChild(imported, existing);
-        } else {
-            host.appendChild(imported);
-        }
-        return this._filterId;
-    }
-
     applyDynamicStyles(element) {
         const { getDisplacementFilter, getDisplacementMap } = window.DisplacementUtils;
 
         // Estilos base que siempre se aplican
         element.style.borderRadius = `${this.radius}px`;
-        // Clear any host overrides from previous renders
-        this.style.backdropFilter = '';
-        this.style.webkitBackdropFilter = '';
-        this.style.background = '';
-        this.style.boxShadow = '';
-        // Border-radius on host so background/backdrop clips correctly (not a square)
-        this.style.borderRadius = `${this.radius}px`;
 
         if (this.autoSize) {
             // Auto-size: obtener dimensiones del contenido de manera más precisa
@@ -352,23 +297,17 @@ class GlassElement extends HTMLElement {
                 element.style.boxShadow = '1px 1px 1px 0px rgba(255,255,255, 0.60) inset, -1px -1px 1px 0px rgba(255,255,255, 0.60) inset, 0px 0px 16px 0px rgba(0,0,0, 0.04)';
                 element.style.border = '1px solid rgba(255, 255, 255, 0.3)';
             } else {
-                // HOST element is in main document → url('#id') resolves to main-doc filter
-                const fid = this._injectFilter({
+                // Efecto completo con SVG filters
+                element.style.backdropFilter = `blur(${this.blur / 2}px) url('${getDisplacementFilter({
                     height: actualHeight,
                     width: actualWidth,
                     radius: this.radius,
                     depth: this.depth,
                     strength: this.strength,
                     chromaticAberration: this.chromaticAberration
-                });
-                const bdf = `blur(${this.blur / 2}px) url('#${fid}') blur(${this.blur}px) brightness(1.18) saturate(2.2) contrast(1.08)`;
-                this.style.backdropFilter = bdf;
-                this.style.webkitBackdropFilter = bdf;
-                this.style.background = this.backgroundColor;
-                element.style.backdropFilter = 'none';
-                element.style.webkitBackdropFilter = 'none';
-                element.style.background = 'transparent';
-                element.style.boxShadow = 'none';
+                })}') blur(${this.blur}px) brightness(1.1) saturate(1.5)`;
+                element.style.background = this.backgroundColor;
+                element.style.boxShadow = '1px 1px 1px 0px rgba(255,255,255, 0.60) inset, -1px -1px 1px 0px rgba(255,255,255, 0.60) inset, 0px 0px 16px 0px rgba(0,0,0, 0.04)';
             }
         } else {
             // Fixed size: usar dimensiones específicas
@@ -391,23 +330,17 @@ class GlassElement extends HTMLElement {
                 element.style.boxShadow = '1px 1px 1px 0px rgba(255,255,255, 0.60) inset, -1px -1px 1px 0px rgba(255,255,255, 0.60) inset, 0px 0px 16px 0px rgba(0,0,0, 0.04)';
                 element.style.border = '1px solid rgba(255, 255, 255, 0.3)';
             } else {
-                // HOST element is in main document → url('#id') resolves to main-doc filter
-                const fid = this._injectFilter({
+                // Efecto completo con SVG filters
+                element.style.backdropFilter = `blur(${this.blur / 2}px) url('${getDisplacementFilter({
                     height: this.height,
                     width: this.width,
                     radius: this.radius,
                     depth: this.depth,
                     strength: this.strength,
                     chromaticAberration: this.chromaticAberration
-                });
-                const bdf = `blur(${this.blur / 2}px) url('#${fid}') blur(${this.blur}px) brightness(1.18) saturate(2.2) contrast(1.08)`;
-                this.style.backdropFilter = bdf;
-                this.style.webkitBackdropFilter = bdf;
-                this.style.background = this.backgroundColor;
-                element.style.backdropFilter = 'none';
-                element.style.webkitBackdropFilter = 'none';
-                element.style.background = 'transparent';
-                element.style.boxShadow = 'none';
+                })}') blur(${this.blur}px) brightness(1.1) saturate(1.5)`;
+                element.style.background = this.backgroundColor;
+                element.style.boxShadow = '1px 1px 1px 0px rgba(255,255,255, 0.60) inset, -1px -1px 1px 0px rgba(255,255,255, 0.60) inset, 0px 0px 16px 0px rgba(0,0,0, 0.04)';
             }
         }
     }
@@ -420,10 +353,16 @@ class GlassElement extends HTMLElement {
                 }
                 
                 .glass-box {
-                    background: transparent;
+                    background: rgba(255, 255, 255, 0.4);
+                    box-shadow: 1px 1px 1px 0px rgba(255,255,255, 0.60) inset, -1px -1px 1px 0px rgba(255,255,255, 0.60) inset, 0px 0px 16px 0px rgba(0,0,0, 0.04);
+                    cursor: pointer;
+                    transition: transform 0.1s ease;
                     position: relative;
-                    pointer-events: none;
                     ${this.autoSize ? `display: inline-block; width: fit-content; min-width: ${this.minWidth}px; min-height: ${this.minHeight}px;` : ''}
+                }
+                
+                .glass-box:active {
+                    transform: scale(0.98);
                 }
 
                 .content {
@@ -434,12 +373,7 @@ class GlassElement extends HTMLElement {
                     color: white;
                     text-align: center;
                     font-family: sans-serif;
-                    pointer-events: none;
                     ${this.autoSize ? 'padding: var(--glass-padding, 16px 24px);' : ''}
-                }
-
-                ::slotted(*) {
-                    pointer-events: auto;
                 }
             </style>
             <div class="glass-box">

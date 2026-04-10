@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zona de Descarga de Ebooks | VoltGrid Ingeniería</title>
+    <meta name="description" content="Descarga ebooks gratuitos sobre ingeniería eléctrica, energía renovable y normativa RETIE. Recursos para profesionales del sector eléctrico.">
+    
+    <!-- Open Graph metadata -->
+    <meta property="og:title" content="Zona de Descarga de Ebooks | VoltGrid Ingeniería">
+    <meta property="og:description" content="Descarga ebooks gratuitos sobre ingeniería eléctrica y energía renovable.">
+    <meta property="og:type" content="website">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- Custom Cursor with Liquid Glass -->
+    <div class="custom-cursor" id="custom-cursor">
+        <glass-element
+            id="cursor-glass"
+            width="80"
+            height="80"
+            radius="40"
+            depth="7"
+            blur="1"
+            strength="50"
+            background-color="rgba(255,255,255,0.6)"
+            chromatic-aberration="2"
+            style="z-index: 9999; pointer-events: none;">
+            <div class="cursor-inner">
+                <div class="cursor-dot"></div>
+            </div>
+        </glass-element>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <h1 class="brand-name">VoltGrid</h1>
+                <span class="brand-suffix">Ingeniería</span>
+            </div>
+            <div class="nav-actions">
+                <button class="nav-cta" onclick="window.location.href='index.html'">← Página Principal</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Ebooks Section -->
+    <section class="ebooks-zone" id="ebooks-zone">
+        <div class="field-background"></div>
+
+        <div class="ebooks-zone-header">
+            <h3 class="ebooks-zone-title">Zona de Descarga de Ebooks</h3>
+            <p class="ebooks-zone-subtitle">Recursos gratuitos para profesionales del sector eléctrico</p>
+        </div>
+
+        <!-- Caja borrosa full-width con dock Apple -->
+        <div class="dock-wrap" id="dock-wrap">
+            <div class="dock-track" id="dock-track">
+                <div class="dock-item" data-title="Guía RETIE">
+                    <div class="dock-card">
+                        <img class="dock-book-img" src="Ebooks - Pictures/Guia Retie - Gemini_Generated_Image_ustt6tustt6tustt 2.jpg" alt="Guía RETIE">
+                        <div class="dock-book-label">Guía RETIE</div>
+                    </div>
+                </div>
+                <div class="dock-item" data-title="Solar 101">
+                    <div class="dock-card">
+                        <img class="dock-book-img" src="Ebooks - Pictures/Solar 101 - Gemini_Generated_Image_ustt6tustt6tustt 4.jpg" alt="Solar 101">
+                        <div class="dock-book-label">Solar 101</div>
+                    </div>
+                </div>
+                <div class="dock-item" data-title="Instalaciones">
+                    <div class="dock-card">
+                        <img class="dock-book-img" src="Ebooks - Pictures/Instalaciones - Gemini_Generated_Image_ustt6tustt6tustt 5.jpg" alt="Instalaciones">
+                        <div class="dock-book-label">Instalaciones</div>
+                    </div>
+                </div>
+                <div class="dock-item" data-title="Mantenimiento">
+                    <div class="dock-card">
+                        <img class="dock-book-img" src="Ebooks - Pictures/Mantenimiento - Gemini_Generated_Image_ustt6tustt6tustt.jpg" alt="Mantenimiento">
+                        <div class="dock-book-label">Mantenimiento</div>
+                    </div>
+                </div>
+                <div class="dock-item" data-title="Normativa">
+                    <div class="dock-card">
+                        <img class="dock-book-img" src="Ebooks - Pictures/Normativa.jpg" alt="Normativa">
+                        <div class="dock-book-label">Normativa</div>
+                    </div>
+                </div>
+                <div class="dock-item" data-title="Seguridad">
+                    <div class="dock-card">
+                        <img class="dock-book-img" src="Ebooks - Pictures/Seguridad - Gemini_Generated_Image_ustt6tustt6tustt 3.jpg" alt="Seguridad">
+                        <div class="dock-book-label">Seguridad</div>
+                    </div>
+                </div>
+                <div class="dock-item" data-title="Energía Solar">
+                    <div class="dock-card">
+                        <img class="dock-book-img" src="Ebooks - Pictures/Energia Solar - Gemini_Generated_Image_lieg7vlieg7vlieg (1).jpg" alt="Energía Solar">
+                        <div class="dock-book-label">Energía Solar</div>
+                    </div>
+                </div>
+                <div class="dock-item" data-title="RETIE Avanzado">
+                    <div class="dock-card">
+                        <img class="dock-book-img" src="Ebooks - Pictures/Retie Avanzado - Gemini_Generated_Image_ixzm4dixzm4dixzm 6.jpg" alt="RETIE Avanzado">
+                        <div class="dock-book-label">RETIE Avanzado</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Scripts -->
+    <script src="displacement-utils.js"></script>
+    <script src="glass-element.js"></script>
+
+    <script>
+        // ── Cursor ───────────────────────────────────────────────────────
+        const cursor      = document.getElementById('custom-cursor');
+        let mouseX = 0, mouseY = 0, cursorX = 0, cursorY = 0;
+        document.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY; });
+        (function tick() {
+            cursorX += (mouseX - cursorX) * 0.15;
+            cursorY += (mouseY - cursorY) * 0.15;
+            cursor.style.left = cursorX + 'px';
+            cursor.style.top  = cursorY + 'px';
+            requestAnimationFrame(tick);
+        })();
+        document.body.style.cursor = 'none';
+
+        // ── Apple Dock magnification ─────────────────────────────────────
+        const wrap  = document.getElementById('dock-wrap');
+        const track = document.getElementById('dock-track');
+
+        let scrollPos  = 0;
+        let autoScroll = true;
+        const SPEED    = 0.25;
+
+        // Duplicar items para bucle infinito
+        track.innerHTML += track.innerHTML;
+        const items = track.querySelectorAll('.dock-item');
+
+        // ── Auto-scroll derecha → izquierda ──────────────────────────────
+        (function autoScrollFn() {
+            if (autoScroll) {
+                scrollPos += SPEED;
+                const half = track.scrollWidth / 2;
+                if (scrollPos >= half) scrollPos = 0;
+                track.style.transform = `translateX(-${scrollPos}px)`;
+            }
+            requestAnimationFrame(autoScrollFn);
+        })();
+
+        // ── Dock magnification — técnica CSS --scale + prev/next offset ───
+        function resetScale() {
+            items.forEach(item => item.style.setProperty('--scale', 1));
+        }
+
+        items.forEach(item => {
+            item.addEventListener('mousemove', e => {
+                const rect   = item.getBoundingClientRect();
+                const offset = Math.abs(e.clientX - rect.left) / rect.width;
+                const scale  = 0.65;
+
+                resetScale();
+
+                const prev = item.previousElementSibling;
+                const next = item.nextElementSibling;
+
+                if (prev) prev.style.setProperty('--scale', 1 + scale * Math.abs(offset - 1));
+                item.style.setProperty('--scale', 1 + scale);
+                if (next) next.style.setProperty('--scale', 1 + scale * offset);
+            });
+        });
+
+        wrap.addEventListener('mouseenter', () => {
+            autoScroll = false;
+            wrap.classList.add('is-hovered');
+        });
+
+        wrap.addEventListener('mouseleave', () => {
+            autoScroll = true;
+            wrap.classList.remove('is-hovered');
+            // Spring suave solo al abandonar el dock completo
+            items.forEach(item => {
+                item.style.transition = '320ms width cubic-bezier(0.34,1.56,0.64,1), 320ms height cubic-bezier(0.34,1.56,0.64,1), 320ms top cubic-bezier(0.34,1.56,0.64,1)';
+            });
+            resetScale();
+            setTimeout(() => {
+                items.forEach(item => { item.style.transition = 'none'; });
+            }, 350);
+        });
+
+        // Click → abre URL de Open Textbook Library
+        items.forEach(item => {
+            item.addEventListener('click', () => {
+                const url = window._otlMap && window._otlMap[item.dataset.title];
+                if (url) {
+                    window.open(url, '_blank', 'noopener,noreferrer');
+                }
+                // Ripple visual
+                const card = item.querySelector('.dock-card');
+                const r = document.createElement('div');
+                r.style.cssText = `position:absolute;top:50%;left:50%;width:0;height:0;
+                    border-radius:50%;background:rgba(255,255,255,0.45);
+                    transform:translate(-50%,-50%);pointer-events:none;z-index:9;
+                    transition:width .55s ease,height .55s ease,opacity .55s ease;`;
+                card.appendChild(r);
+                requestAnimationFrame(() => { r.style.width='240px'; r.style.height='240px'; r.style.opacity='0'; });
+                setTimeout(() => r.remove(), 600);
+            });
+        });
+
+        function showNotification(title) {
+            const n = document.createElement('div');
+            n.style.cssText = `
+                position:fixed;top:24px;right:24px;
+                background:rgba(255,255,255,0.92);
+                backdrop-filter:blur(24px) saturate(1.8);
+                border:1px solid rgba(255,255,255,0.5);
+                border-radius:16px;padding:.9rem 1.4rem;
+                color:#0f2d5c;font-weight:700;font-size:.9rem;
+                box-shadow:0 8px 40px rgba(0,0,0,0.15);
+                z-index:10000;opacity:0;
+                transition:opacity .3s ease,transform .3s ease;
+                transform:translateX(16px);`;
+            n.textContent = '📚 ' + title;
+            document.body.appendChild(n);
+            requestAnimationFrame(() => { n.style.opacity='1'; n.style.transform='translateX(0)'; });
+            setTimeout(() => {
+                n.style.opacity='0'; n.style.transform='translateX(16px)';
+                setTimeout(() => n.remove(), 350);
+            }, 3000);
+        }
+    </script>
+
+    <script>
+    // ── Open Textbook Library matching ──────────────────────────────────
+    (async function initOTL() {
+
+        // Palabras clave por libro + URL de respaldo específica por tema
+        const BOOKS = {
+            'Guía RETIE':     { kw: ['wiring','installation','national electrical code','nec','electrical installation'],
+                               fallback: 'https://open.umn.edu/opentextbooks/subjects/electrical' },
+            'Solar 101':      { kw: ['solar energy','photovoltaic','solar panel','solar power','pv system'],
+                               fallback: 'https://open.umn.edu/opentextbooks/subjects/electrical' },
+            'Instalaciones':  { kw: ['electrical installation','building wiring','power circuit','electrical system'],
+                               fallback: 'https://open.umn.edu/opentextbooks/subjects/electrical' },
+            'Mantenimiento':  { kw: ['maintenance','preventive maintenance','reliability','electrical maintenance'],
+                               fallback: 'https://open.umn.edu/opentextbooks/subjects/engineering' },
+            'Normativa':      { kw: ['electrical code','standard','regulation','nec','ieee','iec'],
+                               fallback: 'https://open.umn.edu/opentextbooks/subjects/electrical' },
+            'Seguridad':      { kw: ['electrical safety','occupational safety','hazard','arc flash','grounding'],
+                               fallback: 'https://open.umn.edu/opentextbooks/subjects/business'    },
+            'Energía Solar':  { kw: ['solar energy','renewable energy','photovoltaic','solar radiation','solar thermal'],
+                               fallback: 'https://open.umn.edu/opentextbooks/subjects/electrical' },
+            'RETIE Avanzado': { kw: ['power systems','power distribution','electrical grid','transmission','substation'],
+                               fallback: 'https://open.umn.edu/opentextbooks/subjects/electrical' }
+        };
+
+        function score(tb, kw) {
+            const title   = (tb.title || '').toLowerCase();
+            const rest    = [tb.description, ...(tb.subjects||[]).map(s=>s.name||s)].join(' ').toLowerCase();
+            return kw.reduce((n, k) => {
+                if (title.includes(k)) return n + 3; // título pesa más
+                if (rest.includes(k))  return n + 1;
+                return n;
+            }, 0);
+        }
+
+        // Construir mapa title → URL
+        const urlMap = {};
+        try {
+            const r = await fetch('https://open.umn.edu/opentextbooks/textbooks.json');
+            if (!r.ok) throw new Error();
+            const json = await r.json();
+            const list = Array.isArray(json) ? json : (json.data || []);
+
+            for (const [title, cfg] of Object.entries(BOOKS)) {
+                let best = null, top = 0;
+                for (const tb of list) {
+                    const s = score(tb, cfg.kw);
+                    if (s > top) { top = s; best = tb; }
+                }
+                urlMap[title] = (best && top > 0)
+                    ? `https://open.umn.edu/opentextbooks/textbooks/${best.id}`
+                    : cfg.fallback;
+            }
+        } catch (_) {
+            for (const [title, cfg] of Object.entries(BOOKS)) {
+                urlMap[title] = cfg.fallback;
+            }
+        }
+
+        // Guardar mapa en global para que el click handler lo use
+        window._otlMap = urlMap;
+
+    })();
+    </script>
+
+</body>
+</html>

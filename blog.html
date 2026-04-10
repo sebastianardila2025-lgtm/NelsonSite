@@ -23,7 +23,21 @@
 
     <!-- Custom Cursor with Liquid Glass -->
     <div class="custom-cursor" id="custom-cursor">
-        <div class="cursor-inner"></div>
+        <glass-element
+            id="cursor-glass"
+            width="80"
+            height="80"
+            radius="40"
+            depth="7"
+            blur="1"
+            strength="50"
+            background-color="rgba(255,255,255,0.6)"
+            chromatic-aberration="2"
+            style="z-index: 9999; pointer-events: none;">
+            <div class="cursor-inner">
+                <div class="cursor-dot"></div>
+            </div>
+        </glass-element>
     </div>
 
     <!-- Navigation -->
@@ -41,61 +55,23 @@
 
     <!-- Blog y Noticias Section -->
     <section class="blog-news-section" id="blog-news">
+        <!-- Fondo de energía renovable -->
+        <div class="renewable-background">
+            <div class="solar-panels-overlay"></div>
+            <div class="wind-turbines-overlay"></div>
+            <div class="green-fields-overlay"></div>
+        </div>
+
         <div class="container">
             <div class="blog-news-header">
                 <h2 class="blog-news-title">Blog y Noticias</h2>
-                <p class="blog-news-subtitle">Mantente informado sobre las últimas tendencias en ingeniería eléctrica</p>
+                <p class="blog-news-subtitle">Mantente informado sobre las últimas tendencias en energía renovable e ingeniería eléctrica</p>
             </div>
 
-            <!-- Zona de Descarga de Ebooks -->
-            <div class="ebooks-zone">
-                <div class="ebooks-zone-header">
-                    <h3 class="ebooks-zone-title">Zona de Descarga de Ebooks</h3>
-                    <p class="ebooks-zone-subtitle">Recursos gratuitos para profesionales del sector eléctrico</p>
-                </div>
-
-                <!-- Contenedor Liquid Glass para Ebooks -->
-                <div class="ebooks-container-wrap">
-                    <div class="ebooks-container">
-                        <!-- Ebooks animados -->
-                        <div class="ebook-item">
-                            <div class="ebook-cover">
-                                <div class="ebook-icon">book</div>
-                                <span class="ebook-title">Guía RETIE</span>
-                            </div>
-                        </div>
-                        <div class="ebook-item">
-                            <div class="ebook-cover">
-                                <div class="ebook-icon">book</div>
-                                <span class="ebook-title">Solar 101</span>
-                            </div>
-                        </div>
-                        <div class="ebook-item">
-                            <div class="ebook-cover">
-                                <div class="ebook-icon">book</div>
-                                <span class="ebook-title">Instalaciones</span>
-                            </div>
-                        </div>
-                        <div class="ebook-item">
-                            <div class="ebook-cover">
-                                <div class="ebook-icon">book</div>
-                                <span class="ebook-title">Mantenimiento</span>
-                            </div>
-                        </div>
-                        <div class="ebook-item">
-                            <div class="ebook-cover">
-                                <div class="ebook-icon">book</div>
-                                <span class="ebook-title">Normativa</span>
-                            </div>
-                        </div>
-                        <div class="ebook-item">
-                            <div class="ebook-cover">
-                                <div class="ebook-icon">book</div>
-                                <span class="ebook-title">Seguridad</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <!-- Contenedor de Noticias con Liquid Glass -->
+            <div class="news-container" id="news-container">
+                <!-- Las noticias se cargarán dinámicamente aquí -->
+                <div class="loading-message">Cargando noticias...</div>
             </div>
         </div>
     </section>
@@ -105,7 +81,7 @@
     <div class="glass-element" id="cursor-glass" auto-size="true" radius="30" depth="5" blur="1" strength="40" ca="2" bg="rgba(255,255,255,0.6)"></div>
 
     <!-- Scripts -->
-    <script src="liquid-glass.js"></script>
+    <script src="displacement-utils.js"></script>
     <script src="glass-element.js"></script>
     
     <script>
@@ -124,8 +100,8 @@
             const dx = mouseX - cursorX;
             const dy = mouseY - cursorY;
             
-            cursorX += dx * 0.1;
-            cursorY += dy * 0.1;
+            cursorX += dx * 0.15; // Más rápido para cursor pequeño
+            cursorY += dy * 0.15;
             
             cursor.style.left = cursorX + 'px';
             cursor.style.top = cursorY + 'px';
@@ -138,19 +114,39 @@
         document.body.style.cursor = 'none';
 
         // Add hover effects for interactive elements
-        const interactiveElements = document.querySelectorAll('.ebook-cover, .blog-news-title, .ebooks-zone-title, .ebook-title');
+        const interactiveElements = document.querySelectorAll('.news-card, .blog-news-title, .ebooks-zone-title, .ebook-title');
         
         interactiveElements.forEach(element => {
             element.addEventListener('mouseenter', () => {
-                cursor.style.transform = 'scale(1.5)';
-                cursor.style.background = 'rgba(212, 175, 60, 0.3)';
-                cursor.style.backdropFilter = 'blur(10px) brightness(1.2)';
+                // Cambiar propiedades del glass-element en hover - efecto elegante
+                if (cursorGlass) {
+                    cursorGlass.setAttribute('strength', '70');
+                    cursorGlass.setAttribute('blur', '3');
+                    cursorGlass.setAttribute('depth', '12');
+                    cursorGlass.style.transform = 'scale(1.4) rotate(5deg)';
+                    // Cambiar punto central a color elegante blanco-azulado
+                    const cursorDot = cursorGlass.querySelector('.cursor-dot');
+                    if (cursorDot) {
+                        cursorDot.style.background = 'rgba(230, 240, 255, 0.95)';
+                        cursorDot.style.boxShadow = '0 0 25px rgba(150, 200, 255, 0.6), 0 0 40px rgba(230, 240, 255, 0.4)';
+                    }
+                }
             });
             
             element.addEventListener('mouseleave', () => {
-                cursor.style.transform = 'scale(1)';
-                cursor.style.background = 'rgba(255, 255, 255, 0.6)';
-                cursor.style.backdropFilter = 'blur(20px) brightness(1.12) saturate(1.9)';
+                // Restaurar propiedades del glass-element
+                if (cursorGlass) {
+                    cursorGlass.setAttribute('strength', '50');
+                    cursorGlass.setAttribute('blur', '1');
+                    cursorGlass.setAttribute('depth', '7');
+                    cursorGlass.style.transform = 'scale(1) rotate(0deg)';
+                    // Restaurar punto central a blanco
+                    const cursorDot = cursorGlass.querySelector('.cursor-dot');
+                    if (cursorDot) {
+                        cursorDot.style.background = 'rgba(255, 255, 255, 0.9)';
+                        cursorDot.style.boxShadow = '0 0 16px rgba(255, 255, 255, 0.8)';
+                    }
+                }
             });
         });
 
@@ -162,6 +158,124 @@
         // Initialize glass elements
         if (window.glassElement) {
             window.glassElement.init();
+        }
+
+        // Cargar noticias de energía renovable
+        loadRenewableEnergyNews();
+
+        async function loadRenewableEnergyNews() {
+            const newsContainer = document.getElementById('news-container');
+            
+            try {
+                // Usar una API gratuita de noticias sobre energía renovable
+                const response = await fetch('https://newsapi.org/v2/everything?q=renewable%20energy%20OR%20solar%20panels%20OR%20wind%20energy%20OR%20green%20energy&language=es&sortBy=publishedAt&pageSize=12&apiKey=YOUR_API_KEY');
+                
+                if (!response.ok) {
+                    throw new Error('Error al cargar noticias');
+                }
+                
+                const data = await response.json();
+                displayNews(data.articles);
+                
+            } catch (error) {
+                console.log('Error cargando noticias API, usando datos de ejemplo:', error);
+                // Usar datos de ejemplo si la API falla
+                displayExampleNews();
+            }
+        }
+
+        function displayNews(articles) {
+            const newsContainer = document.getElementById('news-container');
+            newsContainer.innerHTML = '';
+            
+            articles.forEach((article, index) => {
+                if (article.title && article.description && article.urlToImage) {
+                    const newsCard = createNewsCard(article, index);
+                    newsContainer.appendChild(newsCard);
+                }
+            });
+        }
+
+        function createNewsCard(article, index) {
+            const card = document.createElement('div');
+            card.className = 'news-card';
+            card.onclick = () => window.open(article.url, '_blank');
+            
+            const publishDate = new Date(article.publishedAt).toLocaleDateString('es-ES', {
+                day: 'numeric',
+                month: 'short',
+                year: 'numeric'
+            });
+            
+            card.innerHTML = `
+                <div class="news-card-glass"></div>
+                <div class="news-card-content">
+                    <img src="${article.urlToImage}" alt="${article.title}" class="news-card-image" onerror="this.src='https://picsum.photos/seed/renewable${index}/400/200.jpg'">
+                    <h3 class="news-card-title">${article.title}</h3>
+                    <p class="news-card-description">${article.description}</p>
+                    <div class="news-card-meta">
+                        <span class="news-card-source">${article.source.name}</span>
+                        <span class="news-card-date">${publishDate}</span>
+                    </div>
+                </div>
+            `;
+            
+            return card;
+        }
+
+        function displayExampleNews() {
+            const exampleArticles = [
+                {
+                    title: "Avances revolucionarios en paneles solares de última generación",
+                    description: "Nueva tecnología fotovoltaica promete aumentar la eficiencia en un 40% y reducir costos de producción significativamente.",
+                    urlToImage: "https://picsum.photos/seed/solar1/400/200.jpg",
+                    source: { name: "Energía Hoy" },
+                    publishedAt: new Date().toISOString(),
+                    url: "#"
+                },
+                {
+                    title: "Colombia lidera transición energética en América Latina",
+                    description: "El país duplica su capacidad de generación eólica y solar en el último año, posicionándose como referente regional.",
+                    urlToImage: "https://picsum.photos/seed/wind1/400/200.jpg",
+                    source: { name: "Revista Energía" },
+                    publishedAt: new Date(Date.now() - 86400000).toISOString(),
+                    url: "#"
+                },
+                {
+                    title: "Innovador sistema de almacenamiento de energía revoluciona el sector",
+                    description: "Nuevas baterías de iones de litio con mayor durabilidad y capacidad permiten almacenar energía renovable de forma más eficiente.",
+                    urlToImage: "https://picsum.photos/seed/battery1/400/200.jpg",
+                    source: { name: "Tecnología Verde" },
+                    publishedAt: new Date(Date.now() - 172800000).toISOString(),
+                    url: "#"
+                },
+                {
+                    title: "Parques eólicos offshore: el futuro de la energía limpia",
+                    description: "Proyectos masivos en el mar prometen generar energía suficiente para millones de hogares con cero emisiones.",
+                    urlToImage: "https://picsum.photos/seed/offshore1/400/200.jpg",
+                    source: { name: "Mundo Solar" },
+                    publishedAt: new Date(Date.now() - 259200000).toISOString(),
+                    url: "#"
+                },
+                {
+                    title: "Hidrógeno verde: la clave para la descarbonización industrial",
+                    description: "La producción de hidrógeno a partir de energías renovables se posiciona como solución para sectores difíciles de electrificar.",
+                    urlToImage: "https://picsum.photos/seed/hydrogen1/400/200.jpg",
+                    source: { name: "Energía Sostenible" },
+                    publishedAt: new Date(Date.now() - 345600000).toISOString(),
+                    url: "#"
+                },
+                {
+                    title: "Smart Grids: redes inteligentes optimizan consumo energético",
+                    description: "La implementación de redes eléctricas inteligentes permite distribución más eficiente y reduce pérdidas hasta en un 15%.",
+                    urlToImage: "https://picsum.photos/seed/smartgrid1/400/200.jpg",
+                    source: { name: "Ingeniería Eléctrica" },
+                    publishedAt: new Date(Date.now() - 432000000).toISOString(),
+                    url: "#"
+                }
+            ];
+            
+            displayNews(exampleArticles);
         }
     </script>
 
