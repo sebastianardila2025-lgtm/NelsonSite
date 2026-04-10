@@ -153,25 +153,32 @@
             requestAnimationFrame(autoScrollFn);
         })();
 
-        // ── Dock magnification — técnica CSS --scale + prev/next offset ───
+        // ── Dock magnification — técnica CSS --scale + rAF batching ──────
         function resetScale() {
             items.forEach(item => item.style.setProperty('--scale', 1));
         }
 
+        let rafPending = false;
+        let pendingItem = null, pendingOffset = 0;
+
         items.forEach(item => {
             item.addEventListener('mousemove', e => {
-                const rect   = item.getBoundingClientRect();
-                const offset = Math.abs(e.clientX - rect.left) / rect.width;
-                const scale  = 0.65;
-
-                resetScale();
-
-                const prev = item.previousElementSibling;
-                const next = item.nextElementSibling;
-
-                if (prev) prev.style.setProperty('--scale', 1 + scale * Math.abs(offset - 1));
-                item.style.setProperty('--scale', 1 + scale);
-                if (next) next.style.setProperty('--scale', 1 + scale * offset);
+                const rect = item.getBoundingClientRect();
+                pendingItem   = item;
+                pendingOffset = Math.abs(e.clientX - rect.left) / rect.width;
+                if (rafPending) return;
+                rafPending = true;
+                requestAnimationFrame(() => {
+                    rafPending = false;
+                    if (!pendingItem) return;
+                    const scale = 0.65;
+                    resetScale();
+                    const prev = pendingItem.previousElementSibling;
+                    const next = pendingItem.nextElementSibling;
+                    if (prev) prev.style.setProperty('--scale', 1 + scale * Math.abs(pendingOffset - 1));
+                    pendingItem.style.setProperty('--scale', 1 + scale);
+                    if (next) next.style.setProperty('--scale', 1 + scale * pendingOffset);
+                });
             });
         });
 
@@ -185,7 +192,7 @@
             wrap.classList.remove('is-hovered');
             // Spring suave solo al abandonar el dock completo
             items.forEach(item => {
-                item.style.transition = '320ms width cubic-bezier(0.34,1.56,0.64,1), 320ms height cubic-bezier(0.34,1.56,0.64,1), 320ms top cubic-bezier(0.34,1.56,0.64,1)';
+                item.style.transition = '320ms width cubic-bezier(0.34,1.56,0.64,1), 320ms height cubic-bezier(0.34,1.56,0.64,1), 320ms transform cubic-bezier(0.34,1.56,0.64,1)';
             });
             resetScale();
             setTimeout(() => {

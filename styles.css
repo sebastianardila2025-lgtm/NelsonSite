@@ -3551,12 +3551,14 @@ canvas {
   height: 170px;
   padding: 0;
   border-radius: 24px;
+  -webkit-backdrop-filter: blur(28px) brightness(1.1) saturate(1.8);
   backdrop-filter: blur(28px) brightness(1.1) saturate(1.8);
   background: rgba(255, 255, 255, 0.18);
   border: 1px solid rgba(255, 255, 255, 0.45);
   box-shadow: 0 8px 48px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.6);
-  overflow-x: clip;
-  overflow-y: visible;
+  overflow: visible;
+  -webkit-clip-path: inset(-240px 0 -8px 0 round 24px);
+  clip-path: inset(-240px 0 -8px 0 round 24px);
   z-index: 2;
   display: flex;
   align-items: flex-end;
@@ -3588,9 +3590,9 @@ canvas {
   height: calc(8rem * var(--scale));
   cursor: pointer;
   position: relative;
-  top: calc((8rem * var(--scale) - 8rem) / 2 * -1);
+  transform: translateY(calc((8rem * var(--scale) - 8rem) / 2 * -1));
   transition: none;
-  will-change: width, height, top;
+  will-change: width, height, transform;
 }
 
 .dock-card {
