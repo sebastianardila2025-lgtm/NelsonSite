@@ -7,6 +7,14 @@ var ctx     = canvas.getContext("2d");
 var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) ||
                window.innerWidth <= 768;
 
+/* ── Geometría cacheada (evita getBoundingClientRect en el hot-path) ── */
+var sectionTop = 0, sectionH = 0;
+
+function cacheGeometry() {
+  sectionTop = section.offsetTop;
+  sectionH   = section.offsetHeight;
+}
+
 /* ── Shared helpers ── */
 function resizeCanvas() {
   var dpr = window.devicePixelRatio || 1;
@@ -16,6 +24,7 @@ function resizeCanvas() {
   canvas.style.height = window.innerHeight + "px";
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   ctx.scale(dpr, dpr);
+  cacheGeometry(); // recalcular al resize
 }
 
 function drawVideoFrame() {
@@ -29,9 +38,10 @@ function drawVideoFrame() {
 }
 
 function getScrollProgress() {
-  var rect  = section.getBoundingClientRect();
-  var total = section.offsetHeight - window.innerHeight;
-  var passed = Math.min(Math.max(-rect.top, 0), total);
+  // window.pageYOffset: sin layout reflow, a diferencia de getBoundingClientRect
+  var scrollY = window.pageYOffset || document.documentElement.scrollTop;
+  var total   = sectionH - window.innerHeight;
+  var passed  = Math.min(Math.max(scrollY - sectionTop, 0), total);
   return total > 0 ? passed / total : 0;
 }
 
@@ -55,16 +65,21 @@ if (isMobile) {
   video.setAttribute("preload", "auto");
 
   resizeCanvas();
+  if (loader) { loader.style.display = "block"; loader.textContent = "Cargando…"; }
+
   window.addEventListener("resize", function () {
     resizeCanvas();
     if (mobileReady) drawVideoFrame();
   }, { passive: true });
 
-  /* Show loading text while buffering */
-  if (loader) {
-    loader.style.display = "block";
-    loader.textContent   = "Cargando…";
-  }
+  video.addEventListener("progress", function () {
+    if (!mobileReady && loader && video.buffered.length && video.duration) {
+      var pct = Math.round(
+        (video.buffered.end(video.buffered.length - 1) / video.duration) * 100
+      );
+      loader.textContent = "Cargando " + pct + "%";
+    }
+  });
 
   /* Start loading + play/pause trick to force buffering on iOS */
   video.load();
@@ -84,21 +99,19 @@ if (isMobile) {
     if (!mobileRafId) mobileRafId = requestAnimationFrame(mobileTick);
   }, { once: true });
 
-  /* seeked → paint frame */
+  /* seeked → paint frame; encadenar seek si el scroll cambio durante el decode */
   video.addEventListener("seeked", function () {
     mobilePending = false;
     drawVideoFrame();
-  });
-
-  /* progress → update loading % */
-  video.addEventListener("progress", function () {
-    if (!mobileReady && loader && video.buffered.length && video.duration) {
-      var pct = Math.round(
-        (video.buffered.end(video.buffered.length - 1) / video.duration) * 100
-      );
-      loader.textContent = "Cargando " + pct + "%";
+    if (mobileReady && video.duration) {
+      var next = getScrollProgress() * video.duration;
+      if (Math.abs(video.currentTime - next) > 0.015) {
+        mobilePending = true;
+        video.currentTime = next;
+      }
     }
   });
+
 
   /* RAF loop: samples scroll at 60 fps (catches iOS momentum scroll too).
      Actual seeks are gated by mobilePending so the decoder isn't flooded. */
@@ -141,28 +154,44 @@ if (isMobile) {
 
   var ready       = false;
   var pendingSeek = false;
+  var scrollDirty = false; // true cuando el scroll cambio y hay que procesar
   var rafId       = null;
 
+  /* Marcar que el scroll cambio — cero trabajo en el handler */
+  window.addEventListener("scroll", function () { scrollDirty = true; }, { passive: true });
+
+  function doSeek() {
+    var target = getScrollProgress() * video.duration;
+    if (Math.abs(video.currentTime - target) > 0.016) {
+      pendingSeek = true;
+      video.currentTime = target;
+    }
+  }
+
   function animate() {
-    if (ready && !pendingSeek && video.duration) {
-      var target = getScrollProgress() * video.duration;
-      if (Math.abs(video.currentTime - target) > 0.02) {
-        pendingSeek = true;
-        video.currentTime = target;
-      }
+    /* Solo actuar cuando el scroll cambio Y el decoder esta libre */
+    if (ready && !pendingSeek && scrollDirty && video.duration) {
+      scrollDirty = false;
+      doSeek();
     }
     rafId = requestAnimationFrame(animate);
   }
 
+  /* seeked → pintar frame; encadenar si hubo scroll durante el decode */
   video.addEventListener("seeked", function () {
     pendingSeek = false;
     drawVideoFrame();
+    if (scrollDirty && video.duration) {
+      scrollDirty = false;
+      doSeek();
+    }
   });
 
   video.addEventListener("canplay", function () {
     if (!ready) {
       ready = true;
       if (loader) loader.style.display = "none";
+      cacheGeometry();
       drawVideoFrame();
     }
   }, { once: true });
