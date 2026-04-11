@@ -34,7 +34,7 @@ function drawVideoFrame() {
   // móvil: escala para llenar el ancho (sin recortar horizontalmente), con tope en cover
   // escritorio: contain (muestra el video completo)
   var ratio = isMobile
-    ? Math.min(cw / vw * 3, ch / vh)
+    ? Math.min(cw / vw * 2, ch / vh)
     : Math.min(cw / vw, ch / vh);
   var nw = vw * ratio, nh = vh * ratio;
   ctx.clearRect(0, 0, canvas.width, canvas.height);
