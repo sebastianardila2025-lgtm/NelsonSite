@@ -258,6 +258,7 @@
             }, { passive: true });
 
             wrap.addEventListener('touchmove', e => {
+                e.preventDefault(); // evita que la página se desplace
                 const t   = e.touches[0];
                 const now = Date.now();
                 const dt  = Math.max(now - lastTime, 1);
@@ -273,7 +274,7 @@
 
                 touchBubble.style.left = t.clientX + 'px';
                 touchBubble.style.top  = t.clientY + 'px';
-            }, { passive: true });
+            }, { passive: false });
 
             const endTouch = () => {
                 if (!isSwiping) return;
