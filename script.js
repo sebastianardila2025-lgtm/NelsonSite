@@ -1068,14 +1068,29 @@ addAccessibilityFeatures();
 console.log('%cVoltGrid Ingeniería', 'font-size: 20px; font-weight: bold; color: #0d2341;');
 console.log('%cPrecisión técnica para cumplir, seguridad para confiar', 'font-size: 14px; color: #d4af37;');
 
-// ── Hero Scene Controller + Tower Parallax ──
+// ── Hero Scene Controller + Metric Card ──
 (function() {
-  var scenes = document.querySelectorAll('.hero__scene');
-  var dots   = document.querySelectorAll('.hero__dot');
-  var towerImg = document.getElementById('hero-tower-img');
+  var scenes   = document.querySelectorAll('.hero__scene');
+  var dots     = document.querySelectorAll('.hero__dot');
+  var metricEl = document.getElementById('hero-metric');
+  var labelEl  = document.getElementById('hero-label');
+  var barFill  = document.getElementById('hero-bar-fill');
+  var iconWrap = document.getElementById('hero-card-icon');
   var heroEl   = document.getElementById('hero');
 
   if (!scenes.length) return;
+
+  var ICONS = [
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>',
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>',
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>'
+  ];
+
+  var DATA = [
+    { metric: '100%',  label: 'Cumplimiento normativo', bar: 100 },
+    { metric: '500+',  label: 'Proyectos ejecutados',   bar: 85 },
+    { metric: '30%',   label: 'Ahorro energético',      bar: 65 }
+  ];
 
   var current = 0;
   var interval = null;
@@ -1086,6 +1101,28 @@ console.log('%cPrecisión técnica para cumplir, seguridad para confiar', 'font-
     dots.forEach(function(d) { d.classList.remove('active'); });
     scenes[idx].classList.add('active');
     dots[idx].classList.add('active');
+
+    // Animate card content
+    if (metricEl) {
+      metricEl.style.opacity = '0';
+      metricEl.style.transform = 'translateY(6px)';
+      labelEl.style.opacity = '0';
+    }
+
+    setTimeout(function() {
+      if (iconWrap) iconWrap.innerHTML = ICONS[idx];
+      if (metricEl) {
+        metricEl.textContent = DATA[idx].metric;
+        metricEl.style.opacity = '1';
+        metricEl.style.transform = 'translateY(0)';
+      }
+      if (labelEl) {
+        labelEl.textContent = DATA[idx].label;
+        labelEl.style.opacity = '1';
+      }
+      if (barFill) barFill.style.width = DATA[idx].bar + '%';
+    }, 280);
+
     current = idx;
   }
 
@@ -1110,28 +1147,4 @@ console.log('%cPrecisión técnica para cumplir, seguridad para confiar', 'font-
   }
 
   startAutoplay();
-
-  // ── Tower parallax: image rises out of card on scroll ──
-  if (towerImg && heroEl) {
-    var ticking = false;
-    window.addEventListener('scroll', function() {
-      if (!ticking) {
-        requestAnimationFrame(function() {
-          var rect = heroEl.getBoundingClientRect();
-          var heroH = heroEl.offsetHeight;
-          var scrolled = Math.max(0, window.pageYOffset);
-          var heroBottom = heroEl.offsetTop + heroH;
-          var progress = Math.max(0, Math.min(1, scrolled / heroBottom));
-          // From 40% (hidden below) to -30% (popping out above)
-          var startPct = 40;
-          var endPct = -30;
-          var currentPct = startPct + (endPct - startPct) * progress;
-          var shift = currentPct + '%';
-          towerImg.style.setProperty('--tower-y', shift);
-          ticking = false;
-        });
-        ticking = true;
-      }
-    }, { passive: true });
-  }
 })();

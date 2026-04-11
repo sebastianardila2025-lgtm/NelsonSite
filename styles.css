@@ -280,59 +280,138 @@ h1, h2, h3, h4 {
     background: var(--accent-gold);
 }
 
-/* ── Right: Glass card with tower ── */
+/* ── Right: Glass metric card ── */
 .hero__right {
     display: flex;
     justify-content: center;
-    align-items: flex-end;
+    align-items: center;
 }
 
 .hero__card--glass {
     position: relative;
     width: 320px;
-    height: 340px;
-    background: rgba(255,255,255,0.06);
+    background: rgba(255,255,255,0.05);
     backdrop-filter: blur(24px) saturate(1.4);
     -webkit-backdrop-filter: blur(24px) saturate(1.4);
     border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 20px;
-    overflow: visible;
+    border-radius: 24px;
+    padding: 2.5rem 2rem 2rem;
+    text-align: center;
+    overflow: hidden;
     box-shadow:
-        0 8px 32px rgba(0,0,0,0.2),
+        0 8px 32px rgba(0,0,0,0.25),
         inset 0 1px 0 rgba(255,255,255,0.08);
+    transition: transform 0.5s cubic-bezier(0.25,0.1,0.25,1),
+                box-shadow 0.5s cubic-bezier(0.25,0.1,0.25,1);
+}
+.hero__card--glass:hover {
+    transform: translateY(-4px);
+    box-shadow:
+        0 16px 48px rgba(0,0,0,0.3),
+        inset 0 1px 0 rgba(255,255,255,0.12);
 }
 
-.hero__tower-img {
+/* Decorative floating dots */
+.hero__card-deco {
     position: absolute;
-    bottom: -10px;
-    left: 50%;
-    transform: translateX(-50%) translateY(var(--tower-y, 40%));
-    width: 110%;
-    max-width: 380px;
-    height: auto;
-    object-fit: contain;
-    filter:
-        drop-shadow(0 6px 24px rgba(212,175,55,0.3))
-        brightness(1.2);
-    will-change: transform;
-    transition: transform 0.15s linear;
+    inset: 0;
     pointer-events: none;
-    z-index: 1;
+    overflow: hidden;
 }
-
-/* Gold glow behind tower */
-.hero__card--glass::after {
-    content: '';
+.hero__card-deco span {
     position: absolute;
-    bottom: 30%;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 80%;
-    height: 50%;
-    background: radial-gradient(ellipse, rgba(212,175,55,0.12), transparent 70%);
+    width: 4px; height: 4px;
     border-radius: 50%;
-    pointer-events: none;
-    z-index: 0;
+    background: var(--accent-gold);
+    opacity: 0.15;
+}
+.hero__card-deco span:nth-child(1) { top: 12%; left: 15%; opacity: 0.25; }
+.hero__card-deco span:nth-child(2) { top: 25%; right: 12%; width: 3px; height: 3px; }
+.hero__card-deco span:nth-child(3) { bottom: 30%; left: 10%; width: 5px; height: 5px; opacity: 0.1; }
+.hero__card-deco span:nth-child(4) { bottom: 15%; right: 18%; }
+.hero__card-deco span:nth-child(5) { top: 50%; left: 50%; width: 2px; height: 2px; opacity: 0.2; }
+
+/* Icon */
+.hero__card-icon {
+    width: 52px; height: 52px;
+    margin: 0 auto 1.5rem;
+    background: rgba(212,175,55,0.1);
+    border: 1px solid rgba(212,175,55,0.2);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.4s ease, background 0.4s ease;
+}
+.hero__card--glass:hover .hero__card-icon {
+    transform: scale(1.05);
+    background: rgba(212,175,55,0.15);
+}
+.hero__card-icon svg {
+    width: 26px; height: 26px;
+    stroke: var(--accent-gold);
+    transition: opacity 0.3s ease;
+}
+
+/* Metric number */
+.hero__card-metric {
+    font-size: 3.4rem;
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    margin-bottom: 0.4rem;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* Label */
+.hero__card-label {
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.5);
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    margin-bottom: 1.5rem;
+    transition: opacity 0.3s ease;
+}
+
+/* Progress bar */
+.hero__card-bar {
+    width: 100%;
+    height: 4px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 1.25rem;
+}
+.hero__card-bar-fill {
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(90deg, var(--accent-gold), #e8c96d);
+    border-radius: 4px;
+    transition: width 0.8s cubic-bezier(0.25,0.1,0.25,1);
+}
+
+/* Badge */
+.hero__card-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: rgba(255,255,255,0.45);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+.hero__card-badge-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #34d399;
+    box-shadow: 0 0 8px rgba(52,211,153,0.4);
+    animation: badgePulse 2s ease-in-out infinite;
+}
+@keyframes badgePulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
 }
 
 /* Buttons */
@@ -526,8 +605,8 @@ section {
     .hero__left { min-height: 240px; }
     .hero__heading { font-size: clamp(1.8rem, 7vw, 2.4rem); }
     .hero__desc { font-size: 0.95rem; }
-    .hero__card--glass { width: 240px; height: 260px; }
-    .hero__tower-img { width: 95%; }
+    .hero__card--glass { width: 260px; padding: 2rem 1.5rem 1.5rem; }
+    .hero__card-metric { font-size: 2.6rem; }
     .hero__glow--1 { width: 300px; height: 300px; }
     .hero__glow--2 { width: 250px; height: 250px; }
 

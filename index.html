@@ -11,7 +11,7 @@
     <link rel="shortcut icon" href="/favicon-32.png">
     <link rel="apple-touch-icon" href="/favicon.png">
     <link rel="manifest" href="/site.webmanifest" />
-    <link rel="stylesheet" href="styles.css?v=8">
+    <link rel="stylesheet" href="styles.css?v=9">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -144,8 +144,22 @@
             </div>
 
             <div class="hero__right">
-                <div class="hero__card hero__card--glass" id="hero-tower-card">
-                    <img src="Torre/Torre1.png" alt="Torre eléctrica de alta tensión" class="hero__tower-img" id="hero-tower-img" loading="eager">
+                <div class="hero__card hero__card--glass" id="hero-glass-card">
+                    <div class="hero__card-deco">
+                        <span></span><span></span><span></span><span></span><span></span>
+                    </div>
+                    <div class="hero__card-icon" id="hero-card-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                    </div>
+                    <div class="hero__card-metric" id="hero-metric">100%</div>
+                    <div class="hero__card-label" id="hero-label">Cumplimiento normativo</div>
+                    <div class="hero__card-bar">
+                        <div class="hero__card-bar-fill" id="hero-bar-fill"></div>
+                    </div>
+                    <div class="hero__card-badge">
+                        <span class="hero__card-badge-dot"></span>
+                        Verificado
+                    </div>
                 </div>
             </div>
         </div>
@@ -734,8 +748,8 @@
 
     <script src="displacement-utils.js"></script>
     <script src="glass-element.js"></script>
-    <script src="script.js?v=8"></script>
-    <script src="solar-scroll/script.js?v=8"></script>
+    <script src="script.js?v=9"></script>
+    <script src="solar-scroll/script.js?v=9"></script>
     <script>
         const originalTitle = "VoltGrid Ingeniería";
         const awayMessages = [
