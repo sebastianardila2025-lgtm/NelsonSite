@@ -158,33 +158,50 @@
             requestAnimationFrame(autoScrollFn);
         })();
 
-        // ── Magnification + hover (solo escritorio) ────────────────────────
-        if (!isMobile) {
-            function resetScale() {
-                items.forEach(item => item.style.setProperty('--scale', 1));
-            }
+        // ── Magnification — funciones compartidas desktop + móvil ─────────
+        const SCALE = 0.65;
+        const SPRING = '300ms width cubic-bezier(0.34,1.56,0.64,1), 300ms height cubic-bezier(0.34,1.56,0.64,1), 300ms transform cubic-bezier(0.34,1.56,0.64,1)';
 
+        function resetScale() {
+            items.forEach(item => item.style.setProperty('--scale', 1));
+        }
+
+        function springReset() {
+            items.forEach(item => { item.style.transition = SPRING; });
+            resetScale();
+            setTimeout(() => { items.forEach(item => { item.style.transition = 'none'; }); }, 320);
+        }
+
+        function applyMagnification(clientX) {
+            let touched = null, offset = 0;
+            for (const item of items) {
+                const r = item.getBoundingClientRect();
+                if (clientX >= r.left && clientX <= r.right) {
+                    touched = item;
+                    offset  = (clientX - r.left) / r.width;
+                    break;
+                }
+            }
+            if (!touched) return;
+            resetScale();
+            const prev = touched.previousElementSibling;
+            const next = touched.nextElementSibling;
+            if (prev) prev.style.setProperty('--scale', 1 + SCALE * Math.abs(offset - 1));
+            touched.style.setProperty('--scale', 1 + SCALE);
+            if (next) next.style.setProperty('--scale', 1 + SCALE * offset);
+        }
+
+        // ── Hover + magnification (solo escritorio) ────────────────────────
+        if (!isMobile) {
             let rafPending = false;
-            let pendingItem = null, pendingOffset = 0;
+            let pendingX   = 0;
 
             items.forEach(item => {
                 item.addEventListener('mousemove', e => {
-                    const rect = item.getBoundingClientRect();
-                    pendingItem   = item;
-                    pendingOffset = Math.abs(e.clientX - rect.left) / rect.width;
+                    pendingX = e.clientX;
                     if (rafPending) return;
                     rafPending = true;
-                    requestAnimationFrame(() => {
-                        rafPending = false;
-                        if (!pendingItem) return;
-                        const scale = 0.65;
-                        resetScale();
-                        const prev = pendingItem.previousElementSibling;
-                        const next = pendingItem.nextElementSibling;
-                        if (prev) prev.style.setProperty('--scale', 1 + scale * Math.abs(pendingOffset - 1));
-                        pendingItem.style.setProperty('--scale', 1 + scale);
-                        if (next) next.style.setProperty('--scale', 1 + scale * pendingOffset);
-                    });
+                    requestAnimationFrame(() => { rafPending = false; applyMagnification(pendingX); });
                 });
             });
 
@@ -196,13 +213,7 @@
             wrap.addEventListener('mouseleave', () => {
                 autoScroll = true;
                 wrap.classList.remove('is-hovered');
-                items.forEach(item => {
-                    item.style.transition = '320ms width cubic-bezier(0.34,1.56,0.64,1), 320ms height cubic-bezier(0.34,1.56,0.64,1), 320ms transform cubic-bezier(0.34,1.56,0.64,1)';
-                });
-                resetScale();
-                setTimeout(() => {
-                    items.forEach(item => { item.style.transition = 'none'; });
-                }, 350);
+                springReset();
             });
         }
 
@@ -271,6 +282,7 @@
                 if (scrollPos < 0)     scrollPos += half;
                 if (scrollPos >= half) scrollPos -= half;
                 track.style.transform = `translateX(-${scrollPos}px)`;
+                applyMagnification(t.clientX);
 
                 touchBubble.style.left = t.clientX + 'px';
                 touchBubble.style.top  = t.clientY + 'px';
@@ -281,6 +293,7 @@
                 isSwiping = false;
                 touchBubble.style.opacity   = '0';
                 touchBubble.style.transform = 'translate(-50%,-50%) scale(0.5)';
+                springReset();
 
                 // Inercia: decelera hasta parar, luego reanuda auto-scroll
                 const half = track.scrollWidth / 2;

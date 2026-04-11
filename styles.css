@@ -3969,10 +3969,10 @@ canvas {
     height: 112px;
     margin-top: 3vh;
     padding-bottom: 10px;
-    /* En móvil sin magnification: clip simple sin overflow vertical */
-    -webkit-clip-path: inset(0 0 0 0 round 24px);
-    clip-path: inset(0 0 0 0 round 24px);
-    overflow: hidden;
+    /* Permitir desbordamiento superior para la magnification */
+    -webkit-clip-path: inset(-200px 0 -8px 0 round 24px);
+    clip-path: inset(-200px 0 -8px 0 round 24px);
+    overflow: visible;
   }
   .dock-item {
     width:  calc(5rem * var(--scale));
