@@ -3956,3 +3956,37 @@ canvas {
     padding: 1.5rem;
   }
 }
+
+/* ── Dock: ocultar cursor en dispositivos táctiles ───────────────── */
+@media (hover: none) {
+  .custom-cursor { display: none !important; }
+}
+
+/* ── Dock: responsivo móvil ──────────────────────────────────────── */
+@media (max-width: 768px) {
+  .dock-wrap {
+    width: 93%;
+    height: 112px;
+    margin-top: 3vh;
+    padding-bottom: 10px;
+    /* En móvil sin magnification: clip simple sin overflow vertical */
+    -webkit-clip-path: inset(0 0 0 0 round 24px);
+    clip-path: inset(0 0 0 0 round 24px);
+    overflow: hidden;
+  }
+  .dock-item {
+    width:  calc(5rem * var(--scale));
+    height: calc(5rem * var(--scale));
+    transform: translateY(calc((5rem * var(--scale) - 5rem) / 2 * -1));
+  }
+  .dock-track {
+    gap: 8px;
+    padding: 0 14px;
+  }
+  .ebooks-zone-title {
+    font-size: 1.5rem;
+  }
+  .ebooks-zone-subtitle {
+    font-size: 0.9rem;
+  }
+}
