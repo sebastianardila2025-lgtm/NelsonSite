@@ -19,11 +19,13 @@ function cacheGeometry() {
 function resizeCanvas() {
   var dpr = window.devicePixelRatio || 1;
   var w = window.innerWidth;
+  // móvil: canvas es 16:9 (CSS aspect-ratio), alto = ancho*9/16
   var h = isMobile ? Math.round(w * 9 / 16) : window.innerHeight;
   canvas.width  = w * dpr;
   canvas.height = h * dpr;
   canvas.style.width  = w + "px";
-  canvas.style.height = h + "px";
+  // no sobreescribir height en móvil: CSS aspect-ratio lo controla
+  if (!isMobile) canvas.style.height = h + "px";
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   ctx.scale(dpr, dpr);
   cacheGeometry(); // recalcular al resize
@@ -33,8 +35,7 @@ function drawVideoFrame() {
   if (!video.videoWidth) return;
   var cw = window.innerWidth,  ch = window.innerHeight;
   var vw = video.videoWidth,   vh = video.videoHeight;
-  // móvil: canvas ya es 16:9 → contain llena perfectamente sin barras ni zoom
-  // escritorio: contain (muestra el video completo)
+  // móvil: canvas 16:9 → contain llena perfectamente. escritorio: contain normal
   var ch = isMobile ? Math.round(cw * 9 / 16) : window.innerHeight;
   var ratio = Math.min(cw / vw, ch / vh);
   var nw = vw * ratio, nh = vh * ratio;
