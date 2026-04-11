@@ -381,7 +381,7 @@ section {
     }
     
     .hero {
-        padding: 6rem 0 3rem;
+        padding: 3.5rem 0 2rem;
     }
     
     .hero-container {
@@ -1227,9 +1227,9 @@ canvas {
 }
 
 @media (max-width: 768px) {
-  /* Mobile: shorter scroll distance (200vh) keeps the Apple-style effect */
+  /* Mobile: shorter scroll distance keeps the Apple-style effect */
   .scroll-section {
-    height: 200vh !important;
+    height: 150vh !important;
   }
 
   .scroll-section .sticky-wrap,
