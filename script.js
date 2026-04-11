@@ -1067,3 +1067,71 @@ addAccessibilityFeatures();
 // Console branding
 console.log('%cVoltGrid Ingeniería', 'font-size: 20px; font-weight: bold; color: #0d2341;');
 console.log('%cPrecisión técnica para cumplir, seguridad para confiar', 'font-size: 14px; color: #d4af37;');
+
+// ── Hero Scene Controller + Tower Parallax ──
+(function() {
+  var scenes = document.querySelectorAll('.hero__scene');
+  var dots   = document.querySelectorAll('.hero__dot');
+  var towerImg = document.getElementById('hero-tower-img');
+  var heroEl   = document.getElementById('hero');
+
+  if (!scenes.length) return;
+
+  var current = 0;
+  var interval = null;
+  var INTERVAL_MS = 5000;
+
+  function goTo(idx) {
+    scenes.forEach(function(s) { s.classList.remove('active'); });
+    dots.forEach(function(d) { d.classList.remove('active'); });
+    scenes[idx].classList.add('active');
+    dots[idx].classList.add('active');
+    current = idx;
+  }
+
+  function next() { goTo((current + 1) % scenes.length); }
+
+  function startAutoplay() {
+    stopAutoplay();
+    interval = setInterval(next, INTERVAL_MS);
+  }
+  function stopAutoplay() { clearInterval(interval); }
+
+  dots.forEach(function(dot) {
+    dot.addEventListener('click', function() {
+      goTo(parseInt(this.getAttribute('data-goto'), 10));
+      startAutoplay();
+    });
+  });
+
+  if (heroEl) {
+    heroEl.addEventListener('mouseenter', stopAutoplay);
+    heroEl.addEventListener('mouseleave', startAutoplay);
+  }
+
+  startAutoplay();
+
+  // ── Tower parallax: image rises out of card on scroll ──
+  if (towerImg && heroEl) {
+    var ticking = false;
+    window.addEventListener('scroll', function() {
+      if (!ticking) {
+        requestAnimationFrame(function() {
+          var rect = heroEl.getBoundingClientRect();
+          var heroH = heroEl.offsetHeight;
+          var scrolled = Math.max(0, window.pageYOffset);
+          var heroBottom = heroEl.offsetTop + heroH;
+          var progress = Math.max(0, Math.min(1, scrolled / heroBottom));
+          // From 40% (hidden below) to -30% (popping out above)
+          var startPct = 40;
+          var endPct = -30;
+          var currentPct = startPct + (endPct - startPct) * progress;
+          var shift = currentPct + '%';
+          towerImg.style.setProperty('--tower-y', shift);
+          ticking = false;
+        });
+        ticking = true;
+      }
+    }, { passive: true });
+  }
+})();
