@@ -1239,19 +1239,13 @@ canvas {
     height: 100svh !important;
     overflow: hidden;
     background: #0d2341;
-    display: flex;
-    align-items: center;
-    justify-content: center;
   }
 
-  /* Canvas visible — tamaño 16:9 centrado en la pantalla */
+  /* Canvas ocupa toda la pantalla — JS dibuja con blurred-fill */
   #solar-canvas {
     display: block !important;
     width: 100% !important;
-    height: auto !important;
-    aspect-ratio: 16 / 9;
-    max-height: 100svh;
-    max-width: 100%;
+    height: 100svh !important;
   }
 
   /* Video stays hidden (source for canvas) */
