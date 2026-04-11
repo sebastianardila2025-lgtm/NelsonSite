@@ -1236,7 +1236,8 @@ canvas {
   .scroll-section .scroll-stage {
     position: sticky !important;
     top: 0 !important;
-    height: 100svh !important;
+    height: auto !important;
+    aspect-ratio: 16 / 9 !important;
     overflow: hidden;
     background: #0d2341;
   }
@@ -1245,7 +1246,8 @@ canvas {
   #solar-canvas {
     display: block !important;
     width: 100% !important;
-    height: 100svh !important;
+    height: auto !important;
+    aspect-ratio: 16 / 9 !important;
   }
 
   /* Video stays hidden (source for canvas) */

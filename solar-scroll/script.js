@@ -18,10 +18,12 @@ function cacheGeometry() {
 /* ── Shared helpers ── */
 function resizeCanvas() {
   var dpr = window.devicePixelRatio || 1;
-  canvas.width  = window.innerWidth  * dpr;
-  canvas.height = window.innerHeight * dpr;
-  canvas.style.width  = window.innerWidth  + "px";
-  canvas.style.height = window.innerHeight + "px";
+  var w = window.innerWidth;
+  var h = isMobile ? Math.round(w * 9 / 16) : window.innerHeight;
+  canvas.width  = w * dpr;
+  canvas.height = h * dpr;
+  canvas.style.width  = w + "px";
+  canvas.style.height = h + "px";
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   ctx.scale(dpr, dpr);
   cacheGeometry(); // recalcular al resize
@@ -31,11 +33,10 @@ function drawVideoFrame() {
   if (!video.videoWidth) return;
   var cw = window.innerWidth,  ch = window.innerHeight;
   var vw = video.videoWidth,   vh = video.videoHeight;
-  // móvil: escala para llenar el ancho (sin recortar horizontalmente), con tope en cover
+  // móvil: canvas ya es 16:9 → contain llena perfectamente sin barras ni zoom
   // escritorio: contain (muestra el video completo)
-  var ratio = isMobile
-    ? Math.min(cw / vw * 2, ch / vh)
-    : Math.min(cw / vw, ch / vh);
+  var ch = isMobile ? Math.round(cw * 9 / 16) : window.innerHeight;
+  var ratio = Math.min(cw / vw, ch / vh);
   var nw = vw * ratio, nh = vh * ratio;
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.drawImage(video, (cw - nw) / 2, (ch - nh) / 2, nw, nh);
