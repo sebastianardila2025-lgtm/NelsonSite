@@ -381,7 +381,15 @@ section {
     }
     
     .hero {
-        padding: 3.5rem 0 2rem;
+        padding: 4rem 0 0;
+    }
+
+    .hero-slogan {
+        margin-bottom: 1.5rem;
+    }
+
+    .hero-services {
+        margin-bottom: 1rem;
     }
     
     .hero-container {
@@ -570,6 +578,11 @@ section {
     padding: 96px 0;
     background: #fff;
     border-top: 1px solid #f0f0f0;
+}
+@media (max-width: 768px) {
+    .metrics {
+        padding: 40px 0;
+    }
 }
 .metrics-header {
     max-width: 640px;
@@ -1230,22 +1243,31 @@ canvas {
   /* Mobile: shorter scroll distance keeps the Apple-style effect */
   .scroll-section {
     height: 150vh !important;
+    background: #0d2341;
+    margin: 0 !important;
+    padding: 0 !important;
   }
 
   .scroll-section .sticky-wrap,
   .scroll-section .scroll-stage {
     position: sticky !important;
     top: 0 !important;
-    height: 100svh !important;
+    height: 100vh !important;
+    height: 100dvh !important;
     overflow: hidden;
     background: #0d2341;
+    margin: 0 !important;
+    padding: 0 !important;
   }
 
-  /* Canvas ocupa toda la pantalla — JS dibuja con blurred-fill */
+  /* Canvas ocupa toda la pantalla */
   #solar-canvas {
     display: block !important;
     width: 100% !important;
-    height: 100svh !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    margin: 0 !important;
+    padding: 0 !important;
   }
 
   /* Video stays hidden (source for canvas) */

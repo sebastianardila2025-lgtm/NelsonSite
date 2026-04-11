@@ -33,23 +33,10 @@ function drawVideoFrame() {
   if (!video.videoWidth) return;
   var cw = window.innerWidth,  ch = window.innerHeight;
   var vw = video.videoWidth,   vh = video.videoHeight;
+  var ratio = isMobile ? Math.max(cw / vw, ch / vh) : Math.min(cw / vw, ch / vh);
+  var nw = vw * ratio, nh = vh * ratio;
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  if (isMobile) {
-    // 1ª pasada: cover + blur — rellena el fondo sin barras
-    var rCover = Math.max(cw / vw, ch / vh);
-    var nwC = vw * rCover, nhC = vh * rCover;
-    ctx.filter = 'blur(18px)';
-    ctx.drawImage(video, (cw - nwC) / 2, (ch - nhC) / 2, nwC, nhC);
-    ctx.filter = 'none';
-    // 2ª pasada: contain nítido encima — panel a tamaño correcto
-    var rContain = Math.min(cw / vw, ch / vh);
-    var nw = vw * rContain, nh = vh * rContain;
-    ctx.drawImage(video, (cw - nw) / 2, (ch - nh) / 2, nw, nh);
-  } else {
-    var ratio = Math.min(cw / vw, ch / vh);
-    var nw = vw * ratio, nh = vh * ratio;
-    ctx.drawImage(video, (cw - nw) / 2, (ch - nh) / 2, nw, nh);
-  }
+  ctx.drawImage(video, (cw - nw) / 2, (ch - nh) / 2, nw, nh);
 }
 
 function getScrollProgress() {
