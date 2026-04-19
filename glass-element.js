@@ -79,8 +79,17 @@ class GlassElement extends HTMLElement {
             'base-height',
             'auto-size',
             'min-width',
-            'min-height'
+            'min-height',
+            'dark-only'
         ];
+    }
+
+    get darkOnly() {
+        return this.hasAttribute('dark-only');
+    }
+
+    get isDarkActive() {
+        return document.body.classList.contains('dark-mode');
     }
 
     connectedCallback() {
@@ -91,6 +100,19 @@ class GlassElement extends HTMLElement {
         // Observer para auto-size
         if (this.autoSize) {
             this.setupAutoSizeObserver();
+        }
+
+        // Watch body class changes for dark-only elements
+        if (this.darkOnly) {
+            this._darkObserver = new MutationObserver(() => this.updateStyles());
+            this._darkObserver.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+        }
+    }
+
+    disconnectedCallback() {
+        if (this._darkObserver) {
+            this._darkObserver.disconnect();
+            this._darkObserver = null;
         }
     }
 
@@ -249,6 +271,20 @@ class GlassElement extends HTMLElement {
         // Estilos base que siempre se aplican
         element.style.borderRadius = `${this.radius}px`;
 
+        // dark-only: clear glass effect when not in dark mode
+        if (this.darkOnly && !this.isDarkActive) {
+            element.style.backdropFilter = 'none';
+            element.style.webkitBackdropFilter = 'none';
+            element.style.background = 'transparent';
+            element.style.boxShadow = 'none';
+            element.style.border = 'none';
+            if (!this.autoSize) {
+                element.style.height = `${this.height}px`;
+                element.style.width = `${this.width}px`;
+            }
+            return;
+        }
+
         if (this.autoSize) {
             // Auto-size: obtener dimensiones del contenido de manera más precisa
             
@@ -353,8 +389,8 @@ class GlassElement extends HTMLElement {
                 }
                 
                 .glass-box {
-                    background: rgba(255, 255, 255, 0.4);
-                    box-shadow: 1px 1px 1px 0px rgba(255,255,255, 0.60) inset, -1px -1px 1px 0px rgba(255,255,255, 0.60) inset, 0px 0px 16px 0px rgba(0,0,0, 0.04);
+                    background: ${this.darkOnly && !this.isDarkActive ? 'transparent' : 'rgba(255, 255, 255, 0.4)'};
+                    box-shadow: ${this.darkOnly && !this.isDarkActive ? 'none' : '1px 1px 1px 0px rgba(255,255,255, 0.60) inset, -1px -1px 1px 0px rgba(255,255,255, 0.60) inset, 0px 0px 16px 0px rgba(0,0,0, 0.04)'};
                     cursor: pointer;
                     transition: transform 0.1s ease;
                     position: relative;

@@ -189,14 +189,16 @@ if (isMobile) {
     }
   });
 
-  video.addEventListener("canplay", function () {
-    if (!ready) {
-      ready = true;
-      if (loader) loader.style.display = "none";
-      cacheGeometry();
-      drawVideoFrame();
-    }
-  }, { once: true });
+  function onDesktopReady() {
+    if (ready) return;
+    ready = true;
+    if (loader) loader.style.display = "none";
+    cacheGeometry();
+    drawVideoFrame();
+  }
+
+  video.addEventListener("canplay", onDesktopReady, { once: true });
+  video.addEventListener("loadeddata", onDesktopReady, { once: true });
 
   video.addEventListener("progress", function () {
     if (loader && loader.style.display !== "none" &&
@@ -219,5 +221,20 @@ if (isMobile) {
   desktopObs.observe(section);
   window.addEventListener("resize", resizeCanvas, { passive: true });
   resizeCanvas();
+
+  /* Force Safari to start loading the video */
+  video.load();
+
+  /* Fallback: if neither canplay nor loadeddata fires in 4s, try play/pause trick */
+  setTimeout(function () {
+    if (!ready && video.readyState >= 2) {
+      onDesktopReady();
+    } else if (!ready) {
+      video.play().then(function () {
+        video.pause();
+        video.currentTime = 0;
+      }).catch(function () {});
+    }
+  }, 4000);
 
 }

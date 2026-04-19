@@ -46,10 +46,29 @@
                 <span class="brand-suffix">Ingeniería</span>
             </div>
             <div class="nav-actions">
+                <button class="dark-toggle" id="dark-toggle" aria-label="Modo oscuro">
+                    <svg class="dark-toggle__sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <circle cx="12" cy="12" r="5"/>
+                        <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                    </svg>
+                    <svg class="dark-toggle__moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+                    </svg>
+                </button>
                 <button class="nav-cta" onclick="window.location.href='index.html'">← Página Principal</button>
             </div>
         </div>
     </nav>
+    <script>
+        // Restore dark mode preference from main page
+        if (localStorage.getItem('voltgrid-dark-mode') === 'true') {
+            document.body.classList.add('dark-mode');
+        }
+        document.getElementById('dark-toggle').addEventListener('click', function() {
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('voltgrid-dark-mode', document.body.classList.contains('dark-mode'));
+        });
+    </script>
 
     <!-- Ebooks Section -->
     <section class="ebooks-zone" id="ebooks-zone">

@@ -11,7 +11,7 @@
     <link rel="shortcut icon" href="/favicon-32.png">
     <link rel="apple-touch-icon" href="/favicon.png">
     <link rel="manifest" href="/site.webmanifest" />
-    <link rel="stylesheet" href="styles.css?v=9">
+    <link rel="stylesheet" href="styles.css?v=68">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -30,6 +30,15 @@
                 <span class="brand-suffix">Ingeniería</span>
             </div>
             <div class="nav-actions">
+                <button class="dark-toggle" id="dark-toggle" aria-label="Modo oscuro">
+                    <svg class="dark-toggle__sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <circle cx="12" cy="12" r="5"/>
+                        <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                    </svg>
+                    <svg class="dark-toggle__moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+                    </svg>
+                </button>
                 <glass-element
                     id="nav-hamburger-glass"
                     width="44"
@@ -40,6 +49,7 @@
                     strength="40"
                     chromatic-aberration="2"
                     background-color="rgba(255,255,255,0.4)"
+                    dark-only
                     style="--glass-padding:0; z-index:1001; flex-shrink:0;">
                     <button class="nav-hamburger" id="nav-hamburger" aria-label="Abrir menú" aria-expanded="false" aria-controls="nav-panel">
                         <span class="nav-hamburger__line"></span>
@@ -164,6 +174,13 @@
             </div>
         </div>
     </section>
+
+    <!-- Phrase Banner — own white strip below hero -->
+    <div class="phrase-banner-strip" id="phrase-banner-strip">
+        <div class="phrase-banner" id="phrase-banner">
+            <span class="phrase-banner__text">La excelencia es nuestro estándar.</span>
+        </div>
+    </div>
 
     <!-- SCROLL DOWN -->
     <section class="scroll-section" id="scroll-section">
@@ -412,6 +429,11 @@
         </div>
     </section>
 
+    <!-- Wallpaper Banner -->
+    <section class="wallpaper-banner">
+        <img src="Wallpaper main/ChatGPT Image Apr 17, 2026 at 11_57_03 PM.png" alt="Paneles solares" class="wallpaper-banner__img" />
+    </section>
+
     <!-- FAQ Section -->
     <section class="faq">
         <div class="container">
@@ -488,21 +510,21 @@
                     <p class="lead-info-text">Nuestro equipo técnico analiza tu caso y te responde con una propuesta clara, sin rodeos y sin compromiso.</p>
                     <ul class="lead-benefits">
                         <li class="lead-benefit">
-                            <span class="lead-benefit-icon">⚡</span>
+                            <img class="lead-benefit-icon-img" src="Iconos/Capa 1 copia.png" alt="Técnico especializado" />
                             <div>
                                 <strong>Respuesta en menos de 24 h</strong>
                                 <p>Un técnico especializado te contacta directamente</p>
                             </div>
                         </li>
                         <li class="lead-benefit">
-                            <span class="lead-benefit-icon">✔</span>
+                            <img class="lead-benefit-icon-img" src="Iconos/Capa 3.png" alt="Recibe tu cotización" />
                             <div>
                                 <strong>Sin compromiso</strong>
                                 <p>Recibe tu cotización sin ninguna obligación</p>
                             </div>
                         </li>
                         <li class="lead-benefit">
-                            <span class="lead-benefit-icon">🔒</span>
+                            <img class="lead-benefit-icon-img" src="Iconos/Capa 2.png" alt="Información confidencial" />
                             <div>
                                 <strong>Tus datos están protegidos</strong>
                                 <p>Información confidencial, solo para tu asesoría</p>
@@ -746,10 +768,10 @@
     </div>
 
 
-    <script src="displacement-utils.js"></script>
-    <script src="glass-element.js"></script>
-    <script src="script.js?v=9"></script>
-    <script src="solar-scroll/script.js?v=9"></script>
+    <script src="displacement-utils.js?v=68"></script>
+    <script src="glass-element.js?v=68"></script>
+    <script src="script.js?v=68"></script>
+    <script src="solar-scroll/script.js?v=68"></script>
     <script>
         const originalTitle = "VoltGrid Ingeniería";
         const awayMessages = [

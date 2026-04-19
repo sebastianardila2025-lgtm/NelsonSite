@@ -1068,6 +1068,25 @@ addAccessibilityFeatures();
 console.log('%cVoltGrid Ingeniería', 'font-size: 20px; font-weight: bold; color: #0d2341;');
 console.log('%cPrecisión técnica para cumplir, seguridad para confiar', 'font-size: 14px; color: #d4af37;');
 
+// ── Dark Mode Toggle ──
+(function() {
+  var toggle = document.getElementById('dark-toggle');
+  if (!toggle) return;
+
+  // Restore saved preference
+  var saved = localStorage.getItem('voltgrid-dark-mode');
+  if (saved === 'true') {
+    document.body.classList.add('dark-mode');
+  }
+
+  toggle.addEventListener('click', function() {
+    document.body.classList.toggle('dark-mode');
+    var isDark = document.body.classList.contains('dark-mode');
+    localStorage.setItem('voltgrid-dark-mode', isDark);
+  });
+})();
+
+
 // ── Hero Scene Controller + Metric Card ──
 (function() {
   var scenes   = document.querySelectorAll('.hero__scene');
@@ -1102,7 +1121,6 @@ console.log('%cPrecisión técnica para cumplir, seguridad para confiar', 'font-
     scenes[idx].classList.add('active');
     dots[idx].classList.add('active');
 
-    // Animate card content
     if (metricEl) {
       metricEl.style.opacity = '0';
       metricEl.style.transform = 'translateY(6px)';
@@ -1147,4 +1165,195 @@ console.log('%cPrecisión técnica para cumplir, seguridad para confiar', 'font-
   }
 
   startAutoplay();
+})();
+
+// ── Phrase Banner text focus-snap animation ──
+(function() {
+  var textEl = document.querySelector('.phrase-banner__text');
+  if (!textEl) return;
+
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        textEl.classList.add('is-focused');
+      } else {
+        textEl.classList.remove('is-focused');
+      }
+    });
+  }, { threshold: 0.5 });
+
+  observer.observe(textEl);
+})();
+
+// ── Phrase Banner scroll + Video panel width expansion ──
+(function() {
+  var banner = document.getElementById('phrase-banner');
+  var strip  = document.getElementById('phrase-banner-strip');
+  var panel  = document.getElementById('scroll-section');
+  if (!banner || !strip || !panel) return;
+
+  var text      = banner.querySelector('.phrase-banner__text');
+  var stickyEl  = panel.querySelector('.sticky-wrap');
+  var ticking   = false;
+
+  // Cache positions once so they don't shift during video scroll
+  var cachedStripTop  = strip.offsetTop;
+  var cachedStripMid  = cachedStripTop + strip.offsetHeight / 2;
+  var cachedPanelTop  = panel.offsetTop;
+  var cachedEndTop    = cachedPanelTop + window.innerHeight * 0.25;
+  var cachedTravel    = cachedEndTop - cachedStripMid;
+  var arrived  = false;
+  var lastShift = 0;
+  var goingUp   = false;
+
+  window.addEventListener('resize', function() {
+    cachedStripTop  = strip.offsetTop;
+    cachedStripMid  = cachedStripTop + strip.offsetHeight / 2;
+    cachedPanelTop  = panel.offsetTop;
+    cachedEndTop    = cachedPanelTop + window.innerHeight * 0.25;
+    cachedTravel    = cachedEndTop - cachedStripMid;
+  });
+
+  // Gradient color stops for the gold text morph
+  var GSTOPS = [
+    { p: 0.00, r1: 240, g1: 208, b1: 96,  r2: 212, g2: 175, b2: 55,  r3: 160, g3: 120, b3: 40  }, // gold
+    { p: 0.40, r1: 240, g1: 180, b1: 60,  r2: 230, g2: 126, b2: 34,  r3: 180, g3: 80,  b3: 20  }, // orange
+    { p: 0.65, r1: 230, g1: 80,  b1: 60,  r2: 200, g2: 40,  b2: 40,  r3: 150, g3: 20,  b3: 20  }, // red
+    { p: 1.00, r1: 60,  g1: 100, b1: 180, r2: 13,  g2: 35,  b2: 65,  r3: 8,   g3: 20,  b3: 45  }  // dark blue
+  ];
+
+  function lerpGrad(progress) {
+    var i = 0;
+    for (var s = 1; s < GSTOPS.length; s++) {
+      if (progress <= GSTOPS[s].p) { i = s - 1; break; }
+      i = s - 1;
+    }
+    var a = GSTOPS[i], b = GSTOPS[Math.min(i + 1, GSTOPS.length - 1)];
+    var t = (b.p === a.p) ? 1 : (progress - a.p) / (b.p - a.p);
+    t = Math.max(0, Math.min(1, t));
+    function mix(v1, v2) { return Math.round(v1 + (v2 - v1) * t); }
+    return {
+      c1: 'rgb(' + mix(a.r1,b.r1) + ',' + mix(a.g1,b.g1) + ',' + mix(a.b1,b.b1) + ')',
+      c2: 'rgb(' + mix(a.r2,b.r2) + ',' + mix(a.g2,b.g2) + ',' + mix(a.b2,b.b2) + ')',
+      c3: 'rgb(' + mix(a.r3,b.r3) + ',' + mix(a.g3,b.g3) + ',' + mix(a.b3,b.b3) + ')'
+    };
+  }
+
+  function update() {
+    var scrollY = window.pageYOffset;
+
+    var startScroll = cachedStripTop - window.innerHeight * 0.65;
+    var endScroll   = cachedPanelTop;
+    if (endScroll <= startScroll) endScroll = startScroll + 1;
+
+    // 1:1 with scroll: each pixel scrolled = one pixel moved
+    var rawShift = scrollY - startScroll;
+    var shift = Math.max(0, Math.min(cachedTravel, rawShift));
+    var progress = cachedTravel > 0 ? shift / cachedTravel : 0;
+
+    if (shift >= cachedTravel) arrived = true;
+
+    // Locked at destination
+    if (arrived && rawShift >= cachedTravel) {
+      banner.style.transform = 'translateY(' + cachedTravel + 'px)';
+      if (stickyEl) stickyEl.style.clipPath = 'inset(0 0% 0 0% round 0px)';
+      lastShift = cachedTravel;
+      banner.style.transition = 'none';
+      return;
+    }
+
+    // Release only after scrolling 200px back
+    if (arrived && rawShift < cachedTravel - 200) {
+      arrived = false;
+    }
+
+    // Detect direction
+    var nowUp = shift < lastShift;
+    if (nowUp && !goingUp) {
+      // Just started going up → add slow transition
+      banner.style.transition = 'transform 1.5s ease-out';
+      goingUp = true;
+    } else if (!nowUp && goingUp) {
+      // Just started going down → remove transition (instant)
+      banner.style.transition = 'none';
+      goingUp = false;
+    }
+
+    lastShift = shift;
+    banner.style.transform = 'translateY(' + shift + 'px)';
+
+    // Gradient morph: gold → orange → red → dark blue
+    var g = lerpGrad(progress);
+    text.style.background = 'linear-gradient(180deg, ' + g.c1 + ' 0%, ' + g.c2 + ' 50%, ' + g.c3 + ' 100%)';
+    text.style.webkitBackgroundClip = 'text';
+    text.style.backgroundClip = 'text';
+
+    // Glow: gold early, transitions to blue at the end
+    if (progress > 0.85) {
+      var glowP = (progress - 0.85) / 0.15;
+      var glowSize = 8 + glowP * 16;
+      var glowAlpha = glowP * 0.7;
+      text.style.setProperty('--pb-glow',
+        '0 0 ' + glowSize + 'px rgba(59,130,246,' + glowAlpha + '), ' +
+        '0 0 ' + (glowSize * 2) + 'px rgba(59,130,246,' + (glowAlpha * 0.4) + ')'
+      );
+    } else if (progress > 0.2) {
+      var gP = (progress - 0.2) / 0.65;
+      var gSize = 6 + gP * 14;
+      var gAlpha = 0.2 + gP * 0.4;
+      text.style.setProperty('--pb-glow',
+        '0 0 ' + gSize + 'px rgba(212,175,55,' + gAlpha + '), ' +
+        '0 0 ' + (gSize * 2) + 'px rgba(212,175,55,' + (gAlpha * 0.3) + ')'
+      );
+    } else {
+      text.style.setProperty('--pb-glow', '0 0 20px rgba(212,175,55,0.3)');
+    }
+
+    // Video panel width — uses full scroll range so expansion is gradual
+    if (stickyEl) {
+      var videoProgress = Math.max(0, Math.min(1, (scrollY - startScroll) / (endScroll - startScroll)));
+      var insetMax = 7;
+      var inset = insetMax * (1 - videoProgress);
+      var borderR = 16 * (1 - videoProgress);
+      stickyEl.style.clipPath = 'inset(0 ' + inset + '% 0 ' + inset + '% round ' + borderR + 'px)';
+    }
+  }
+
+  window.addEventListener('scroll', function() {
+    if (!ticking) {
+      requestAnimationFrame(function() { update(); ticking = false; });
+      ticking = true;
+    }
+  }, { passive: true });
+
+  update();
+})();
+
+// ── Wallpaper Banner scroll expand ──
+(function() {
+  var wp = document.querySelector('.wallpaper-banner');
+  if (!wp) return;
+
+  var ticking = false;
+  var insetMax = 7;   // start cropped 7% each side
+  var radiusMax = 16; // start with 16px rounded corners
+
+  function updateWP() {
+    var rect = wp.getBoundingClientRect();
+    var viewH = window.innerHeight;
+    // progress 0→1: starts when banner is 15% into viewport, fully expanded at mid-screen
+    var progress = Math.max(0, Math.min(1, (viewH * 0.85 - rect.top) / (viewH * 0.35)));
+    var inset = insetMax * (1 - progress);
+    var radius = radiusMax * (1 - progress);
+    wp.style.clipPath = 'inset(0 ' + inset + '% 0 ' + inset + '% round ' + radius + 'px)';
+  }
+
+  window.addEventListener('scroll', function() {
+    if (!ticking) {
+      requestAnimationFrame(function() { updateWP(); ticking = false; });
+      ticking = true;
+    }
+  }, { passive: true });
+
+  updateWP();
 })();
